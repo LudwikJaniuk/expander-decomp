@@ -1,8 +1,12 @@
 #include <iostream>
+#include <lemon/adaptors.h>
 #include <lemon/list_graph.h>
 #include <lemon/bfs.h>
 #include <lemon/dijkstra.h>
 #include <lemon/preflow.h>
+
+#include "preliminaries.h"
+
 using namespace lemon;
 using namespace std;
 int main()
@@ -17,28 +21,31 @@ int main()
 //       30 
 //   
 
-  ListDigraph g;
-  ListDigraph::ArcMap<int> capacity(g);
+  ListGraph g;
+  ListGraph::EdgeMap<int> capacity(g);
 
-  int LEVELS = 10000000;
+  int LEVELS = 100;
 
-  ListDigraph::Node s = g.addNode();
-  ListDigraph::Node t = g.addNode();
+  ListGraph::Node s = g.addNode();
+  ListGraph::Node t = g.addNode();
 
   for(int i = 0; i < LEVELS; i++) {
-	  ListDigraph::Arc a = g.addArc(s, t);
+	  ListGraph::Edge a = g.addEdge(s, t);
 	  capacity[a] = 1;
   }
-  cout << "Algo" << endl;
 
-  Preflow<ListDigraph> preflow(g, capacity, s, t);
-  preflow.run();
+  cout << "es " << deg(g, s) << endl;
 
-  cout << "Hello World! This is LEMON library here." << endl;
-  cout << "We have a directed graph with " << countNodes(g) << " nodes "
-       << "and " << countArcs(g) << " arc." << endl;
+  ListGraph::NodeMap<bool> filter(g, true);
+  ListGraph::EdgeMap<bool> filterE(g, true);
+  filter[t] = false;
+  SubGraph<ListGraph> g_(g, filter, filterE);
 
-  cout << "maxFlow " << preflow.flowValue() << endl;
+  GraphSubset<ListGraph> gs(g, g_);
+
+  cout << "vol " << vol(g) << endl;
+  cout << "vol sub " << vol(g_) << endl;
+  cout << "vol subset " << vol(gs) << endl;
   return 0;
 }
 
