@@ -46,12 +46,22 @@ int main()
   ListGraph::EdgeMap<bool> filterE(g, true);
   filter[t] = false;
   SubGraph<ListGraph> g_(g, filter, filterE);
-
   GraphSubset<ListGraph> gs(g, g_);
+
+  ListGraph::NodeMap<bool> Tfilter(g, true);
+  ListGraph::EdgeMap<bool> TfilterE(g, true);
+  Tfilter[u] = false;
+  SubGraph<ListGraph> Tg_(g, Tfilter, TfilterE);
+  GraphSubset<ListGraph> gt(g, Tg_);
 
   cout << "vol " << vol(g) << endl;
   cout << "vol sub " << vol(g_) << endl;
   cout << "vol subset " << vol(gs) << endl;
+  cout << "S = {s, u}, T = {s, t}" << endl;
+  cout << "s t u " << g.id(s) << " " << g.id(t) << " " << g.id(u) << endl;
+  cout << "E(S,T) " << n_edges_between(gs, gt) << endl;
+  cout << "D(S) " << cut_size(gs) << endl;
+  cout << "D(T) " << cut_size(gt) << endl;
   return 0;
 }
 
