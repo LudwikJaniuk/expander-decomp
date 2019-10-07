@@ -25,12 +25,18 @@ int main()
   ListGraph::EdgeMap<int> capacity(g);
 
   int LEVELS = 100;
+  int LEVELS2 = 150;
 
   ListGraph::Node s = g.addNode();
   ListGraph::Node t = g.addNode();
+  ListGraph::Node u = g.addNode();
 
   for(int i = 0; i < LEVELS; i++) {
 	  ListGraph::Edge a = g.addEdge(s, t);
+	  capacity[a] = 1;
+  }
+  for(int i = 0; i < LEVELS2; i++) {
+	  ListGraph::Edge a = g.addEdge(t, u);
 	  capacity[a] = 1;
   }
 

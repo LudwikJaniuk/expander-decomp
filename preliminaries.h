@@ -43,4 +43,27 @@ int vol(const GraphSubset<MyGraph> &gs) {
 	return volume;
 }
 
+// E(S,T) : edges between two subsets
+template <typename GT>
+int n_edges_between(const GraphSubset<GT> &S_, const GraphSubset<GT> &T_) {
+	assert(&S_.graph == &T_.graph);
+	const SubGraph<GT>& S = S_.subset;
+	const SubGraph<GT>& T = T_.subset;
+	const GT &G = S.graph;
+
+	int n = 0;
+	for(typename GT::EdgeIt e(G); e != INVALID; ++e) {
+		typename GT::Node u = G.u(e);
+		typename GT::Node v = G.v(e);
+		bool crossing = S.status(u) && T.status(u);
+		crossing |= S.status(v) && T.status(v);
+		n += crossing ? 1 : 0;
+	}
+	return n;
+}
+
+// cut-size delta : |E(S, comp(S))|
+
+// conductance of cut S: cut-size(S) / min(vol S, vol comp s)
+
 
