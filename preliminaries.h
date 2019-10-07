@@ -81,5 +81,16 @@ int cut_size(const GraphSubset<GT> &S_) {
 }
 
 // conductance of cut S: cut-size(S) / min(vol S, vol comp s)
+template <typename GT>
+double conductance(const GraphSubset<GT> &S_) {
+	const SubGraph<GT>& S = S_.subset;
+	const GT &G = S_.graph;
+
+	int d = cut_size(S_);
+	int volS = vol(S_);
+	int volcompS = vol(G) - volS;
+
+	return ((double)d)/min(volS, volcompS);
+}
 
 

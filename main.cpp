@@ -62,6 +62,8 @@ int main()
   cout << "E(S,T) " << n_edges_between(gs, gt) << endl;
   cout << "D(S) " << cut_size(gs) << endl;
   cout << "D(T) " << cut_size(gt) << endl;
+  cout << "conductance(S) " << conductance(gs) << endl;
+  cout << "conductance(T) " << conductance(gt) << endl;
   return 0;
 }
 
