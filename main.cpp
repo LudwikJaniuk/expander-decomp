@@ -18,6 +18,73 @@ random_device r;
 default_random_engine engine(r());
 uniform_int_distribution<int> uniform_dist(0, 1);
 
+template<typename G>
+vector<typename G::Node> cut_player(const G& g, const vector<G>& matchings) {
+	using NodeMapd = typename G::template NodeMap<double>;
+	using Node = typename G::Node;
+	using NodeIt = typename G::NodeIt;
+	using EdgeIt = typename G::EdgeIt;
+
+	NodeMapd probs(g);
+	vector<Node> allNodes;
+
+	for(NodeIt n(g); n!=INVALID; ++n){
+		allNodes.push_back(n);
+		probs[n] = uniform_dist(engine) ? 1.0/allNodes.size() : -1.0/allNodes.size(); // TODO
+	}
+
+	cout << "AllNodes: " << endl;
+	for(const Node& n : allNodes) {
+		cout << g.id(n) << " ";
+	}
+	cout << endl;
+
+	for(const G& m : matchings) {
+		for(EdgeIt e(g); e!=INVALID; ++e){
+			Node u = m.u(e);
+			Node v = m.v(e);
+			double avg = probs[u]/2 + probs[v]/2;
+			probs[u] = avg;
+			probs[v] = avg;
+		}
+	}
+
+	sort(allNodes.begin(), allNodes.end(), [&](Node a, Node b) { 
+		return probs[a] < probs[b];
+	});
+
+	size_t size = allNodes.size();
+	assert(size%2==0);
+	allNodes.resize(size/2);
+	return allNodes;
+
+	// for each vertex v
+	// 	weight[v] = rand(0, 1) ? 1/n : -1/n
+	// for each mapping m (in order)
+	// 	for each edge (u,v) of m
+	// 		weights[u] = weights[v] = avg(weights[u], weights[v])
+	// NodeLIst nodes;
+	// sort(nodelist by weight[node])
+	//
+	// return slice of nodellist beginning
+	// (actually can optimize with stl)
+	// */
+}
+
+void run_cut_player() {
+	ListGraph g;
+	for(int i = 0; i < 100; i++) {
+		g.addNode();
+	}
+
+	vector<ListGraph::Node> out = cut_player<ListGraph>(g, vector<ListGraph>());
+
+	for(ListGraph::Node n : out) {
+		cout << g.id(n) << ", ";
+	}
+	cout << endl;
+}
+
 int main()
 {
 
@@ -89,55 +156,11 @@ int main()
 
   cout << "Random: " << uniform_dist(engine)<< '\n';
 
+  // We need to run the cut player with some tests
+
+  run_cut_player();
+
   return 0;
-}
-
-template<typename G>
-vector<int> cut_player(const G& g, const vector<G>& matchings) {
-	using NodeMapd = typename G::template NodeMap<double>;
-	using Node = typename G::Node;
-	using NodeIt = typename G::NodeIt;
-	using EdgeIt = typename G::EdgeIt;
-
-	NodeMapd probs;
-	vector<Node> allNodes(countNodes(g));
-	return allNodes;
-
-	for(NodeIt n(g); n!=INVALID; ++n){
-		allNodes.push_back(n);
-		probs[n] = uniform_dist(engine) ? 1.0/allNodes.size() : -1.0/allNodes.size(); // TODO
-	}
-
-	for(const G& m : matchings) {
-		for(EdgeIt e(g); e!=INVALID; ++e){
-			Node u = m.u(e);
-			Node v = m.v(e);
-			double avg = probs[u]/2 + probs[v]/2;
-			probs[u] = avg;
-			probs[v] = avg;
-		}
-	}
-
-	sort(allNodes.begin(), allNodes.end(), [&](Node a, Node b) { 
-		return probs[a] < probs[b];
-	});
-
-	size_t size = allNodes.size();
-	assert(size%2==0);
-	allNodes.resize(size/2);
-	return allNodes;
-
-	// for each vertex v
-	// 	weight[v] = rand(0, 1) ? 1/n : -1/n
-	// for each mapping m (in order)
-	// 	for each edge (u,v) of m
-	// 		weights[u] = weights[v] = avg(weights[u], weights[v])
-	// NodeLIst nodes;
-	// sort(nodelist by weight[node])
-	//
-	// return slice of nodellist beginning
-	// (actually can optimize with stl)
-	// */
 }
 
 
