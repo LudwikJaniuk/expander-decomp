@@ -8,6 +8,7 @@
 using namespace lemon;
 using namespace std;
 
+// TODO [EASY] Use conveninece macros to reduce amount of tpes
 
 // TODO [EASY] Maybe subgraph does have a reference to the original graph?
 // Like a subgraph, but keep around the orignal graph not to hide e.g. edged going out
@@ -93,4 +94,55 @@ double conductance(const GraphSubset<GT> &S_) {
 	return ((double)d)/min(volS, volcompS);
 }
 
+/*
+// This will be very interesting when we do conductances of subsets - need to track what "cuts" are opposite to inside of there.
+// COnductace of graph -- total search
+template <typename GT>
+double conductance(const GT &G) {
+	ListGraph::NodeMap<bool> filter(G, false);
+	ListGraph::EdgeMap<bool> filterE(G, true);
+	SubGraph<ListGraph> g_(g, filter, filterE);
+	GraphSubset<ListGraph> gs(g, g_);
 
+	// Base case for empty graph, and also its the max possible
+	double min_cond = 1;
+	
+	vector<GT::NodeIt> nodes;
+	for(typename GT::NodeIt n(G); e != INVALID; ++e) {
+		nodes.push_back(n);
+	}
+
+	// We'll be doing some binary counting here
+	bool carry = false;
+	int i = 0;
+	while(i < nodes.size()) {
+		if(carry) {
+			if(!filter[nodes[i]]) {
+				filter[nodes[i]] = true;
+				carry = false;
+			} else {
+				++i;
+				continue;
+			}
+		}
+
+		double cond = conductance(gs);
+		min_cond = min(min_cond, cond);
+
+
+		// ?
+		i = 0;
+
+		// "add one"
+		if(!filter[nodes[i]]) {
+			filter[nodes[i]] = true;
+		} else {
+			filter[nodes[i]] = false;
+			carry = true;
+			++i;
+		}
+	}
+
+	return min_cond;
+}
+*/
