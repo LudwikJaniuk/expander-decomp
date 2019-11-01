@@ -1,8 +1,10 @@
 #include <iostream>
 #include <algorithm>
 #include <random>
+#include <memory>
 #include <lemon/adaptors.h>
 #include <lemon/list_graph.h>
+#include <lemon/edge_set.h>
 #include <lemon/bfs.h>
 #include <lemon/dijkstra.h>
 #include <lemon/preflow.h>
@@ -18,12 +20,12 @@ random_device r;
 default_random_engine engine(r());
 uniform_int_distribution<int> uniform_dist(0, 1);
 
-template<typename G>
-vector<typename G::Node> cut_player(const G& g, const vector<G>& matchings) {
+template<typename G, typename M>
+vector<typename G::Node> cut_player(const G& g, const vector<unique_ptr<M>>& matchings) {
 	using NodeMapd = typename G::template NodeMap<double>;
 	using Node = typename G::Node;
 	using NodeIt = typename G::NodeIt;
-	using EdgeIt = typename G::EdgeIt;
+	using MEdgeIt = typename M::EdgeIt;
 
 	NodeMapd probs(g);
 	vector<Node> allNodes;
@@ -39,10 +41,10 @@ vector<typename G::Node> cut_player(const G& g, const vector<G>& matchings) {
 	}
 	cout << endl;
 
-	for(const G& m : matchings) {
-		for(EdgeIt e(g); e!=INVALID; ++e){
-			Node u = m.u(e);
-			Node v = m.v(e);
+	for(const unique_ptr<M>& m : matchings) {
+		for(MEdgeIt e(*m); e!=INVALID; ++e){
+			Node u = m->u(e);
+			Node v = m->v(e);
 			double avg = probs[u]/2 + probs[v]/2;
 			probs[u] = avg;
 			probs[v] = avg;
@@ -77,7 +79,26 @@ void run_cut_player() {
 		g.addNode();
 	}
 
-	vector<ListGraph::Node> out = cut_player<ListGraph>(g, vector<ListGraph>());
+	// Matchings
+	vector<unique_ptr<ListEdgeSet<ListGraph>>> matchings;
+
+	unique_ptr<ListEdgeSet<ListGraph>> m(new ListEdgeSet<ListGraph>(g));
+
+	ListGraph::Node u, v;
+	bool odd = true;
+	for(ListGraph::NodeIt n(g); n != INVALID; ++n) {
+		if(odd) {
+			u = n;
+		} else {
+			v = n;
+			m->addEdge(u, v);
+			cout << "M " << g.id(u) << " " << g.id(v) << endl;
+		}
+		odd = !odd;
+	}
+
+	matchings.push_back(move(m));
+	vector<ListGraph::Node> out = cut_player<ListGraph>(g, matchings);
 
 	for(ListGraph::Node n : out) {
 		cout << g.id(n) << ", ";
