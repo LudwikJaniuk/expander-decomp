@@ -2,6 +2,8 @@
 #include <algorithm>
 #include <random>
 #include <memory>
+#include <vector>
+#include <set>
 #include <lemon/adaptors.h>
 #include <lemon/list_graph.h>
 #include <lemon/edge_set.h>
@@ -20,6 +22,8 @@ random_device r;
 default_random_engine engine(r());
 uniform_int_distribution<int> uniform_dist(0, 1);
 
+// Actually, cut player gets H
+// Actually Actually, sure it gets H but it just needs the matchings...
 template<typename G, typename M>
 vector<typename G::Node> cut_player(const G& g, const vector<unique_ptr<M>>& matchings) {
 	using NodeMapd = typename G::template NodeMap<double>;
@@ -73,10 +77,111 @@ vector<typename G::Node> cut_player(const G& g, const vector<unique_ptr<M>>& mat
 	// */
 }
 
+template<typename G>
+void matching_player(G& g, const set<typename G::Node>& cut) {
+	using Snapshot = typename G::Snapshot;
+	using Node = typename G::Node;
+	using Edge = typename G::Edge;
+	using NodeIt = typename G::NodeIt;
+	using EdgeIt = typename G::EdgeIt;
+	using EdgeMap = typename G::template EdgeMap<int>;
+
+	size_t num_verts = countNodes(g);
+
+	Snapshot snap(g);
+
+	Node s = g.addNode();
+	Node t = g.addNode();
+	EdgeMap capacity(g);
+	int s_added = 0; 
+	int t_added = 0; 
+	for(NodeIt n(g); n != INVALID; ++n) {
+		if (n == s) continue;
+		if (n == t) continue;
+		Edge e;
+		if(cut.count(n)) {
+			e = g.addEdge(s, n);
+			s_added++;
+			cout << "S" << endl;
+		} else {
+			e = g.addEdge(n, t);
+			t_added++;
+			cout << "t" << endl;
+		}
+		capacity[e] = 1;
+	}
+	cout << s_added << " S added" << endl;
+	cout << t_added << " T added" << endl;
+	assert(s_added == t_added);
+
+
+	for(unsigned long long i = 1; i < num_verts; i *= 2) { 
+
+		for(EdgeIt e(g); e != INVALID; ++e) {
+			capacity[e] = 1;
+		}
+
+		Preflow<G, EdgeMap> p(g, capacity, s, t);
+		p.runMinCut();
+		cout << "FLow: " << p.flowValue() << endl;
+
+	}
+	// Set up source and sink to both sides
+	// give all internal ones capacity of 1
+	// If we find a flow of n/2
+	// 	then we're done, since the cut player couldn't find a good cut,
+	// 	G is already an expander...
+	// 	However we're supposed to output a certification in that case right? 
+	// 	And H isn't necessarily an expander yet (how will we know?) TODO
+	// 	But for now if this is the case, we output claim "G is expander".
+	// If not, then we double all the capacities and see if we can do it now
+	// When you finally can do it and have a flow F
+	// Decompose F into flow paths
+	// and output those matchings. 
+	//
+	// I think we can do decomposition by simply going vertex by vertex and tracing their flows,
+	// then subtracting that from the total flow...
+	
+	snap.restore();
+}
+
+
 void run_cut_player() {
 	ListGraph g;
+	vector<ListGraph::Node> nodes;
 	for(int i = 0; i < 100; i++) {
-		g.addNode();
+		nodes.push_back(g.addNode());
+
+	}
+	for(int i = 0; i < 45; i++) {
+		ListGraph::Node u = nodes[i];
+		int lim = 2;//(rand()%7 == 1 ? 5 : 1);
+		for(int j = 0; j < lim; j++) {
+			ListGraph::Node v;
+			do { v = nodes[45 + rand()%10]; } 
+			while (v == u || findEdge(g, u, v) != INVALID);
+			g.addEdge(u, v);
+		}
+	}
+	for(int i = 45; i < 55; i++) {
+		ListGraph::Node u = nodes[i];
+		int lim = 2;//(rand()%7 == 1 ? 5 : 1);
+		for(int j = 0; j < lim; j++) {
+			ListGraph::Node v;
+			do { v = nodes[45 + rand()%10]; } 
+			while (v == u || findEdge(g, u, v) != INVALID);
+			g.addEdge(u, v);
+		}
+	}
+	for(int i = 55; i < 100; i++) {
+		ListGraph::Node u = nodes[i];
+		int lim = 2;//(rand()%7 == 1 ? 5 : 1);
+		for(int j = 0; j < lim; j++) {
+			ListGraph::Node v;
+			do { v = nodes[45 + rand()%10]; } 
+			while (v == u || findEdge(g, u, v) != INVALID);
+			g.addEdge(u, v);
+		}
 	}
 
 	// Matchings
@@ -104,6 +209,9 @@ void run_cut_player() {
 		cout << g.id(n) << ", ";
 	}
 	cout << endl;
+
+	set<ListGraph::Node> cut(out.begin(), out.end());
+	matching_player<ListGraph>(g, cut);
 }
 
 int main()
