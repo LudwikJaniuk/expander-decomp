@@ -115,10 +115,12 @@ void matching_player(G& g, const set<typename G::Node>& cut) {
 	assert(s_added == t_added);
 
 
-	for(unsigned long long i = 1; i < num_verts; i *= 2) { 
+	for(unsigned long long i = 1; i < /*trial*/10*num_verts; i *= 2) { 
 
 		for(EdgeIt e(g); e != INVALID; ++e) {
-			capacity[e] = 1;
+			if(g.u(e) == s || g.v(e) == s) continue;
+			if(g.u(e) == t || g.v(e) == t) continue;
+			capacity[e] = i;
 		}
 
 		Preflow<G, EdgeMap> p(g, capacity, s, t);
@@ -145,9 +147,7 @@ void matching_player(G& g, const set<typename G::Node>& cut) {
 	snap.restore();
 }
 
-
-void run_cut_player() {
-	ListGraph g;
+void generate_large(ListGraph& g) {
 	vector<ListGraph::Node> nodes;
 	for(int i = 0; i < 100; i++) {
 		nodes.push_back(g.addNode());
@@ -172,6 +172,34 @@ void run_cut_player() {
 		ListGraph::Node v = nodes[2];
 		g.addEdge(u, v);
 	}
+}
+
+
+void generate_small(ListGraph& g) {
+	vector<ListGraph::Node> nodes;
+	for(int i = 0; i < 10; i++) {
+		nodes.push_back(g.addNode());
+	}
+
+	g.addEdge(nodes[0], nodes[1]);
+
+	g.addEdge(nodes[0], nodes[2]);
+	g.addEdge(nodes[0], nodes[3]);
+	g.addEdge(nodes[0], nodes[4]);
+	g.addEdge(nodes[0], nodes[5]);
+	g.addEdge(nodes[1], nodes[6]);
+	g.addEdge(nodes[1], nodes[7]);
+	g.addEdge(nodes[1], nodes[8]);
+	g.addEdge(nodes[1], nodes[9]);
+}
+
+void generate_graph(ListGraph& g) {
+	generate_small(g);
+}
+
+void run_cut_player() {
+	ListGraph g;
+	generate_graph(g);
 
 	// Matchings
 	vector<unique_ptr<ListEdgeSet<ListGraph>>> matchings;
@@ -192,6 +220,7 @@ void run_cut_player() {
 	}
 
 	matchings.push_back(move(m));
+
 	vector<ListGraph::Node> out = cut_player<ListGraph>(g, matchings);
 
 	for(ListGraph::Node n : out) {
@@ -205,78 +234,7 @@ void run_cut_player() {
 
 int main()
 {
-
-//       20
-//    b ---- d
-//   /30      \30
-//  a          f
-//   \20      /20
-//    c ---- e
-//       30 
-//   
-
-  ListGraph g;
-  ListGraph::EdgeMap<int> capacity(g);
-
-  int LEVELS = 100;
-  int LEVELS2 = 150;
-
-  ListGraph::Node s = g.addNode();
-  ListGraph::Node t = g.addNode();
-  ListGraph::Node u = g.addNode();
-
-  for(int i = 0; i < LEVELS; i++) {
-	  ListGraph::Edge a = g.addEdge(s, t);
-	  capacity[a] = 1;
-  }
-  for(int i = 0; i < LEVELS2; i++) {
-	  ListGraph::Edge a = g.addEdge(t, u);
-	  capacity[a] = 1;
-  }
-
-  cout << "es " << deg(g, s) << endl;
-
-  ListGraph::NodeMap<bool> filter(g, true);
-  ListGraph::EdgeMap<bool> filterE(g, true);
-  filter[t] = false;
-  SubGraph<ListGraph> g_(g, filter, filterE);
-  GraphSubset<ListGraph> gs(g, g_);
-
-  ListGraph::NodeMap<bool> Tfilter(g, true);
-  ListGraph::EdgeMap<bool> TfilterE(g, true);
-  Tfilter[u] = false;
-  SubGraph<ListGraph> Tg_(g, Tfilter, TfilterE);
-  GraphSubset<ListGraph> gt(g, Tg_);
-
-  cout << "vol " << vol(g) << endl;
-  cout << "vol sub " << vol(g_) << endl;
-  cout << "vol subset " << vol(gs) << endl;
-  cout << "S = {s, u}, T = {s, t}" << endl;
-  cout << "s t u " << g.id(s) << " " << g.id(t) << " " << g.id(u) << endl;
-  cout << "E(S,T) " << n_edges_between(gs, gt) << endl;
-  cout << "D(S) " << cut_size(gs) << endl;
-  cout << "D(T) " << cut_size(gt) << endl;
-  cout << "conductance(S) " << conductance(gs) << endl;
-  cout << "conductance(T) " << conductance(gt) << endl;
-
-  Tfilter[s] = false;
-
-  cout << "vol " << vol(g) << endl;
-  cout << "vol sub " << vol(g_) << endl;
-  cout << "vol subset " << vol(gs) << endl;
-  cout << "S = {s, u}, T = {s, t}" << endl;
-  cout << "s t u " << g.id(s) << " " << g.id(t) << " " << g.id(u) << endl;
-  cout << "E(S,T) " << n_edges_between(gs, gt) << endl;
-  cout << "D(S) " << cut_size(gs) << endl;
-  cout << "D(T) " << cut_size(gt) << endl;
-  cout << "conductance(S) " << conductance(gs) << endl;
-  cout << "conductance(T) " << conductance(gt) << endl;
-
-  cout << "Random: " << uniform_dist(engine)<< '\n';
-
-  // We need to run the cut player with some tests
-
-  run_cut_player();
+ run_cut_player();
 
   return 0;
 }
