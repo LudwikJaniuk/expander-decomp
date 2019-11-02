@@ -194,7 +194,7 @@ void generate_small(ListGraph& g) {
 }
 
 void generate_graph(ListGraph& g) {
-	generate_small(g);
+	generate_large(g);
 }
 
 void run_cut_player() {
