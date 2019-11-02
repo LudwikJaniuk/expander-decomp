@@ -151,37 +151,26 @@ void run_cut_player() {
 	vector<ListGraph::Node> nodes;
 	for(int i = 0; i < 100; i++) {
 		nodes.push_back(g.addNode());
+	}
 
-	}
-	for(int i = 0; i < 45; i++) {
+	g.addEdge(nodes[0], nodes[1]);
+	g.addEdge(nodes[1], nodes[2]);
+	g.addEdge(nodes[2], nodes[0]);
+
+	for(int i = 3; i < 33; i++) {
 		ListGraph::Node u = nodes[i];
-		int lim = 2;//(rand()%7 == 1 ? 5 : 1);
-		for(int j = 0; j < lim; j++) {
-			ListGraph::Node v;
-			do { v = nodes[45 + rand()%10]; } 
-			while (v == u || findEdge(g, u, v) != INVALID);
-			g.addEdge(u, v);
-		}
+		ListGraph::Node v = nodes[0];
+		g.addEdge(u, v);
 	}
-	for(int i = 45; i < 55; i++) {
+	for(int i = 33; i < 66; i++) {
 		ListGraph::Node u = nodes[i];
-		int lim = 2;//(rand()%7 == 1 ? 5 : 1);
-		for(int j = 0; j < lim; j++) {
-			ListGraph::Node v;
-			do { v = nodes[45 + rand()%10]; } 
-			while (v == u || findEdge(g, u, v) != INVALID);
-			g.addEdge(u, v);
-		}
+		ListGraph::Node v = nodes[1];
+		g.addEdge(u, v);
 	}
-	for(int i = 55; i < 100; i++) {
+	for(int i = 66; i < 100; i++) {
 		ListGraph::Node u = nodes[i];
-		int lim = 2;//(rand()%7 == 1 ? 5 : 1);
-		for(int j = 0; j < lim; j++) {
-			ListGraph::Node v;
-			do { v = nodes[45 + rand()%10]; } 
-			while (v == u || findEdge(g, u, v) != INVALID);
-			g.addEdge(u, v);
-		}
+		ListGraph::Node v = nodes[2];
+		g.addEdge(u, v);
 	}
 
 	// Matchings
