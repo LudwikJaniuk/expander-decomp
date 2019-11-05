@@ -110,16 +110,21 @@ vector<typename G::Node> extract_path(
 	vector<Node> path;
 
 	cout << "Path ";
-	for(OutArcIt a(g, u); a != INVALID; ++a) {
+	for(OutArcIt a(g, u); a != INVALID; ) {
 		Node v = g.target(a);
 
 		int ff = flow(g, f, u, v);
-		if(ff <= 0) continue;
+		if(ff - subtr[a] <= 0) {
+			++a;
+			continue;
+		};
 
 		path.push_back(u);
+		subtr[a] += 1;
 
 		cout << "(" << g.id(u) << " " << g.id(v) << ", " << ff <<  ")";
 		if(v == t) {
+			cout << " T";
 			break;
 		}
 
@@ -189,16 +194,12 @@ void matching_player(G& g, const set<typename G::Node>& cut) {
 		if(cut.count(n)) {
 			e = g.addEdge(s, n);
 			s_added++;
-			cout << "S" << endl;
 		} else {
 			e = g.addEdge(n, t);
 			t_added++;
-			cout << "t" << endl;
 		}
 		capacity[e] = 1;
 	}
-	cout << s_added << " S added" << endl;
-	cout << t_added << " T added" << endl;
 	assert(s_added == t_added);
 
 
@@ -214,10 +215,11 @@ void matching_player(G& g, const set<typename G::Node>& cut) {
 		p.reset(new Preflow<G, EdgeMap>(g, capacity, s, t));
 		p->runMinCut();
 		// Note that "startSecondPhase" must be run to get flows for individual verts
-		cout << "FLow: " << p->flowValue() << endl;
+		cout << "(cap, flow): (" << i << ", " << p->flowValue() << ")" << endl;
 
 	}
 
+	cout << "Decomposing paths." << endl;
 	decompose_paths(g, p, s, t);
 
 
@@ -290,15 +292,15 @@ void generate_graph(ListGraph& g) {
 	generate_large(g);
 }
 
-void run_cut_player() {
+void run() {
 	ListGraph g;
 	generate_graph(g);
 
 	// Matchings
 	vector<unique_ptr<ListEdgeSet<ListGraph>>> matchings;
-
 	unique_ptr<ListEdgeSet<ListGraph>> m(new ListEdgeSet<ListGraph>(g));
 
+	/*
 	ListGraph::Node u, v;
 	bool odd = true;
 	for(ListGraph::NodeIt n(g); n != INVALID; ++n) {
@@ -314,8 +316,10 @@ void run_cut_player() {
 
 	matchings.push_back(move(m));
 
+	*/
 	vector<ListGraph::Node> out = cut_player<ListGraph>(g, matchings);
 
+	cout << "Cut player gave: ";
 	for(ListGraph::Node n : out) {
 		cout << g.id(n) << ", ";
 	}
@@ -327,9 +331,9 @@ void run_cut_player() {
 
 int main()
 {
- run_cut_player();
+	run();
 
-  return 0;
+	return 0;
 }
 
 
