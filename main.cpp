@@ -39,7 +39,7 @@ vector<typename G::Node> cut_player(const G& g, const vector<unique_ptr<M>>& mat
 		probs[n] = uniform_dist(engine) ? 1.0/allNodes.size() : -1.0/allNodes.size(); // TODO
 	}
 
-	cout << "AllNodes: " << endl;
+	cout << "All nodes: " << endl;
 	for(const Node& n : allNodes) {
 		cout << g.id(n) << " ";
 	}
@@ -180,6 +180,7 @@ void matching_player(G& g, const set<typename G::Node>& cut, ListEdgeSet<G>& m_o
 	using EdgeMap = typename G::template EdgeMap<int>;
 
 	size_t num_verts = countNodes(g);
+	assert(num_verts%2 == 0);
 
 	Snapshot snap(g);
 
@@ -217,7 +218,10 @@ void matching_player(G& g, const set<typename G::Node>& cut, ListEdgeSet<G>& m_o
 		p->runMinCut();
 		// Note that "startSecondPhase" must be run to get flows for individual verts
 		cout << "(cap, flow): (" << i << ", " << p->flowValue() << ")" << endl;
-
+		if(p->flowValue() == num_verts/2) {
+			cout << "We have achieved full flow, but half this capacity didn't manage that!" << endl;
+			break;
+		}
 	}
 
 	cout << "Decomposing paths." << endl;
@@ -303,39 +307,17 @@ void run() {
 
 	// Matchings
 	vector<unique_ptr<ListEdgeSet<ListGraph>>> matchings;
-	unique_ptr<ListEdgeSet<ListGraph>> m(new ListEdgeSet<ListGraph>(g));
-
-	/*
-	ListGraph::Node u, v;
-	bool odd = true;
-	for(ListGraph::NodeIt n(g); n != INVALID; ++n) {
-		if(odd) {
-			u = n;
-		} else {
-			v = n;
-			m->addEdge(u, v);
-			cout << "M " << g.id(u) << " " << g.id(v) << endl;
-		}
-		odd = !odd;
-	}
-
-
-	matchings.push_back(move(m));
-	*/
-
 	vector<ListGraph::Node> out = cut_player<ListGraph>(g, matchings);
-
-	cout << "Cut player gave: ";
+	cout << "Cut player gave the following cut: " << endl;
 	for(ListGraph::Node n : out) {
 		cout << g.id(n) << ", ";
 	}
 	cout << endl;
 
+	unique_ptr<ListEdgeSet<ListGraph>> m(new ListEdgeSet<ListGraph>(g));
 	set<ListGraph::Node> cut(out.begin(), out.end());
-	//ListEdgeSet<ListGraph> m(g);
 	matching_player<ListGraph>(g, cut, *m);
-
-	cout << "Matching player gave: " << endl;
+	cout << "Matching player gave the following matching: " << endl;
 	for(ListEdgeSet<ListGraph>::EdgeIt e(*m); e != INVALID; ++e) {
 		cout << "(" << m->id(m->u(e)) << ", " << m->id(m->v(e)) << ")" << endl;
 	}
