@@ -77,19 +77,73 @@ vector<typename G::Node> cut_player(const G& g, const vector<unique_ptr<M>>& mat
 	// */
 }
 
+
+// Very simple greedy solution
 template<typename G>
-void decompose_paths(
+vector<typename G::Node> extract_path(
 	const G& g,
-	const unique_ptr<Preflow<G, typename G::template EdgeMap<int>>>& f
+	const unique_ptr<Preflow<G, typename G::template EdgeMap<int>>>& f,
+	typename G::template EdgeMap<int>& subtr,
+	typename G::Node u,
+	typename G::Node t
 ) {
 	using Snapshot = typename G::Snapshot;
 	using Node = typename G::Node;
 	using Edge = typename G::Edge;
 	using NodeIt = typename G::NodeIt;
 	using EdgeIt = typename G::EdgeIt;
+	using IncEdgeIt = typename G::IncEdgeIt;
+	using OutArcIt = typename G::OutArcIt;
 	using EdgeMap = typename G::template EdgeMap<int>;
 
+	vector<Node> path;
 
+	cout << "Path ";
+	for(OutArcIt a(g, u); a != INVALID; ++a) {
+		if(f->flow(a) <= 0) continue;
+
+		cout << g.id(u) << " ";
+
+		path.push_back(u);
+		Node v = g.target(a);
+		if(v == t) {
+			break;
+		}
+
+		u = v;
+		a = OutArcIt(g, u);
+	}
+
+	return path;
+}
+
+
+template<typename G>
+vector<vector<typename G::Node>> decompose_paths(
+	const G& g,
+	const unique_ptr<Preflow<G, typename G::template EdgeMap<int>>>& f,
+	typename G::Node s,
+	typename G::Node t
+) {
+	using Snapshot = typename G::Snapshot;
+	using Node = typename G::Node;
+	using Edge = typename G::Edge;
+	using NodeIt = typename G::NodeIt;
+	using EdgeIt = typename G::EdgeIt;
+	using IncEdgeIt = typename G::IncEdgeIt;
+	using EdgeMap = typename G::template EdgeMap<int>;
+
+	f->startSecondPhase();
+	EdgeMap subtr(g, 0);
+	vector<vector<Node>> paths;
+
+	for(IncEdgeIt e(g, s); e != INVALID; ++e) {
+		Node u = g.u(e) == s ? g.v(e) : g.u(e);
+
+		paths.push_back(extract_path(g, f, subtr, u, t));
+	}
+
+	return paths;
 }
 
 
@@ -102,6 +156,7 @@ void matching_player(G& g, const set<typename G::Node>& cut) {
 	using Edge = typename G::Edge;
 	using NodeIt = typename G::NodeIt;
 	using EdgeIt = typename G::EdgeIt;
+// TODO maybe we want to go with longs
 	using EdgeMap = typename G::template EdgeMap<int>;
 
 	size_t num_verts = countNodes(g);
@@ -144,11 +199,12 @@ void matching_player(G& g, const set<typename G::Node>& cut) {
 
 		p.reset(new Preflow<G, EdgeMap>(g, capacity, s, t));
 		p->runMinCut();
+		// Note that "startSecondPhase" must be run to get flows for individual verts
 		cout << "FLow: " << p->flowValue() << endl;
 
 	}
 
-	decompose_paths(g, p);
+	decompose_paths(g, p, s, t);
 
 
 	// Set up source and sink to both sides
