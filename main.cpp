@@ -77,6 +77,17 @@ vector<typename G::Node> cut_player(const G& g, const vector<unique_ptr<M>>& mat
 	// */
 }
 
+// For some reason lemon returns arbitrary values for flow, the difference is correct tho
+template<typename G>
+int flow( 
+	const G& g,
+	const unique_ptr<Preflow<G, typename G::template EdgeMap<int>>>& f,
+	typename G::Node u,
+	typename G::Node v
+) {
+	return f->flow(findArc(g, u, v)) - f->flow(findArc(g, v, u));
+}
+
 
 // Very simple greedy solution
 template<typename G>
@@ -100,12 +111,14 @@ vector<typename G::Node> extract_path(
 
 	cout << "Path ";
 	for(OutArcIt a(g, u); a != INVALID; ++a) {
-		if(f->flow(a) <= 0) continue;
+		Node v = g.target(a);
 
-		cout << g.id(u) << " ";
+		int ff = flow(g, f, u, v);
+		if(ff <= 0) continue;
 
 		path.push_back(u);
-		Node v = g.target(a);
+
+		cout << "(" << g.id(u) << " " << g.id(v) << ", " << ff <<  ")";
 		if(v == t) {
 			break;
 		}
@@ -113,6 +126,7 @@ vector<typename G::Node> extract_path(
 		u = v;
 		a = OutArcIt(g, u);
 	}
+	cout << endl;
 
 	return path;
 }
