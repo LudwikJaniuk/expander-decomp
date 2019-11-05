@@ -78,6 +78,24 @@ vector<typename G::Node> cut_player(const G& g, const vector<unique_ptr<M>>& mat
 }
 
 template<typename G>
+void decompose_paths(
+	const G& g,
+	const unique_ptr<Preflow<G, typename G::template EdgeMap<int>>>& f
+) {
+	using Snapshot = typename G::Snapshot;
+	using Node = typename G::Node;
+	using Edge = typename G::Edge;
+	using NodeIt = typename G::NodeIt;
+	using EdgeIt = typename G::EdgeIt;
+	using EdgeMap = typename G::template EdgeMap<int>;
+
+
+}
+
+
+// TODO acutally spit out mathcing
+// ant then maybe also create cut, and save all?
+template<typename G>
 void matching_player(G& g, const set<typename G::Node>& cut) {
 	using Snapshot = typename G::Snapshot;
 	using Node = typename G::Node;
@@ -115,7 +133,8 @@ void matching_player(G& g, const set<typename G::Node>& cut) {
 	assert(s_added == t_added);
 
 
-	for(unsigned long long i = 1; i < /*trial*/10*num_verts; i *= 2) { 
+	unique_ptr<Preflow<G, EdgeMap>> p(new Preflow<G, EdgeMap>(g, capacity, s, t));
+	for(unsigned long long i = 1; i < num_verts; i *= 2) { 
 
 		for(EdgeIt e(g); e != INVALID; ++e) {
 			if(g.u(e) == s || g.v(e) == s) continue;
@@ -123,11 +142,15 @@ void matching_player(G& g, const set<typename G::Node>& cut) {
 			capacity[e] = i;
 		}
 
-		Preflow<G, EdgeMap> p(g, capacity, s, t);
-		p.runMinCut();
-		cout << "FLow: " << p.flowValue() << endl;
+		p.reset(new Preflow<G, EdgeMap>(g, capacity, s, t));
+		p->runMinCut();
+		cout << "FLow: " << p->flowValue() << endl;
 
 	}
+
+	decompose_paths(g, p);
+
+
 	// Set up source and sink to both sides
 	// give all internal ones capacity of 1
 	// If we find a flow of n/2
