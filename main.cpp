@@ -109,7 +109,7 @@ vector<typename G::Node> extract_path(
 
 	vector<Node> path;
 
-	cout << "Path ";
+	cout << "Path: ";
 	for(OutArcIt a(g, u); a != INVALID; ) {
 		Node v = g.target(a);
 
@@ -122,11 +122,12 @@ vector<typename G::Node> extract_path(
 		path.push_back(u);
 		subtr[a] += 1;
 
-		cout << "(" << g.id(u) << " " << g.id(v) << ", " << ff <<  ")";
+		//cout << "(" << g.id(u) << " " << g.id(v) << ", " << ff <<  ")";
+		cout << g.id(u);
 		if(v == t) {
-			cout << " T";
 			break;
 		}
+		cout << " -> ";
 
 		u = v;
 		a = OutArcIt(g, u);
@@ -307,19 +308,27 @@ void run() {
 
 	// Matchings
 	vector<unique_ptr<ListEdgeSet<ListGraph>>> matchings;
-	vector<ListGraph::Node> out = cut_player<ListGraph>(g, matchings);
-	cout << "Cut player gave the following cut: " << endl;
-	for(ListGraph::Node n : out) {
-		cout << g.id(n) << ", ";
-	}
-	cout << endl;
 
-	unique_ptr<ListEdgeSet<ListGraph>> m(new ListEdgeSet<ListGraph>(g));
-	set<ListGraph::Node> cut(out.begin(), out.end());
-	matching_player<ListGraph>(g, cut, *m);
-	cout << "Matching player gave the following matching: " << endl;
-	for(ListEdgeSet<ListGraph>::EdgeIt e(*m); e != INVALID; ++e) {
-		cout << "(" << m->id(m->u(e)) << ", " << m->id(m->v(e)) << ")" << endl;
+	for(int i = 0; i < 3; i++) {
+		vector<ListGraph::Node> out = cut_player<ListGraph>(g, matchings);
+		cout << "Cut player gave the following cut: " << endl;
+		for(ListGraph::Node n : out) {
+			cout << g.id(n) << ", ";
+		}
+		cout << endl;
+
+		unique_ptr<ListEdgeSet<ListGraph>> m(new ListEdgeSet<ListGraph>(g));
+		set<ListGraph::Node> cut(out.begin(), out.end());
+		matching_player<ListGraph>(g, cut, *m);
+		cout << "Matching player gave the following matching: " << endl;
+		for(ListEdgeSet<ListGraph>::EdgeIt e(*m); e != INVALID; ++e) {
+			cout << "(" << m->id(m->u(e)) << ", " << m->id(m->v(e)) << ")" << endl;
+		}
+
+		matchings.push_back(move(m));
+		cout << "======================" << endl;
+		cout << "== End round " << i << endl;
+		cout << "======================" << endl;
 	}
 }
 
