@@ -133,6 +133,7 @@ vector<typename G::Node> extract_path(
 	}
 	cout << endl;
 
+	assert(path.size() >= 2);
 	return path;
 }
 
@@ -169,7 +170,7 @@ vector<vector<typename G::Node>> decompose_paths(
 // TODO acutally spit out mathcing
 // ant then maybe also create cut, and save all?
 template<typename G>
-void matching_player(G& g, const set<typename G::Node>& cut) {
+void matching_player(G& g, const set<typename G::Node>& cut, ListEdgeSet<G>& m_out) {
 	using Snapshot = typename G::Snapshot;
 	using Node = typename G::Node;
 	using Edge = typename G::Edge;
@@ -220,8 +221,13 @@ void matching_player(G& g, const set<typename G::Node>& cut) {
 	}
 
 	cout << "Decomposing paths." << endl;
-	decompose_paths(g, p, s, t);
+	auto paths = decompose_paths(g, p, s, t);
 
+	snap.restore();
+
+	for(auto &path : paths) {
+		m_out.addEdge(path[0], path.back());
+	}
 
 	// Set up source and sink to both sides
 	// give all internal ones capacity of 1
@@ -239,7 +245,6 @@ void matching_player(G& g, const set<typename G::Node>& cut) {
 	// I think we can do decomposition by simply going vertex by vertex and tracing their flows,
 	// then subtracting that from the total flow...
 	
-	snap.restore();
 }
 
 void generate_large(ListGraph& g) {
@@ -314,9 +319,10 @@ void run() {
 		odd = !odd;
 	}
 
-	matchings.push_back(move(m));
 
+	matchings.push_back(move(m));
 	*/
+
 	vector<ListGraph::Node> out = cut_player<ListGraph>(g, matchings);
 
 	cout << "Cut player gave: ";
@@ -326,7 +332,13 @@ void run() {
 	cout << endl;
 
 	set<ListGraph::Node> cut(out.begin(), out.end());
-	matching_player<ListGraph>(g, cut);
+	//ListEdgeSet<ListGraph> m(g);
+	matching_player<ListGraph>(g, cut, *m);
+
+	cout << "Matching player gave: " << endl;
+	for(ListEdgeSet<ListGraph>::EdgeIt e(*m); e != INVALID; ++e) {
+		cout << "(" << m->id(m->u(e)) << ", " << m->id(m->v(e)) << ")" << endl;
+	}
 }
 
 int main()
