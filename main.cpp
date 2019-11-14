@@ -308,6 +308,7 @@ void matching_player(G& g, const set<typename G::Node>& cut, ListEdgeSet<G>& m_o
 	assert(s_added == t_added);
 
 
+	cout << "Running binary search on flows" << endl;
 	unique_ptr<Preflow<G, EdgeMap>> p(new Preflow<G, EdgeMap>(g, capacity, s, t));
 	for(unsigned long long i = 1; i < num_verts; i *= 2) { 
 
@@ -409,12 +410,14 @@ void generate_graph(ListGraph& g) {
 
 void run() {
 	ListGraph g;
+	cout << "Generating graph with " << N_NODES << " nodes." << endl;
 	generate_graph(g);
 
 	// Matchings
 	vector<unique_ptr<ListEdgeSet<ListGraph>>> matchings;
 
 	for(int i = 0; i < ROUNDS; i++) {
+		cout << "Running Cut player" << endl;
 		vector<ListGraph::Node> out = cut_player<ListGraph>(g, matchings);
 		if(PRINT_NODES) {
 			cout << "Cut player gave the following cut: " << endl;
@@ -426,6 +429,7 @@ void run() {
 
 		unique_ptr<ListEdgeSet<ListGraph>> m(new ListEdgeSet<ListGraph>(g));
 		set<ListGraph::Node> cut(out.begin(), out.end());
+		cout << "Running Matching player" << endl;
 		matching_player<ListGraph>(g, cut, *m);
 		if(PRINT_NODES) {
 			cout << "Matching player gave the following matching: " << endl;
