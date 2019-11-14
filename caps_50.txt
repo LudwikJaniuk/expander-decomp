@@ -1,0 +1,754 @@
+(cap, flow): (1, 4984)
+(cap, flow): (2, 4986)
+(cap, flow): (4, 4990)
+(cap, flow): (8, 4998)
+(cap, flow): (16, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 0
+======================
+(cap, flow): (1, 4925)
+(cap, flow): (2, 4927)
+(cap, flow): (4, 4931)
+(cap, flow): (8, 4939)
+(cap, flow): (16, 4955)
+(cap, flow): (32, 4987)
+(cap, flow): (64, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 1
+======================
+(cap, flow): (1, 4929)
+(cap, flow): (2, 4931)
+(cap, flow): (4, 4935)
+(cap, flow): (8, 4943)
+(cap, flow): (16, 4959)
+(cap, flow): (32, 4991)
+(cap, flow): (64, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 2
+======================
+(cap, flow): (1, 4832)
+(cap, flow): (2, 4834)
+(cap, flow): (4, 4838)
+(cap, flow): (8, 4846)
+(cap, flow): (16, 4862)
+(cap, flow): (32, 4894)
+(cap, flow): (64, 4958)
+(cap, flow): (128, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 3
+======================
+(cap, flow): (1, 4893)
+(cap, flow): (2, 4895)
+(cap, flow): (4, 4899)
+(cap, flow): (8, 4907)
+(cap, flow): (16, 4923)
+(cap, flow): (32, 4955)
+(cap, flow): (64, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 4
+======================
+(cap, flow): (1, 4761)
+(cap, flow): (2, 4763)
+(cap, flow): (4, 4767)
+(cap, flow): (8, 4775)
+(cap, flow): (16, 4791)
+(cap, flow): (32, 4823)
+(cap, flow): (64, 4887)
+(cap, flow): (128, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 5
+======================
+(cap, flow): (1, 4561)
+(cap, flow): (2, 4563)
+(cap, flow): (4, 4567)
+(cap, flow): (8, 4575)
+(cap, flow): (16, 4591)
+(cap, flow): (32, 4623)
+(cap, flow): (64, 4687)
+(cap, flow): (128, 4815)
+(cap, flow): (256, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 6
+======================
+(cap, flow): (1, 4487)
+(cap, flow): (2, 4489)
+(cap, flow): (4, 4493)
+(cap, flow): (8, 4501)
+(cap, flow): (16, 4517)
+(cap, flow): (32, 4549)
+(cap, flow): (64, 4613)
+(cap, flow): (128, 4741)
+(cap, flow): (256, 4997)
+(cap, flow): (512, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 7
+======================
+(cap, flow): (1, 3744)
+(cap, flow): (2, 3746)
+(cap, flow): (4, 3750)
+(cap, flow): (8, 3758)
+(cap, flow): (16, 3774)
+(cap, flow): (32, 3806)
+(cap, flow): (64, 3870)
+(cap, flow): (128, 3998)
+(cap, flow): (256, 4254)
+(cap, flow): (512, 4766)
+(cap, flow): (1024, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 8
+======================
+(cap, flow): (1, 4348)
+(cap, flow): (2, 4350)
+(cap, flow): (4, 4354)
+(cap, flow): (8, 4362)
+(cap, flow): (16, 4378)
+(cap, flow): (32, 4410)
+(cap, flow): (64, 4474)
+(cap, flow): (128, 4602)
+(cap, flow): (256, 4858)
+(cap, flow): (512, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 9
+======================
+(cap, flow): (1, 4275)
+(cap, flow): (2, 4277)
+(cap, flow): (4, 4281)
+(cap, flow): (8, 4289)
+(cap, flow): (16, 4305)
+(cap, flow): (32, 4337)
+(cap, flow): (64, 4401)
+(cap, flow): (128, 4529)
+(cap, flow): (256, 4785)
+(cap, flow): (512, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 10
+======================
+(cap, flow): (1, 4468)
+(cap, flow): (2, 4470)
+(cap, flow): (4, 4474)
+(cap, flow): (8, 4482)
+(cap, flow): (16, 4498)
+(cap, flow): (32, 4530)
+(cap, flow): (64, 4594)
+(cap, flow): (128, 4722)
+(cap, flow): (256, 4978)
+(cap, flow): (512, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 11
+======================
+(cap, flow): (1, 3099)
+(cap, flow): (2, 3101)
+(cap, flow): (4, 3105)
+(cap, flow): (8, 3113)
+(cap, flow): (16, 3129)
+(cap, flow): (32, 3161)
+(cap, flow): (64, 3225)
+(cap, flow): (128, 3353)
+(cap, flow): (256, 3609)
+(cap, flow): (512, 4121)
+(cap, flow): (1024, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 12
+======================
+(cap, flow): (1, 3093)
+(cap, flow): (2, 3095)
+(cap, flow): (4, 3099)
+(cap, flow): (8, 3107)
+(cap, flow): (16, 3123)
+(cap, flow): (32, 3155)
+(cap, flow): (64, 3219)
+(cap, flow): (128, 3347)
+(cap, flow): (256, 3603)
+(cap, flow): (512, 4115)
+(cap, flow): (1024, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 13
+======================
+(cap, flow): (1, 3136)
+(cap, flow): (2, 3138)
+(cap, flow): (4, 3142)
+(cap, flow): (8, 3150)
+(cap, flow): (16, 3166)
+(cap, flow): (32, 3198)
+(cap, flow): (64, 3262)
+(cap, flow): (128, 3390)
+(cap, flow): (256, 3646)
+(cap, flow): (512, 4158)
+(cap, flow): (1024, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 14
+======================
+(cap, flow): (1, 4227)
+(cap, flow): (2, 4229)
+(cap, flow): (4, 4233)
+(cap, flow): (8, 4241)
+(cap, flow): (16, 4257)
+(cap, flow): (32, 4289)
+(cap, flow): (64, 4353)
+(cap, flow): (128, 4481)
+(cap, flow): (256, 4737)
+(cap, flow): (512, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 15
+======================
+(cap, flow): (1, 4494)
+(cap, flow): (2, 4496)
+(cap, flow): (4, 4500)
+(cap, flow): (8, 4508)
+(cap, flow): (16, 4524)
+(cap, flow): (32, 4556)
+(cap, flow): (64, 4620)
+(cap, flow): (128, 4748)
+(cap, flow): (256, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 16
+======================
+(cap, flow): (1, 4007)
+(cap, flow): (2, 4009)
+(cap, flow): (4, 4013)
+(cap, flow): (8, 4021)
+(cap, flow): (16, 4037)
+(cap, flow): (32, 4069)
+(cap, flow): (64, 4133)
+(cap, flow): (128, 4261)
+(cap, flow): (256, 4517)
+(cap, flow): (512, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 17
+======================
+(cap, flow): (1, 4125)
+(cap, flow): (2, 4127)
+(cap, flow): (4, 4131)
+(cap, flow): (8, 4139)
+(cap, flow): (16, 4155)
+(cap, flow): (32, 4187)
+(cap, flow): (64, 4251)
+(cap, flow): (128, 4379)
+(cap, flow): (256, 4635)
+(cap, flow): (512, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 18
+======================
+(cap, flow): (1, 4605)
+(cap, flow): (2, 4607)
+(cap, flow): (4, 4611)
+(cap, flow): (8, 4619)
+(cap, flow): (16, 4635)
+(cap, flow): (32, 4667)
+(cap, flow): (64, 4731)
+(cap, flow): (128, 4859)
+(cap, flow): (256, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 19
+======================
+(cap, flow): (1, 3881)
+(cap, flow): (2, 3883)
+(cap, flow): (4, 3887)
+(cap, flow): (8, 3895)
+(cap, flow): (16, 3911)
+(cap, flow): (32, 3943)
+(cap, flow): (64, 4007)
+(cap, flow): (128, 4135)
+(cap, flow): (256, 4391)
+(cap, flow): (512, 4903)
+(cap, flow): (1024, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 20
+======================
+(cap, flow): (1, 4397)
+(cap, flow): (2, 4399)
+(cap, flow): (4, 4403)
+(cap, flow): (8, 4411)
+(cap, flow): (16, 4427)
+(cap, flow): (32, 4459)
+(cap, flow): (64, 4523)
+(cap, flow): (128, 4651)
+(cap, flow): (256, 4907)
+(cap, flow): (512, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 21
+======================
+(cap, flow): (1, 3949)
+(cap, flow): (2, 3951)
+(cap, flow): (4, 3955)
+(cap, flow): (8, 3963)
+(cap, flow): (16, 3979)
+(cap, flow): (32, 4011)
+(cap, flow): (64, 4075)
+(cap, flow): (128, 4203)
+(cap, flow): (256, 4459)
+(cap, flow): (512, 4971)
+(cap, flow): (1024, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 22
+======================
+(cap, flow): (1, 3427)
+(cap, flow): (2, 3429)
+(cap, flow): (4, 3433)
+(cap, flow): (8, 3441)
+(cap, flow): (16, 3457)
+(cap, flow): (32, 3489)
+(cap, flow): (64, 3553)
+(cap, flow): (128, 3681)
+(cap, flow): (256, 3937)
+(cap, flow): (512, 4449)
+(cap, flow): (1024, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 23
+======================
+(cap, flow): (1, 3127)
+(cap, flow): (2, 3129)
+(cap, flow): (4, 3133)
+(cap, flow): (8, 3141)
+(cap, flow): (16, 3157)
+(cap, flow): (32, 3189)
+(cap, flow): (64, 3253)
+(cap, flow): (128, 3381)
+(cap, flow): (256, 3637)
+(cap, flow): (512, 4149)
+(cap, flow): (1024, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 24
+======================
+(cap, flow): (1, 3813)
+(cap, flow): (2, 3815)
+(cap, flow): (4, 3819)
+(cap, flow): (8, 3827)
+(cap, flow): (16, 3843)
+(cap, flow): (32, 3875)
+(cap, flow): (64, 3939)
+(cap, flow): (128, 4067)
+(cap, flow): (256, 4323)
+(cap, flow): (512, 4835)
+(cap, flow): (1024, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 25
+======================
+(cap, flow): (1, 2943)
+(cap, flow): (2, 2945)
+(cap, flow): (4, 2949)
+(cap, flow): (8, 2957)
+(cap, flow): (16, 2973)
+(cap, flow): (32, 3005)
+(cap, flow): (64, 3069)
+(cap, flow): (128, 3197)
+(cap, flow): (256, 3453)
+(cap, flow): (512, 3965)
+(cap, flow): (1024, 4989)
+(cap, flow): (2048, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 26
+======================
+(cap, flow): (1, 4281)
+(cap, flow): (2, 4283)
+(cap, flow): (4, 4287)
+(cap, flow): (8, 4295)
+(cap, flow): (16, 4311)
+(cap, flow): (32, 4343)
+(cap, flow): (64, 4407)
+(cap, flow): (128, 4535)
+(cap, flow): (256, 4791)
+(cap, flow): (512, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 27
+======================
+(cap, flow): (1, 4297)
+(cap, flow): (2, 4299)
+(cap, flow): (4, 4303)
+(cap, flow): (8, 4311)
+(cap, flow): (16, 4327)
+(cap, flow): (32, 4359)
+(cap, flow): (64, 4423)
+(cap, flow): (128, 4551)
+(cap, flow): (256, 4807)
+(cap, flow): (512, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 28
+======================
+(cap, flow): (1, 4340)
+(cap, flow): (2, 4342)
+(cap, flow): (4, 4346)
+(cap, flow): (8, 4354)
+(cap, flow): (16, 4370)
+(cap, flow): (32, 4402)
+(cap, flow): (64, 4466)
+(cap, flow): (128, 4594)
+(cap, flow): (256, 4850)
+(cap, flow): (512, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 29
+======================
+(cap, flow): (1, 2663)
+(cap, flow): (2, 2665)
+(cap, flow): (4, 2669)
+(cap, flow): (8, 2677)
+(cap, flow): (16, 2693)
+(cap, flow): (32, 2725)
+(cap, flow): (64, 2789)
+(cap, flow): (128, 2917)
+(cap, flow): (256, 3173)
+(cap, flow): (512, 3685)
+(cap, flow): (1024, 4709)
+(cap, flow): (2048, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 30
+======================
+(cap, flow): (1, 4864)
+(cap, flow): (2, 4866)
+(cap, flow): (4, 4870)
+(cap, flow): (8, 4878)
+(cap, flow): (16, 4894)
+(cap, flow): (32, 4926)
+(cap, flow): (64, 4990)
+(cap, flow): (128, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 31
+======================
+(cap, flow): (1, 3121)
+(cap, flow): (2, 3123)
+(cap, flow): (4, 3127)
+(cap, flow): (8, 3135)
+(cap, flow): (16, 3151)
+(cap, flow): (32, 3183)
+(cap, flow): (64, 3247)
+(cap, flow): (128, 3375)
+(cap, flow): (256, 3631)
+(cap, flow): (512, 4143)
+(cap, flow): (1024, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 32
+======================
+(cap, flow): (1, 4207)
+(cap, flow): (2, 4209)
+(cap, flow): (4, 4213)
+(cap, flow): (8, 4221)
+(cap, flow): (16, 4237)
+(cap, flow): (32, 4269)
+(cap, flow): (64, 4333)
+(cap, flow): (128, 4461)
+(cap, flow): (256, 4717)
+(cap, flow): (512, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 33
+======================
+(cap, flow): (1, 3337)
+(cap, flow): (2, 3339)
+(cap, flow): (4, 3343)
+(cap, flow): (8, 3351)
+(cap, flow): (16, 3367)
+(cap, flow): (32, 3399)
+(cap, flow): (64, 3463)
+(cap, flow): (128, 3591)
+(cap, flow): (256, 3847)
+(cap, flow): (512, 4359)
+(cap, flow): (1024, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 34
+======================
+(cap, flow): (1, 4547)
+(cap, flow): (2, 4549)
+(cap, flow): (4, 4553)
+(cap, flow): (8, 4561)
+(cap, flow): (16, 4577)
+(cap, flow): (32, 4609)
+(cap, flow): (64, 4673)
+(cap, flow): (128, 4801)
+(cap, flow): (256, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 35
+======================
+(cap, flow): (1, 3953)
+(cap, flow): (2, 3955)
+(cap, flow): (4, 3959)
+(cap, flow): (8, 3967)
+(cap, flow): (16, 3983)
+(cap, flow): (32, 4015)
+(cap, flow): (64, 4079)
+(cap, flow): (128, 4207)
+(cap, flow): (256, 4463)
+(cap, flow): (512, 4975)
+(cap, flow): (1024, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 36
+======================
+(cap, flow): (1, 2456)
+(cap, flow): (2, 2458)
+(cap, flow): (4, 2462)
+(cap, flow): (8, 2470)
+(cap, flow): (16, 2486)
+(cap, flow): (32, 2518)
+(cap, flow): (64, 2582)
+(cap, flow): (128, 2710)
+(cap, flow): (256, 2966)
+(cap, flow): (512, 3478)
+(cap, flow): (1024, 4502)
+(cap, flow): (2048, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 37
+======================
+(cap, flow): (1, 3228)
+(cap, flow): (2, 3230)
+(cap, flow): (4, 3234)
+(cap, flow): (8, 3242)
+(cap, flow): (16, 3258)
+(cap, flow): (32, 3290)
+(cap, flow): (64, 3354)
+(cap, flow): (128, 3482)
+(cap, flow): (256, 3738)
+(cap, flow): (512, 4250)
+(cap, flow): (1024, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 38
+======================
+(cap, flow): (1, 4048)
+(cap, flow): (2, 4050)
+(cap, flow): (4, 4054)
+(cap, flow): (8, 4062)
+(cap, flow): (16, 4078)
+(cap, flow): (32, 4110)
+(cap, flow): (64, 4174)
+(cap, flow): (128, 4302)
+(cap, flow): (256, 4558)
+(cap, flow): (512, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 39
+======================
+(cap, flow): (1, 2747)
+(cap, flow): (2, 2749)
+(cap, flow): (4, 2753)
+(cap, flow): (8, 2761)
+(cap, flow): (16, 2777)
+(cap, flow): (32, 2809)
+(cap, flow): (64, 2873)
+(cap, flow): (128, 3001)
+(cap, flow): (256, 3257)
+(cap, flow): (512, 3769)
+(cap, flow): (1024, 4793)
+(cap, flow): (2048, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 40
+======================
+(cap, flow): (1, 3498)
+(cap, flow): (2, 3500)
+(cap, flow): (4, 3504)
+(cap, flow): (8, 3512)
+(cap, flow): (16, 3528)
+(cap, flow): (32, 3560)
+(cap, flow): (64, 3624)
+(cap, flow): (128, 3752)
+(cap, flow): (256, 4008)
+(cap, flow): (512, 4520)
+(cap, flow): (1024, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 41
+======================
+(cap, flow): (1, 3525)
+(cap, flow): (2, 3527)
+(cap, flow): (4, 3531)
+(cap, flow): (8, 3539)
+(cap, flow): (16, 3555)
+(cap, flow): (32, 3587)
+(cap, flow): (64, 3651)
+(cap, flow): (128, 3779)
+(cap, flow): (256, 4035)
+(cap, flow): (512, 4547)
+(cap, flow): (1024, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 42
+======================
+(cap, flow): (1, 3304)
+(cap, flow): (2, 3306)
+(cap, flow): (4, 3310)
+(cap, flow): (8, 3318)
+(cap, flow): (16, 3334)
+(cap, flow): (32, 3366)
+(cap, flow): (64, 3430)
+(cap, flow): (128, 3558)
+(cap, flow): (256, 3814)
+(cap, flow): (512, 4326)
+(cap, flow): (1024, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 43
+======================
+(cap, flow): (1, 4457)
+(cap, flow): (2, 4459)
+(cap, flow): (4, 4463)
+(cap, flow): (8, 4471)
+(cap, flow): (16, 4487)
+(cap, flow): (32, 4519)
+(cap, flow): (64, 4583)
+(cap, flow): (128, 4711)
+(cap, flow): (256, 4967)
+(cap, flow): (512, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 44
+======================
+(cap, flow): (1, 3463)
+(cap, flow): (2, 3465)
+(cap, flow): (4, 3469)
+(cap, flow): (8, 3477)
+(cap, flow): (16, 3493)
+(cap, flow): (32, 3525)
+(cap, flow): (64, 3589)
+(cap, flow): (128, 3717)
+(cap, flow): (256, 3973)
+(cap, flow): (512, 4485)
+(cap, flow): (1024, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 45
+======================
+(cap, flow): (1, 3922)
+(cap, flow): (2, 3924)
+(cap, flow): (4, 3928)
+(cap, flow): (8, 3936)
+(cap, flow): (16, 3952)
+(cap, flow): (32, 3984)
+(cap, flow): (64, 4048)
+(cap, flow): (128, 4176)
+(cap, flow): (256, 4432)
+(cap, flow): (512, 4944)
+(cap, flow): (1024, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 46
+======================
+(cap, flow): (1, 3725)
+(cap, flow): (2, 3727)
+(cap, flow): (4, 3731)
+(cap, flow): (8, 3739)
+(cap, flow): (16, 3755)
+(cap, flow): (32, 3787)
+(cap, flow): (64, 3851)
+(cap, flow): (128, 3979)
+(cap, flow): (256, 4235)
+(cap, flow): (512, 4747)
+(cap, flow): (1024, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 47
+======================
+(cap, flow): (1, 3373)
+(cap, flow): (2, 3375)
+(cap, flow): (4, 3379)
+(cap, flow): (8, 3387)
+(cap, flow): (16, 3403)
+(cap, flow): (32, 3435)
+(cap, flow): (64, 3499)
+(cap, flow): (128, 3627)
+(cap, flow): (256, 3883)
+(cap, flow): (512, 4395)
+(cap, flow): (1024, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 48
+======================
+(cap, flow): (1, 4145)
+(cap, flow): (2, 4147)
+(cap, flow): (4, 4151)
+(cap, flow): (8, 4159)
+(cap, flow): (16, 4175)
+(cap, flow): (32, 4207)
+(cap, flow): (64, 4271)
+(cap, flow): (128, 4399)
+(cap, flow): (256, 4655)
+(cap, flow): (512, 5000)
+We have achieved full flow, but half this capacity didn't manage that!
+Decomposing paths.
+======================
+== End round 49
+======================

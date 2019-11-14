@@ -3,6 +3,7 @@
 #include <random>
 #include <memory>
 #include <vector>
+#include <array>
 #include <set>
 #include <lemon/adaptors.h>
 #include <lemon/list_graph.h>
@@ -20,6 +21,7 @@ using namespace std;
 int N_NODES = 1000;
 int ROUNDS = 5;
 bool PRINT_PATHS = false;
+bool PRINT_NODES = false;
 // END PARAMETERS
 
 // Seed with a real random value, if available
@@ -45,11 +47,13 @@ vector<typename G::Node> cut_player(const G& g, const vector<unique_ptr<M>>& mat
 		probs[n] = uniform_dist(engine) ? 1.0/allNodes.size() : -1.0/allNodes.size(); // TODO
 	}
 
-	cout << "All nodes: " << endl;
-	for(const Node& n : allNodes) {
-		cout << g.id(n) << " ";
+	if(PRINT_NODES) {
+		cout << "All nodes: " << endl;
+		for(const Node& n : allNodes) {
+			cout << g.id(n) << " ";
+		}
+		cout << endl;
 	}
-	cout << endl;
 
 	for(const unique_ptr<M>& m : matchings) {
 		for(MEdgeIt e(*m); e!=INVALID; ++e){
@@ -97,7 +101,7 @@ int flow(
 
 // Very simple greedy solution
 template<typename G>
-void extract_path(
+inline void extract_path(
 	const G& g,
 	const unique_ptr<Preflow<G, typename G::template EdgeMap<int>>>& f,
 	typename G::template EdgeMap<int>& subtr,
@@ -116,7 +120,9 @@ void extract_path(
 
 	if (PRINT_PATHS) cout << "Path: ";
 	out_path[0] = u;
+	int prof = 0;
 	for(OutArcIt a(g, u); a != INVALID; ) {
+		++prof;
 		Node v = g.target(a);
 
 		int ff = flow(g, f, u, v);
@@ -138,11 +144,53 @@ void extract_path(
 		u = v;
 		a = OutArcIt(g, u);
 	}
+	if (PRINT_PATHS) cout << " ]] " << prof;
 	if (PRINT_PATHS) cout << endl;
 
 	assert(out_path.size() == 2);
 }
 
+template<typename G>
+inline void extract_path_fast(
+	const G& g,
+	const unique_ptr<Preflow<G, typename G::template EdgeMap<int>>>& f,
+	typename G::template NodeMap<vector<tuple<typename G::Node, int>>>& flow_children,
+	typename G::Node u_orig,
+	typename G::Node t, // For assertsions
+	array<typename G::Node, 2> &out_path
+) {
+	using Snapshot = typename G::Snapshot;
+	using Node = typename G::Node;
+	using Edge = typename G::Edge;
+	using NodeIt = typename G::NodeIt;
+	using EdgeIt = typename G::EdgeIt;
+	using IncEdgeIt = typename G::IncEdgeIt;
+	using OutArcIt = typename G::OutArcIt;
+	using EdgeMap = typename G::template EdgeMap<int>;
+
+	if (PRINT_PATHS) cout << "Path: " << g.id(u_orig);
+	out_path[0] = u_orig;
+	Node u = u_orig;
+	while(true) {
+		auto& tup = flow_children[u].back();
+		Node v = get<0>(tup);
+		--get<1>(tup);
+
+		if(get<1>(tup) == 0) flow_children[u].pop_back();
+
+		if(flow_children[v].size() == 0) {
+			assert(v == t);
+			assert(u != u_orig);
+
+			out_path[1] = u;
+			if (PRINT_PATHS) cout <<  endl;
+			break;
+		}
+
+		if (PRINT_PATHS) cout << " -> " << g.id(v);
+		u = v;
+	}
+}
 
 template<typename G>
 vector<array<typename G::Node, 2>> decompose_paths(
@@ -169,6 +217,53 @@ vector<array<typename G::Node, 2>> decompose_paths(
 
 		paths.push_back(array<Node, 2>());
 		extract_path(g, f, subtr, u, t, paths[paths.size()-1]);
+	}
+
+	return paths;
+}
+
+template<typename G>
+vector<array<typename G::Node, 2>> decompose_paths_fast(
+	const G& g,
+	const unique_ptr<Preflow<G, typename G::template EdgeMap<int>>>& f,
+	typename G::Node s,
+	typename G::Node t
+) {
+	using Snapshot = typename G::Snapshot;
+	using Node = typename G::Node;
+	using Edge = typename G::Edge;
+	using NodeIt = typename G::NodeIt;
+	using EdgeIt = typename G::EdgeIt;
+	using IncEdgeIt = typename G::IncEdgeIt;
+	using EdgeMap = typename G::template EdgeMap<int>;
+	using NodeNeighborMap = typename G::template NodeMap<vector<tuple<Node, int>>>;
+
+	f->startSecondPhase();
+	EdgeMap subtr(g, 0);
+	NodeNeighborMap flow_children(g, vector<tuple<Node, int>>());
+	vector<array<Node, 2>> paths;
+	paths.reserve(countNodes(g)/2);
+
+	// Calc flow children (one pass)
+	for(EdgeIt e(g); e != INVALID; ++e) {
+		Node u = g.u(e);
+		Node v = g.v(e);
+		long e_flow = flow(g, f, u, v);
+		if(e_flow > 0) {
+			flow_children[u].push_back(tuple(v, e_flow));
+		} else
+		if(e_flow < 0) {
+			flow_children[v].push_back(tuple(u, -e_flow));
+		}
+	}
+	// Now path decomp is much faster
+
+	for(IncEdgeIt e(g, s); e != INVALID; ++e) {
+		assert(g.u(e) == s || g.v(e) == s);
+		Node u = g.u(e) == s ? g.v(e) : g.u(e);
+
+		paths.push_back(array<Node, 2>());
+		extract_path_fast(g, f, flow_children, u, t, paths[paths.size()-1]);
 	}
 
 	return paths;
@@ -233,7 +328,7 @@ void matching_player(G& g, const set<typename G::Node>& cut, ListEdgeSet<G>& m_o
 	}
 
 	cout << "Decomposing paths." << endl;
-	auto paths = decompose_paths(g, p, s, t);
+	auto paths = decompose_paths_fast(g, p, s, t);
 
 	snap.restore();
 
@@ -321,20 +416,24 @@ void run() {
 
 	for(int i = 0; i < ROUNDS; i++) {
 		vector<ListGraph::Node> out = cut_player<ListGraph>(g, matchings);
-		cout << "Cut player gave the following cut: " << endl;
-		for(ListGraph::Node n : out) {
-			cout << g.id(n) << ", ";
+		if(PRINT_NODES) {
+			cout << "Cut player gave the following cut: " << endl;
+			for(ListGraph::Node n : out) {
+				cout << g.id(n) << ", ";
+			}
+			cout << endl;
 		}
-		cout << endl;
 
 		unique_ptr<ListEdgeSet<ListGraph>> m(new ListEdgeSet<ListGraph>(g));
 		set<ListGraph::Node> cut(out.begin(), out.end());
 		matching_player<ListGraph>(g, cut, *m);
-		cout << "Matching player gave the following matching: " << endl;
-		for(ListEdgeSet<ListGraph>::EdgeIt e(*m); e != INVALID; ++e) {
-			cout << "(" << m->id(m->u(e)) << ", " << m->id(m->v(e)) << "), ";
+		if(PRINT_NODES) {
+			cout << "Matching player gave the following matching: " << endl;
+			for(ListEdgeSet<ListGraph>::EdgeIt e(*m); e != INVALID; ++e) {
+				cout << "(" << m->id(m->u(e)) << ", " << m->id(m->v(e)) << "), ";
+			}
+			cout << endl;
 		}
-		cout << endl;
 
 		matchings.push_back(move(m));
 		cout << "======================" << endl;
@@ -353,6 +452,9 @@ int main(int  argc, char** argv)
 	}
 	if(argc >= 4) {
 		PRINT_PATHS = stoi(argv[3]);
+	}
+	if(argc >= 5) {
+		PRINT_NODES = stoi(argv[4]);
 	}
 
 	run();
