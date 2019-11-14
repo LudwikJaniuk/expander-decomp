@@ -103,7 +103,7 @@ void extract_path(
 	typename G::template EdgeMap<int>& subtr,
 	typename G::Node u,
 	typename G::Node t,
-	vector<typename G::Node> &out_path
+	array<typename G::Node, 2> &out_path
 ) {
 	using Snapshot = typename G::Snapshot;
 	using Node = typename G::Node;
@@ -115,7 +115,7 @@ void extract_path(
 	using EdgeMap = typename G::template EdgeMap<int>;
 
 	if (PRINT_PATHS) cout << "Path: ";
-	out_path.push_back(u);
+	out_path[0] = u;
 	for(OutArcIt a(g, u); a != INVALID; ) {
 		Node v = g.target(a);
 
@@ -130,7 +130,7 @@ void extract_path(
 		//cout << "(" << g.id(u) << " " << g.id(v) << ", " << ff <<  ")";
 		if (PRINT_PATHS) cout << g.id(u);
 		if(v == t) {
-			out_path.push_back(u);
+			out_path[1] = u;
 			break;
 		}
 		if (PRINT_PATHS) cout << " -> ";
@@ -145,7 +145,7 @@ void extract_path(
 
 
 template<typename G>
-vector<vector<typename G::Node>> decompose_paths(
+vector<array<typename G::Node, 2>> decompose_paths(
 	const G& g,
 	const unique_ptr<Preflow<G, typename G::template EdgeMap<int>>>& f,
 	typename G::Node s,
@@ -161,12 +161,12 @@ vector<vector<typename G::Node>> decompose_paths(
 
 	f->startSecondPhase();
 	EdgeMap subtr(g, 0);
-	vector<vector<Node>> paths;
+	vector<array<Node, 2>> paths;
 
 	for(IncEdgeIt e(g, s); e != INVALID; ++e) {
 		Node u = g.u(e) == s ? g.v(e) : g.u(e);
 
-		paths.push_back(vector<Node>());
+		paths.push_back(array<Node, 2>());
 		extract_path(g, f, subtr, u, t, paths[paths.size()-1]);
 	}
 
