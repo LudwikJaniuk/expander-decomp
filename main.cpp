@@ -16,6 +16,11 @@
 using namespace lemon;
 using namespace std;
 
+// PARAMETERS:
+int N_NODES = 1000;
+bool PRINT_PATHS = false;
+// END PARAMETERS
+
 // Seed with a real random value, if available
 random_device r;
 // Choose a random mean between 1 and 6
@@ -109,7 +114,8 @@ vector<typename G::Node> extract_path(
 
 	vector<Node> path;
 
-	cout << "Path: ";
+
+	if (PRINT_PATHS) cout << "Path: ";
 	for(OutArcIt a(g, u); a != INVALID; ) {
 		Node v = g.target(a);
 
@@ -123,16 +129,16 @@ vector<typename G::Node> extract_path(
 		subtr[a] += 1;
 
 		//cout << "(" << g.id(u) << " " << g.id(v) << ", " << ff <<  ")";
-		cout << g.id(u);
+		if (PRINT_PATHS) cout << g.id(u);
 		if(v == t) {
 			break;
 		}
-		cout << " -> ";
+		if (PRINT_PATHS) cout << " -> ";
 
 		u = v;
 		a = OutArcIt(g, u);
 	}
-	cout << endl;
+	if (PRINT_PATHS) cout << endl;
 
 	assert(path.size() >= 2);
 	return path;
@@ -254,7 +260,7 @@ void matching_player(G& g, const set<typename G::Node>& cut, ListEdgeSet<G>& m_o
 
 void generate_large(ListGraph& g) {
 	vector<ListGraph::Node> nodes;
-	for(int i = 0; i < 100; i++) {
+	for(int i = 0; i < N_NODES; i++) {
 		nodes.push_back(g.addNode());
 	}
 
@@ -262,17 +268,20 @@ void generate_large(ListGraph& g) {
 	g.addEdge(nodes[1], nodes[2]);
 	g.addEdge(nodes[2], nodes[0]);
 
-	for(int i = 3; i < 33; i++) {
+	int lim1 = N_NODES/3;
+	int lim2 = 2*N_NODES/3;
+
+	for(int i = 3; i < lim1; i++) {
 		ListGraph::Node u = nodes[i];
 		ListGraph::Node v = nodes[0];
 		g.addEdge(u, v);
 	}
-	for(int i = 33; i < 66; i++) {
+	for(int i = lim1; i < lim2; i++) {
 		ListGraph::Node u = nodes[i];
 		ListGraph::Node v = nodes[1];
 		g.addEdge(u, v);
 	}
-	for(int i = 66; i < 100; i++) {
+	for(int i = lim2; i < N_NODES; i++) {
 		ListGraph::Node u = nodes[i];
 		ListGraph::Node v = nodes[2];
 		g.addEdge(u, v);
@@ -309,7 +318,7 @@ void run() {
 	// Matchings
 	vector<unique_ptr<ListEdgeSet<ListGraph>>> matchings;
 
-	for(int i = 0; i < 3; i++) {
+	for(int i = 0; i < 15; i++) {
 		vector<ListGraph::Node> out = cut_player<ListGraph>(g, matchings);
 		cout << "Cut player gave the following cut: " << endl;
 		for(ListGraph::Node n : out) {
@@ -322,8 +331,9 @@ void run() {
 		matching_player<ListGraph>(g, cut, *m);
 		cout << "Matching player gave the following matching: " << endl;
 		for(ListEdgeSet<ListGraph>::EdgeIt e(*m); e != INVALID; ++e) {
-			cout << "(" << m->id(m->u(e)) << ", " << m->id(m->v(e)) << ")" << endl;
+			cout << "(" << m->id(m->u(e)) << ", " << m->id(m->v(e)) << "), ";
 		}
+		cout << endl;
 
 		matchings.push_back(move(m));
 		cout << "======================" << endl;
@@ -332,8 +342,15 @@ void run() {
 	}
 }
 
-int main()
+int main(int  argc, char** argv)
 {
+	if(argc >= 2) {
+		N_NODES = stoi(argv[1]);
+	}
+	if(argc >= 3) {
+		PRINT_PATHS = stoi(argv[2]);
+	}
+
 	run();
 
 	return 0;
