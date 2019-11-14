@@ -5,6 +5,9 @@
 #include <vector>
 #include <array>
 #include <set>
+#include <chrono> 
+#include <cstdlib> 
+#include <lemon/core.h>
 #include <lemon/adaptors.h>
 #include <lemon/list_graph.h>
 #include <lemon/edge_set.h>
@@ -14,8 +17,10 @@
 
 #include "preliminaries.h"
 
+
 using namespace lemon;
 using namespace std;
+using namespace std::chrono; 
 
 // PARAMETERS:
 int N_NODES = 1000;
@@ -89,16 +94,18 @@ vector<typename G::Node> cut_player(const G& g, const vector<unique_ptr<M>>& mat
 
 // For some reason lemon returns arbitrary values for flow, the difference is correct tho
 template<typename G>
+inline
 int flow( 
-	const G& g,
+	const ArcLookUp<G>& alp,
 	const unique_ptr<Preflow<G, typename G::template EdgeMap<int>>>& f,
 	typename G::Node u,
 	typename G::Node v
 ) {
-	return f->flow(findArc(g, u, v)) - f->flow(findArc(g, v, u));
+	return f->flow(alp(u, v)) - f->flow(alp(v, u));
 }
 
 
+/*
 // Very simple greedy solution
 template<typename G>
 inline void extract_path(
@@ -149,6 +156,7 @@ inline void extract_path(
 
 	assert(out_path.size() == 2);
 }
+*/
 
 template<typename G>
 inline void extract_path_fast(
@@ -237,18 +245,23 @@ vector<array<typename G::Node, 2>> decompose_paths_fast(
 	using IncEdgeIt = typename G::IncEdgeIt;
 	using EdgeMap = typename G::template EdgeMap<int>;
 	using NodeNeighborMap = typename G::template NodeMap<vector<tuple<Node, int>>>;
+	using ArcLookup = ArcLookUp<G>;
 
+	cout << "Starting to decompose paths" << endl;
 	f->startSecondPhase();
 	EdgeMap subtr(g, 0);
 	NodeNeighborMap flow_children(g, vector<tuple<Node, int>>());
 	vector<array<Node, 2>> paths;
 	paths.reserve(countNodes(g)/2);
 
+	cout << "Starting to pre-calc flow children" << endl;
+	auto start = high_resolution_clock::now();
 	// Calc flow children (one pass)
+	ArcLookup alp(g);
 	for(EdgeIt e(g); e != INVALID; ++e) {
 		Node u = g.u(e);
 		Node v = g.v(e);
-		long e_flow = flow(g, f, u, v);
+		long e_flow = flow(alp, f, u, v);
 		if(e_flow > 0) {
 			flow_children[u].push_back(tuple(v, e_flow));
 		} else
@@ -256,6 +269,9 @@ vector<array<typename G::Node, 2>> decompose_paths_fast(
 			flow_children[v].push_back(tuple(u, -e_flow));
 		}
 	}
+	auto stop = high_resolution_clock::now();
+	auto duration = duration_cast<microseconds>(stop - start);
+	cout << "Pre-calculated path children in (microsec) " << duration.count() << endl;
 	// Now path decomp is much faster
 
 	for(IncEdgeIt e(g, s); e != INVALID; ++e) {
@@ -308,7 +324,9 @@ void matching_player(G& g, const set<typename G::Node>& cut, ListEdgeSet<G>& m_o
 	assert(s_added == t_added);
 
 
+
 	cout << "Running binary search on flows" << endl;
+	auto start = high_resolution_clock::now();
 	unique_ptr<Preflow<G, EdgeMap>> p(new Preflow<G, EdgeMap>(g, capacity, s, t));
 	for(unsigned long long i = 1; i < num_verts; i *= 2) { 
 
@@ -319,17 +337,30 @@ void matching_player(G& g, const set<typename G::Node>& cut, ListEdgeSet<G>& m_o
 		}
 
 		p.reset(new Preflow<G, EdgeMap>(g, capacity, s, t));
-		p->runMinCut();
-		// Note that "startSecondPhase" must be run to get flows for individual verts
-		cout << "(cap, flow): (" << i << ", " << p->flowValue() << ")" << endl;
+
+		cout << "Cap " << i << " ... " << flush;
+
+		auto start = high_resolution_clock::now();
+		p->runMinCut(); // Note that "startSecondPhase" must be run to get flows for individual verts
+		auto stop = high_resolution_clock::now();
+		auto duration = duration_cast<microseconds>(stop - start);
+
+		cout << "flow: " << p->flowValue() << " (" << duration.count() << " microsecs)" << endl;
 		if(p->flowValue() == num_verts/2) {
 			cout << "We have achieved full flow, but half this capacity didn't manage that!" << endl;
 			break;
 		}
 	}
+	auto stop = high_resolution_clock::now();
+	auto duration = duration_cast<microseconds>(stop - start);
+	cout << "Flow search took (microsec) " << duration.count() << endl;
 
 	cout << "Decomposing paths." << endl;
+	start = high_resolution_clock::now();
 	auto paths = decompose_paths_fast(g, p, s, t);
+	stop = high_resolution_clock::now();
+	duration = duration_cast<microseconds>(stop - start);
+	cout << "Path decomposition took (microsec) " << duration.count() << endl;
 
 	snap.restore();
 
