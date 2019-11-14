@@ -162,6 +162,7 @@ vector<array<typename G::Node, 2>> decompose_paths(
 	f->startSecondPhase();
 	EdgeMap subtr(g, 0);
 	vector<array<Node, 2>> paths;
+	paths.reserve(N_NODES/2);
 
 	for(IncEdgeIt e(g, s); e != INVALID; ++e) {
 		Node u = g.u(e) == s ? g.v(e) : g.u(e);
