@@ -18,6 +18,7 @@ using namespace std;
 
 // PARAMETERS:
 int N_NODES = 1000;
+int ROUNDS = 5;
 bool PRINT_PATHS = false;
 // END PARAMETERS
 
@@ -96,12 +97,13 @@ int flow(
 
 // Very simple greedy solution
 template<typename G>
-vector<typename G::Node> extract_path(
+void extract_path(
 	const G& g,
 	const unique_ptr<Preflow<G, typename G::template EdgeMap<int>>>& f,
 	typename G::template EdgeMap<int>& subtr,
 	typename G::Node u,
-	typename G::Node t
+	typename G::Node t,
+	vector<typename G::Node> &out_path
 ) {
 	using Snapshot = typename G::Snapshot;
 	using Node = typename G::Node;
@@ -112,10 +114,8 @@ vector<typename G::Node> extract_path(
 	using OutArcIt = typename G::OutArcIt;
 	using EdgeMap = typename G::template EdgeMap<int>;
 
-	vector<Node> path;
-
-
 	if (PRINT_PATHS) cout << "Path: ";
+	out_path.push_back(u);
 	for(OutArcIt a(g, u); a != INVALID; ) {
 		Node v = g.target(a);
 
@@ -125,12 +125,12 @@ vector<typename G::Node> extract_path(
 			continue;
 		};
 
-		path.push_back(u);
 		subtr[a] += 1;
 
 		//cout << "(" << g.id(u) << " " << g.id(v) << ", " << ff <<  ")";
 		if (PRINT_PATHS) cout << g.id(u);
 		if(v == t) {
+			out_path.push_back(u);
 			break;
 		}
 		if (PRINT_PATHS) cout << " -> ";
@@ -140,8 +140,7 @@ vector<typename G::Node> extract_path(
 	}
 	if (PRINT_PATHS) cout << endl;
 
-	assert(path.size() >= 2);
-	return path;
+	assert(out_path.size() == 2);
 }
 
 
@@ -167,7 +166,8 @@ vector<vector<typename G::Node>> decompose_paths(
 	for(IncEdgeIt e(g, s); e != INVALID; ++e) {
 		Node u = g.u(e) == s ? g.v(e) : g.u(e);
 
-		paths.push_back(extract_path(g, f, subtr, u, t));
+		paths.push_back(vector<Node>());
+		extract_path(g, f, subtr, u, t, paths[paths.size()-1]);
 	}
 
 	return paths;
@@ -318,7 +318,7 @@ void run() {
 	// Matchings
 	vector<unique_ptr<ListEdgeSet<ListGraph>>> matchings;
 
-	for(int i = 0; i < 15; i++) {
+	for(int i = 0; i < ROUNDS; i++) {
 		vector<ListGraph::Node> out = cut_player<ListGraph>(g, matchings);
 		cout << "Cut player gave the following cut: " << endl;
 		for(ListGraph::Node n : out) {
@@ -348,7 +348,10 @@ int main(int  argc, char** argv)
 		N_NODES = stoi(argv[1]);
 	}
 	if(argc >= 3) {
-		PRINT_PATHS = stoi(argv[2]);
+		ROUNDS = stoi(argv[2]);
+	}
+	if(argc >= 4) {
+		PRINT_PATHS = stoi(argv[3]);
 	}
 
 	run();
