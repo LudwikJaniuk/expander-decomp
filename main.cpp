@@ -8,6 +8,7 @@
 #include <set>
 #include <chrono> 
 #include <cstdlib> 
+#include <bits/stdc++.h>
 #include <lemon/core.h>
 #include <lemon/adaptors.h>
 #include <lemon/list_graph.h>
@@ -32,10 +33,8 @@ bool READ_GRAPH_FROM_FILE = false;
 string IN_GRAPH_FILE;
 // END PARAMETERS
 
-// Seed with a real random value, if available
-random_device r;
 // Choose a random mean between 1 and 6
-default_random_engine engine(r());
+default_random_engine engine;
 uniform_int_distribution<int> uniform_dist(0, 1);
 
 // Actually, cut player gets H
@@ -444,6 +443,7 @@ void generate_graph(ListGraph& g) {
 }
 
 void parse_chaco_format(string filename, ListGraph& g) {
+	using Node = ListGraph::Node;
 	cout << "Reading graph from " << filename << endl;
 	ifstream file;
 	file.open(filename);
@@ -451,9 +451,41 @@ void parse_chaco_format(string filename, ListGraph& g) {
 		cerr << "Unable to read file " << filename << endl;
 		exit(1);
 	}
-	cerr << "Not implemented yet!" << endl;
-	exit(1);
-	
+
+	string line;
+	stringstream ss;
+	getline(file, line);
+	ss.str(line);
+
+	long n_verts, n_edges;
+	ss >> n_verts >> n_edges;
+	cout << "Reading a graph with V " << n_verts << "E " << n_edges << endl;
+	g.reserveNode(n_verts);
+	g.reserveNode(n_edges);
+
+	vector<ListGraph::Node> nodes;
+	for(size_t i = 0; i < n_verts; i++) {
+		nodes.push_back(g.addNode());
+	}
+
+	for(size_t i = 0; i < n_verts; i++) {
+		getline(file, line);
+		ss.clear();
+		ss << line;
+		Node u = nodes[i];
+		size_t v_name;
+		while(ss >> v_name) {
+			Node v = nodes[v_name-1];
+			if(findEdge(g, u, v) == INVALID) {
+				g.addEdge(u, v);
+			}
+		}
+	}
+
+	if(n_verts%2!=0) {
+		cout << "Odd number of vertices, adding extra one." << endl;
+		g.addEdge(nodes[0], g.addNode());
+	}
 }
 
 void run() {
@@ -504,6 +536,7 @@ cxxopts::Options create_options() {
 		("r,rounds", "Number of rounds to run cut-matching game", cxxopts::value<long>()->default_value("5"))
 		("p,paths", "Whether to print paths")
 		("v,verbose", "Whether to print nodes and cuts (does not include paths)")
+		("s,seed", "Use a seed for RNG (optionally set seed manually)", cxxopts::value<int>()->implicit_value("1337"))
 		;
 	return options;
 }
@@ -524,6 +557,11 @@ void parse_options(int argc, char** argv) {
 		PRINT_NODES = result["verbose"].as<bool>();
 	if(result.count("paths"))
 		PRINT_PATHS = result["paths"].as<bool>();
+	if(result.count("seed"))
+		engine = default_random_engine(result["seed"].as<int>());
+	else
+		engine = default_random_engine(random_device()());
+
 }
 
 int main(int  argc, char** argv)
