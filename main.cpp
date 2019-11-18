@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <algorithm>
 #include <random>
 #include <memory>
@@ -15,8 +16,8 @@
 #include <lemon/dijkstra.h>
 #include <lemon/preflow.h>
 
+#include "cxxopts.hpp"
 #include "preliminaries.h"
-
 
 using namespace lemon;
 using namespace std;
@@ -24,9 +25,11 @@ using namespace std::chrono;
 
 // PARAMETERS:
 int N_NODES = 1000;
-int ROUNDS = 5;
+int N_ROUNDS = 5;
 bool PRINT_PATHS = false;
 bool PRINT_NODES = false;
+bool READ_GRAPH_FROM_FILE = false;
+string IN_GRAPH_FILE;
 // END PARAMETERS
 
 // Seed with a real random value, if available
@@ -436,18 +439,34 @@ void generate_small(ListGraph& g) {
 }
 
 void generate_graph(ListGraph& g) {
+	cout << "Generating graph with " << N_NODES << " nodes." << endl;
 	generate_large(g);
+}
+
+void parse_chaco_format(string filename, ListGraph& g) {
+	cout << "Reading graph from " << filename << endl;
+	ifstream file;
+	file.open(filename);
+	if(!file) {
+		cerr << "Unable to read file " << filename << endl;
+		exit(1);
+	}
+	cerr << "Not implemented yet!" << endl;
+	exit(1);
+	
 }
 
 void run() {
 	ListGraph g;
-	cout << "Generating graph with " << N_NODES << " nodes." << endl;
-	generate_graph(g);
+	if(READ_GRAPH_FROM_FILE)
+		parse_chaco_format(IN_GRAPH_FILE, g);
+	else
+		generate_graph(g);
 
 	// Matchings
 	vector<unique_ptr<ListEdgeSet<ListGraph>>> matchings;
 
-	for(int i = 0; i < ROUNDS; i++) {
+	for(int i = 0; i < N_ROUNDS; i++) {
 		cout << "Running Cut player" << endl;
 		vector<ListGraph::Node> out = cut_player<ListGraph>(g, matchings);
 		if(PRINT_NODES) {
@@ -477,23 +496,40 @@ void run() {
 	}
 }
 
+cxxopts::Options create_options() {
+	cxxopts::Options options("Janiuk graph partition", "Individual project implementation if thatchapon's paper to find graph partitions. Currently only cut-matching game.");
+	options.add_options()
+		("f,file", "File to read graph from", cxxopts::value<std::string>()->default_value(""))
+		("n,nodes", "Number of nodes in graph to generate. Should be even. Ignored if -f is set.", cxxopts::value<long>()->default_value("100"))
+		("r,rounds", "Number of rounds to run cut-matching game", cxxopts::value<long>()->default_value("5"))
+		("p,paths", "Whether to print paths")
+		("v,verbose", "Whether to print nodes and cuts (does not include paths)")
+		;
+	return options;
+}
+
+void parse_options(int argc, char** argv) {
+	auto options = create_options();
+	auto result = options.parse(argc, argv);
+	if(result.count("file")) {
+		READ_GRAPH_FROM_FILE = true;
+		IN_GRAPH_FILE = result["file"].as<string>();
+
+	}
+	if(result.count("nodes"))
+		N_NODES = result["nodes"].as<long>();
+	if(result.count("rounds"))
+		N_ROUNDS = result["rounds"].as<long>();
+	if(result.count("verbose"))
+		PRINT_NODES = result["verbose"].as<bool>();
+	if(result.count("paths"))
+		PRINT_PATHS = result["paths"].as<bool>();
+}
+
 int main(int  argc, char** argv)
 {
-	if(argc >= 2) {
-		N_NODES = stoi(argv[1]);
-	}
-	if(argc >= 3) {
-		ROUNDS = stoi(argv[2]);
-	}
-	if(argc >= 4) {
-		PRINT_PATHS = stoi(argv[3]);
-	}
-	if(argc >= 5) {
-		PRINT_NODES = stoi(argv[4]);
-	}
-
+	parse_options(argc, argv);
 	run();
-
 	return 0;
 }
 
