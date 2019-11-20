@@ -325,8 +325,6 @@ void matching_player(G& g, const set<typename G::Node>& cut, ListEdgeSet<G>& m_o
 	}
 	assert(s_added == t_added);
 
-
-
 	cout << "Running binary search on flows" << endl;
 	auto start = high_resolution_clock::now();
 	unique_ptr<Preflow<G, EdgeMap>> p(new Preflow<G, EdgeMap>(g, capacity, s, t));
@@ -488,40 +486,47 @@ void parse_chaco_format(string filename, ListGraph& g) {
 	}
 }
 
-void run() {
-	ListGraph g;
+void create_graph(ListGraph& g) {
 	if(READ_GRAPH_FROM_FILE)
 		parse_chaco_format(IN_GRAPH_FILE, g);
 	else
 		generate_graph(g);
+}
+
+void one_round(ListGraph& g, vector<unique_ptr<ListEdgeSet<ListGraph>>>& matchings) {
+	cout << "Running Cut player" << endl;
+	vector<ListGraph::Node> out = cut_player<ListGraph>(g, matchings);
+	if(PRINT_NODES) {
+		cout << "Cut player gave the following cut: " << endl;
+		for(ListGraph::Node n : out) {
+			cout << g.id(n) << ", ";
+		}
+		cout << endl;
+	}
+
+	unique_ptr<ListEdgeSet<ListGraph>> m(new ListEdgeSet<ListGraph>(g));
+	set<ListGraph::Node> cut(out.begin(), out.end());
+	cout << "Running Matching player" << endl;
+	matching_player<ListGraph>(g, cut, *m);
+	if(PRINT_NODES) {
+		cout << "Matching player gave the following matching: " << endl;
+		for(ListEdgeSet<ListGraph>::EdgeIt e(*m); e != INVALID; ++e) {
+			cout << "(" << m->id(m->u(e)) << ", " << m->id(m->v(e)) << "), ";
+		}
+		cout << endl;
+	}
+
+	matchings.push_back(move(m));
+}
+
+void run() {
+	ListGraph g;
+	create_graph(g);
 
 	// Matchings
 	vector<unique_ptr<ListEdgeSet<ListGraph>>> matchings;
-
 	for(int i = 0; i < N_ROUNDS; i++) {
-		cout << "Running Cut player" << endl;
-		vector<ListGraph::Node> out = cut_player<ListGraph>(g, matchings);
-		if(PRINT_NODES) {
-			cout << "Cut player gave the following cut: " << endl;
-			for(ListGraph::Node n : out) {
-				cout << g.id(n) << ", ";
-			}
-			cout << endl;
-		}
-
-		unique_ptr<ListEdgeSet<ListGraph>> m(new ListEdgeSet<ListGraph>(g));
-		set<ListGraph::Node> cut(out.begin(), out.end());
-		cout << "Running Matching player" << endl;
-		matching_player<ListGraph>(g, cut, *m);
-		if(PRINT_NODES) {
-			cout << "Matching player gave the following matching: " << endl;
-			for(ListEdgeSet<ListGraph>::EdgeIt e(*m); e != INVALID; ++e) {
-				cout << "(" << m->id(m->u(e)) << ", " << m->id(m->v(e)) << "), ";
-			}
-			cout << endl;
-		}
-
-		matchings.push_back(move(m));
+		one_round(g, matchings);
 		cout << "======================" << endl;
 		cout << "== End round " << i << endl;
 		cout << "======================" << endl;
