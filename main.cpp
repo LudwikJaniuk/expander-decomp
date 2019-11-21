@@ -1,6 +1,7 @@
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "cert-msc32-c"
 #pragma ide diagnostic ignored "cppcoreguidelines-slicing"
+
 #include <iostream>
 #include <algorithm>
 #include <random>
@@ -8,8 +9,8 @@
 #include <vector>
 #include <array>
 #include <set>
-#include <chrono> 
-#include <cstdlib> 
+#include <chrono>
+#include <cstdlib>
 #include <bits/stdc++.h>
 #include <lemon/core.h>
 #include <lemon/adaptors.h>
@@ -22,7 +23,7 @@
 
 using namespace lemon;
 using namespace std;
-using namespace std::chrono; 
+using namespace std::chrono;
 
 // PARAMETERS:
 int N_NODES = 1000;
@@ -45,6 +46,7 @@ struct CutMatching {
     using EdgeIt = typename G::EdgeIt;
     using IncEdgeIt = typename G::IncEdgeIt;
     using OutArcIt = typename G::OutArcIt;
+    using Paths = vector<array<Node, 2>>;
     using ArcLookup = ArcLookUp<G>;
     // LEMON uses ints internally. We might want to look into this
     template<class T>
@@ -53,6 +55,7 @@ struct CutMatching {
     template<class T>
     using NodeMap = typename G::template NodeMap<T>;
     using NodeNeighborMap = NodeMap<vector<tuple<Node, int>>>;
+    using FlowAlgo = Preflow<G, EdgeMapi>;
 
     default_random_engine engine;
     uniform_int_distribution<int> uniform_dist;
@@ -157,18 +160,12 @@ struct CutMatching {
         }
     }
 
-    vector<array<Node, 2>> decompose_paths_fast(
-            const G &g,
-            const unique_ptr<Preflow<G, EdgeMapi>> &f,
-            Node s,
-            Node t
-    ) {
+    void decompose_paths_fast(const G &g, const unique_ptr<FlowAlgo> &f, Node s, Node t, Paths &out_paths) {
         cout << "Starting to decompose paths" << endl;
         f->startSecondPhase();
         EdgeMapi subtr(g, 0);
         NodeNeighborMap flow_children(g, vector<tuple<Node, int>>());
-        vector<array<Node, 2>> paths;
-        paths.reserve(countNodes(g) / 2);
+        out_paths.reserve(countNodes(g) / 2);
 
         cout << "Starting to pre-calc flow children" << endl;
         auto start = high_resolution_clock::now();
@@ -193,27 +190,76 @@ struct CutMatching {
             assert(g.u(e) == s || g.v(e) == s);
             Node u = g.u(e) == s ? g.v(e) : g.u(e);
 
-            paths.push_back(array<Node, 2>());
-            extract_path_fast(g, f, flow_children, u, t, paths[paths.size() - 1]);
+            out_paths.push_back(array<Node, 2>());
+            extract_path_fast(g, f, flow_children, u, t, out_paths[out_paths.size() - 1]);
         }
-
-        return paths;
     }
 
+    void
+    bin_search_flows(const G &g, unique_ptr<FlowAlgo> &p, EdgeMapi &capacity, size_t num_verts, Node t, Node s) const {
+        cout << "Running binary search on flows" << endl;
+        auto start = high_resolution_clock::now();
+        for (size_t i = 1; i < num_verts; i *= 2) {
+            for (EdgeIt e(g); e != INVALID; ++e) {
+                if (g.u(e) == s || g.v(e) == s) continue;
+                if (g.u(e) == t || g.v(e) == t) continue;
+                capacity[e] = i;
+            }
 
-// TODO acutally spit out mathcing
-// ant then maybe also create cut, and save all?
+            p.reset(new Preflow<G, EdgeMapi>(g, capacity, s, t));
+
+            cout << "Cap " << i << " ... " << flush;
+
+            auto start2 = high_resolution_clock::now();
+            p->runMinCut(); // Note that "startSecondPhase" must be run to get flows for individual verts
+            auto stop2 = high_resolution_clock::now();
+            auto duration2 = duration_cast<microseconds>(stop2 - start2);
+
+            cout << "flow: " << p->flowValue() << " (" << duration2.count() << " microsecs)" << endl;
+            if (p->flowValue() == num_verts / 2) {
+                cout << "We have achieved full flow, but half this capacity didn't manage that!" << endl;
+                break;
+            }
+        }
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
+        cout << "Flow search took (microsec) " << duration.count() << endl;
+    }
+
+// TODO create sparse cut
     void matching_player(G &g, const set<Node> &cut, ListEdgeSet<G> &m_out) {
-
         size_t num_verts = countNodes(g);
         assert(num_verts % 2 == 0);
 
         Snapshot snap(g);
 
-        Node s = g.addNode();
-        Node t = g.addNode();
+        Node s, t;
         EdgeMapi capacity(g);
+        make_sink_source(g, cut, capacity, t, s);
 
+        unique_ptr<FlowAlgo> p;
+        bin_search_flows(g, p, capacity, num_verts, t, s);
+
+        vector<array<Node, 2>> paths;
+
+        cout << "Decomposing paths." << endl;
+        auto start = high_resolution_clock::now();
+        decompose_paths_fast(g, p, s, t, paths);
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
+        cout << "Path decomposition took (microsec) " << duration.count() << endl;
+
+        snap.restore();
+
+        for (auto &path : paths) {
+            m_out.addEdge(path[0], path.back());
+        }
+    }
+
+    void
+    make_sink_source(G &g, const set<Node> &cut, EdgeMapi &capacity, Node &t, Node &s) const {
+        s = g.addNode();
+        t = g.addNode();
         int s_added = 0;
         int t_added = 0;
         for (NodeIt n(g); n != INVALID; ++n) {
@@ -229,68 +275,7 @@ struct CutMatching {
             }
             capacity[e] = 1;
         }
-
         assert(s_added == t_added);
-
-        cout << "Running binary search on flows" << endl;
-        auto start = high_resolution_clock::now();
-        unique_ptr<Preflow<G, EdgeMapi>> p(new Preflow<G, EdgeMapi>(g, capacity, s, t));
-        for (unsigned long long i = 1; i < num_verts; i *= 2) {
-
-            for (EdgeIt e(g); e != INVALID; ++e) {
-                if (g.u(e) == s || g.v(e) == s) continue;
-                if (g.u(e) == t || g.v(e) == t) continue;
-                capacity[e] = i;
-            }
-
-            p.reset(new Preflow<G, EdgeMapi>(g, capacity, s, t));
-
-            cout << "Cap " << i << " ... " << flush;
-
-            auto start2 = high_resolution_clock::now();
-            p->runMinCut(); // Note that "startSecondPhase" must be run to get flows for individual verts
-            auto stop = high_resolution_clock::now();
-            auto duration = duration_cast<microseconds>(stop - start2);
-
-            cout << "flow: " << p->flowValue() << " (" << duration.count() << " microsecs)" << endl;
-            if (p->flowValue() == num_verts / 2) {
-                cout << "We have achieved full flow, but half this capacity didn't manage that!" << endl;
-                break;
-            }
-        }
-        auto stop = high_resolution_clock::now();
-        auto duration = duration_cast<microseconds>(stop - start);
-        cout << "Flow search took (microsec) " << duration.count() << endl;
-
-        cout << "Decomposing paths." << endl;
-        start = high_resolution_clock::now();
-        auto paths = decompose_paths_fast(g, p, s, t);
-        stop = high_resolution_clock::now();
-        duration = duration_cast<microseconds>(stop - start);
-        cout << "Path decomposition took (microsec) " << duration.count() << endl;
-
-        snap.restore();
-
-        for (auto &path : paths) {
-            m_out.addEdge(path[0], path.back());
-        }
-
-        // Set up source and sink to both sides
-        // give all internal ones capacity of 1
-        // If we find a flow of n/2
-        // 	then we're done, since the cut player couldn't find a good cut,
-        // 	G is already an expander...
-        // 	However we're supposed to output a certification in that case right?
-        // 	And H isn't necessarily an expander yet (how will we know?) TODO
-        // 	But for now if this is the case, we output claim "G is expander".
-        // If not, then we double all the capacities and see if we can do it now
-        // When you finally can do it and have a flow F
-        // Decompose F into flow paths
-        // and output those matchings.
-        //
-        // I think we can do decomposition by simply going vertex by vertex and tracing their flows,
-        // then subtracting that from the total flow...
-
     }
 
     void generate_large_graph(ListGraph &g) {
@@ -324,7 +309,7 @@ struct CutMatching {
         }
     }
 
-    void parse_chaco_format(const string& filename, ListGraph &g) {
+    void parse_chaco_format(const string &filename, ListGraph &g) {
         cout << "Reading graph from " << filename << endl;
         ifstream file;
         file.open(filename);
@@ -422,47 +407,48 @@ struct CutMatching {
 };
 
 cxxopts::Options create_options() {
-	cxxopts::Options options("Janiuk graph partition", "Individual project implementation if thatchapon's paper to find graph partitions. Currently only cut-matching game.");
-	options.add_options()
-		("f,file", "File to read graph from", cxxopts::value<std::string>()->default_value(""))
-		("n,nodes", "Number of nodes in graph to generate. Should be even. Ignored if -f is set.", cxxopts::value<long>()->default_value("100"))
-		("r,rounds", "Number of rounds to run cut-matching game", cxxopts::value<long>()->default_value("5"))
-		("p,paths", "Whether to print paths")
-		("v,verbose", "Whether to print nodes and cuts (does not include paths)")
-		("s,seed", "Use a seed for RNG (optionally set seed manually)", cxxopts::value<int>()->implicit_value("1337"))
-		;
-	return options;
+    cxxopts::Options options("Janiuk graph partition",
+                             "Individual project implementation if thatchapon's paper to find graph partitions. Currently only cut-matching game.");
+    options.add_options()
+            ("f,file", "File to read graph from", cxxopts::value<std::string>()->default_value(""))
+            ("n,nodes", "Number of nodes in graph to generate. Should be even. Ignored if -f is set.",
+             cxxopts::value<long>()->default_value("100"))
+            ("r,rounds", "Number of rounds to run cut-matching game", cxxopts::value<long>()->default_value("5"))
+            ("p,paths", "Whether to print paths")
+            ("v,verbose", "Whether to print nodes and cuts (does not include paths)")
+            ("s,seed", "Use a seed for RNG (optionally set seed manually)",
+             cxxopts::value<int>()->implicit_value("1337"));
+    return options;
 }
 
-void parse_options(int argc, char** argv, CutMatching<ListGraph> &cm) {
-	auto options = create_options();
-	auto result = options.parse(argc, argv);
-	if(result.count("file")) {
-		READ_GRAPH_FROM_FILE = true;
-		IN_GRAPH_FILE = result["file"].as<string>();
+void parse_options(int argc, char **argv, CutMatching<ListGraph> &cm) {
+    auto options = create_options();
+    auto result = options.parse(argc, argv);
+    if (result.count("file")) {
+        READ_GRAPH_FROM_FILE = true;
+        IN_GRAPH_FILE = result["file"].as<string>();
 
-	}
-	if(result.count("nodes"))
-		N_NODES = result["nodes"].as<long>();
-	if(result.count("rounds"))
-		N_ROUNDS = result["rounds"].as<long>();
-	if(result.count("verbose"))
-		PRINT_NODES = result["verbose"].as<bool>();
-	if(result.count("paths"))
-		PRINT_PATHS = result["paths"].as<bool>();
-	if(result.count("seed"))
-		cm.engine = default_random_engine(result["seed"].as<int>());
-	else
-		cm.engine = default_random_engine(random_device()());
+    }
+    if (result.count("nodes"))
+        N_NODES = result["nodes"].as<long>();
+    if (result.count("rounds"))
+        N_ROUNDS = result["rounds"].as<long>();
+    if (result.count("verbose"))
+        PRINT_NODES = result["verbose"].as<bool>();
+    if (result.count("paths"))
+        PRINT_PATHS = result["paths"].as<bool>();
+    if (result.count("seed"))
+        cm.engine = default_random_engine(result["seed"].as<int>());
+    else
+        cm.engine = default_random_engine(random_device()());
 
 }
 
-int main(int  argc, char** argv)
-{
+int main(int argc, char **argv) {
     CutMatching<ListGraph> cm;
-	parse_options(argc, argv, cm);
-	cm.run();
-	return 0;
+    parse_options(argc, argv, cm);
+    cm.run();
+    return 0;
 }
 
 #pragma clang diagnostic pop
