@@ -1,3 +1,6 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "cert-msc32-c"
+#pragma ide diagnostic ignored "cppcoreguidelines-slicing"
 #include <iostream>
 #include <algorithm>
 #include <random>
@@ -31,8 +34,6 @@ string IN_GRAPH_FILE;
 // END PARAMETERS
 
 // Choose a random mean between 1 and 6
-default_random_engine engine;
-uniform_int_distribution<int> uniform_dist(0, 1);
 
 template<class G>
 struct CutMatching {
@@ -52,6 +53,11 @@ struct CutMatching {
     template<class T>
     using NodeMap = typename G::template NodeMap<T>;
     using NodeNeighborMap = NodeMap<vector<tuple<Node, int>>>;
+
+    default_random_engine engine;
+    uniform_int_distribution<int> uniform_dist;
+
+    CutMatching() : uniform_dist(0, 1) {};
 
     // Actually, cut player gets H
 // Actually Actually, sure it gets H but it just needs the matchings...
@@ -428,7 +434,7 @@ cxxopts::Options create_options() {
 	return options;
 }
 
-void parse_options(int argc, char** argv) {
+void parse_options(int argc, char** argv, CutMatching<ListGraph> &cm) {
 	auto options = create_options();
 	auto result = options.parse(argc, argv);
 	if(result.count("file")) {
@@ -445,18 +451,18 @@ void parse_options(int argc, char** argv) {
 	if(result.count("paths"))
 		PRINT_PATHS = result["paths"].as<bool>();
 	if(result.count("seed"))
-		engine = default_random_engine(result["seed"].as<int>());
+		cm.engine = default_random_engine(result["seed"].as<int>());
 	else
-		engine = default_random_engine(random_device()());
+		cm.engine = default_random_engine(random_device()());
 
 }
 
 int main(int  argc, char** argv)
 {
-	parse_options(argc, argv);
-	CutMatching<ListGraph> cm;
+    CutMatching<ListGraph> cm;
+	parse_options(argc, argv, cm);
 	cm.run();
 	return 0;
 }
 
-
+#pragma clang diagnostic pop
