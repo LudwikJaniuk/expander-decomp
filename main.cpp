@@ -1,5 +1,4 @@
 #include <iostream>
-#include <fstream>
 #include <algorithm>
 #include <random>
 #include <memory>
@@ -13,8 +12,6 @@
 #include <lemon/adaptors.h>
 #include <lemon/list_graph.h>
 #include <lemon/edge_set.h>
-#include <lemon/bfs.h>
-#include <lemon/dijkstra.h>
 #include <lemon/preflow.h>
 
 #include "cxxopts.hpp"
@@ -37,501 +34,386 @@ string IN_GRAPH_FILE;
 default_random_engine engine;
 uniform_int_distribution<int> uniform_dist(0, 1);
 
-// Actually, cut player gets H
+template<class G>
+struct CutMatching {
+    using NodeMapd = typename G::template NodeMap<double>;
+    using Node = typename G::Node;
+    using NodeIt = typename G::NodeIt;
+    using Snapshot = typename G::Snapshot;
+    using Edge = typename G::Edge;
+    using EdgeIt = typename G::EdgeIt;
+    using IncEdgeIt = typename G::IncEdgeIt;
+    using OutArcIt = typename G::OutArcIt;
+    using ArcLookup = ArcLookUp<G>;
+    // LEMON uses ints internally. We might want to look into this
+    template<class T>
+    using EdgeMap = typename G::template EdgeMap<T>;
+    using EdgeMapi = EdgeMap<int>;
+    template<class T>
+    using NodeMap = typename G::template NodeMap<T>;
+    using NodeNeighborMap = NodeMap<vector<tuple<Node, int>>>;
+
+    // Actually, cut player gets H
 // Actually Actually, sure it gets H but it just needs the matchings...
-template<typename G, typename M>
-vector<typename G::Node> cut_player(const G& g, const vector<unique_ptr<M>>& matchings) {
-	using NodeMapd = typename G::template NodeMap<double>;
-	using Node = typename G::Node;
-	using NodeIt = typename G::NodeIt;
-	using MEdgeIt = typename M::EdgeIt;
+    template<typename M>
+    vector<Node> cut_player(const G &g, const vector<unique_ptr<M>> &matchings) {
+        using MEdgeIt = typename M::EdgeIt;
 
-	NodeMapd probs(g);
-	vector<Node> allNodes;
 
-	for(NodeIt n(g); n!=INVALID; ++n){
-		allNodes.push_back(n);
-		probs[n] = uniform_dist(engine) ? 1.0/allNodes.size() : -1.0/allNodes.size(); // TODO
-	}
+        NodeMapd probs(g);
+        vector<Node> allNodes;
 
-	if(PRINT_NODES) {
-		cout << "All nodes: " << endl;
-		for(const Node& n : allNodes) {
-			cout << g.id(n) << " ";
-		}
-		cout << endl;
-	}
+        for (NodeIt n(g); n != INVALID; ++n) {
+            allNodes.push_back(n);
+            probs[n] = uniform_dist(engine) ? 1.0 / allNodes.size() : -1.0 / allNodes.size(); // TODO
+        }
 
-	for(const unique_ptr<M>& m : matchings) {
-		for(MEdgeIt e(*m); e!=INVALID; ++e){
-			Node u = m->u(e);
-			Node v = m->v(e);
-			double avg = probs[u]/2 + probs[v]/2;
-			probs[u] = avg;
-			probs[v] = avg;
-		}
-	}
+        if (PRINT_NODES) {
+            cout << "All nodes: " << endl;
+            for (const Node &n : allNodes) {
+                cout << g.id(n) << " ";
+            }
+            cout << endl;
+        }
 
-	sort(allNodes.begin(), allNodes.end(), [&](Node a, Node b) { 
-		return probs[a] < probs[b];
-	});
+        for (const unique_ptr<M> &m : matchings) {
+            for (MEdgeIt e(*m); e != INVALID; ++e) {
+                Node u = m->u(e);
+                Node v = m->v(e);
+                double avg = probs[u] / 2 + probs[v] / 2;
+                probs[u] = avg;
+                probs[v] = avg;
+            }
+        }
 
-	size_t size = allNodes.size();
-	assert(size%2==0);
-	allNodes.resize(size/2);
-	return allNodes;
+        sort(allNodes.begin(), allNodes.end(), [&](Node a, Node b) {
+            return probs[a] < probs[b];
+        });
 
-	// for each vertex v
-	// 	weight[v] = rand(0, 1) ? 1/n : -1/n
-	// for each mapping m (in order)
-	// 	for each edge (u,v) of m
-	// 		weights[u] = weights[v] = avg(weights[u], weights[v])
-	// NodeLIst nodes;
-	// sort(nodelist by weight[node])
-	//
-	// return slice of nodellist beginning
-	// (actually can optimize with stl)
-	// */
-}
+        size_t size = allNodes.size();
+        assert(size % 2 == 0);
+        allNodes.resize(size / 2);
+        return allNodes;
+
+        // for each vertex v
+        // 	weight[v] = rand(0, 1) ? 1/n : -1/n
+        // for each mapping m (in order)
+        // 	for each edge (u,v) of m
+        // 		weights[u] = weights[v] = avg(weights[u], weights[v])
+        // NodeLIst nodes;
+        // sort(nodelist by weight[node])
+        //
+        // return slice of nodellist beginning
+        // (actually can optimize with stl)
+        // */
+    }
 
 // For some reason lemon returns arbitrary values for flow, the difference is correct tho
-template<typename G>
-inline
-int flow( 
-	const ArcLookUp<G>& alp,
-	const unique_ptr<Preflow<G, typename G::template EdgeMap<int>>>& f,
-	typename G::Node u,
-	typename G::Node v
-) {
-	return f->flow(alp(u, v)) - f->flow(alp(v, u));
-}
+    inline
+    int flow(
+            const ArcLookUp<G> &alp,
+            const unique_ptr<Preflow<G, EdgeMapi>> &f,
+            Node u,
+            Node v
+    ) {
+        return f->flow(alp(u, v)) - f->flow(alp(v, u));
+    }
 
+    inline void extract_path_fast(
+            const G &g,
+            const unique_ptr<Preflow<G, EdgeMapi>> &f,
+            NodeNeighborMap &flow_children,
+            Node u_orig,
+            Node t, // For assertsions
+            array<Node, 2> &out_path
+    ) {
+        if (PRINT_PATHS) cout << "Path: " << g.id(u_orig);
+        out_path[0] = u_orig;
+        Node u = u_orig;
+        while (true) {
+            auto &tup = flow_children[u].back();
+            Node v = get<0>(tup);
+            --get<1>(tup);
 
-/*
-// Very simple greedy solution
-template<typename G>
-inline void extract_path(
-	const G& g,
-	const unique_ptr<Preflow<G, typename G::template EdgeMap<int>>>& f,
-	typename G::template EdgeMap<int>& subtr,
-	typename G::Node u,
-	typename G::Node t,
-	array<typename G::Node, 2> &out_path
-) {
-	using Snapshot = typename G::Snapshot;
-	using Node = typename G::Node;
-	using Edge = typename G::Edge;
-	using NodeIt = typename G::NodeIt;
-	using EdgeIt = typename G::EdgeIt;
-	using IncEdgeIt = typename G::IncEdgeIt;
-	using OutArcIt = typename G::OutArcIt;
-	using EdgeMap = typename G::template EdgeMap<int>;
+            if (get<1>(tup) == 0) flow_children[u].pop_back();
 
-	if (PRINT_PATHS) cout << "Path: ";
-	out_path[0] = u;
-	int prof = 0;
-	for(OutArcIt a(g, u); a != INVALID; ) {
-		++prof;
-		Node v = g.target(a);
+            if (flow_children[v].empty()) {
+                assert(v == t);
+                assert(u != u_orig);
 
-		int ff = flow(g, f, u, v);
-		if(ff - subtr[a] <= 0) {
-			++a;
-			continue;
-		};
+                out_path[1] = u;
+                if (PRINT_PATHS) cout << endl;
+                break;
+            }
 
-		subtr[a] += 1;
+            if (PRINT_PATHS) cout << " -> " << g.id(v);
+            u = v;
+        }
+    }
 
-		//cout << "(" << g.id(u) << " " << g.id(v) << ", " << ff <<  ")";
-		if (PRINT_PATHS) cout << g.id(u);
-		if(v == t) {
-			out_path[1] = u;
-			break;
-		}
-		if (PRINT_PATHS) cout << " -> ";
+    vector<array<Node, 2>> decompose_paths_fast(
+            const G &g,
+            const unique_ptr<Preflow<G, EdgeMapi>> &f,
+            Node s,
+            Node t
+    ) {
+        cout << "Starting to decompose paths" << endl;
+        f->startSecondPhase();
+        EdgeMapi subtr(g, 0);
+        NodeNeighborMap flow_children(g, vector<tuple<Node, int>>());
+        vector<array<Node, 2>> paths;
+        paths.reserve(countNodes(g) / 2);
 
-		u = v;
-		a = OutArcIt(g, u);
-	}
-	if (PRINT_PATHS) cout << " ]] " << prof;
-	if (PRINT_PATHS) cout << endl;
+        cout << "Starting to pre-calc flow children" << endl;
+        auto start = high_resolution_clock::now();
+        // Calc flow children (one pass)
+        ArcLookup alp(g);
+        for (EdgeIt e(g); e != INVALID; ++e) {
+            Node u = g.u(e);
+            Node v = g.v(e);
+            long e_flow = flow(alp, f, u, v);
+            if (e_flow > 0) {
+                flow_children[u].push_back(tuple(v, e_flow));
+            } else if (e_flow < 0) {
+                flow_children[v].push_back(tuple(u, -e_flow));
+            }
+        }
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
+        cout << "Pre-calculated path children in (microsec) " << duration.count() << endl;
+        // Now path decomp is much faster
 
-	assert(out_path.size() == 2);
-}
-*/
+        for (IncEdgeIt e(g, s); e != INVALID; ++e) {
+            assert(g.u(e) == s || g.v(e) == s);
+            Node u = g.u(e) == s ? g.v(e) : g.u(e);
 
-template<typename G>
-inline void extract_path_fast(
-	const G& g,
-	const unique_ptr<Preflow<G, typename G::template EdgeMap<int>>>& f,
-	typename G::template NodeMap<vector<tuple<typename G::Node, int>>>& flow_children,
-	typename G::Node u_orig,
-	typename G::Node t, // For assertsions
-	array<typename G::Node, 2> &out_path
-) {
-	using Snapshot = typename G::Snapshot;
-	using Node = typename G::Node;
-	using Edge = typename G::Edge;
-	using NodeIt = typename G::NodeIt;
-	using EdgeIt = typename G::EdgeIt;
-	using IncEdgeIt = typename G::IncEdgeIt;
-	using OutArcIt = typename G::OutArcIt;
-	using EdgeMap = typename G::template EdgeMap<int>;
+            paths.push_back(array<Node, 2>());
+            extract_path_fast(g, f, flow_children, u, t, paths[paths.size() - 1]);
+        }
 
-	if (PRINT_PATHS) cout << "Path: " << g.id(u_orig);
-	out_path[0] = u_orig;
-	Node u = u_orig;
-	while(true) {
-		auto& tup = flow_children[u].back();
-		Node v = get<0>(tup);
-		--get<1>(tup);
-
-		if(get<1>(tup) == 0) flow_children[u].pop_back();
-
-		if(flow_children[v].size() == 0) {
-			assert(v == t);
-			assert(u != u_orig);
-
-			out_path[1] = u;
-			if (PRINT_PATHS) cout <<  endl;
-			break;
-		}
-
-		if (PRINT_PATHS) cout << " -> " << g.id(v);
-		u = v;
-	}
-}
-
-template<typename G>
-vector<array<typename G::Node, 2>> decompose_paths(
-	const G& g,
-	const unique_ptr<Preflow<G, typename G::template EdgeMap<int>>>& f,
-	typename G::Node s,
-	typename G::Node t
-) {
-	using Snapshot = typename G::Snapshot;
-	using Node = typename G::Node;
-	using Edge = typename G::Edge;
-	using NodeIt = typename G::NodeIt;
-	using EdgeIt = typename G::EdgeIt;
-	using IncEdgeIt = typename G::IncEdgeIt;
-	using EdgeMap = typename G::template EdgeMap<int>;
-
-	f->startSecondPhase();
-	EdgeMap subtr(g, 0);
-	vector<array<Node, 2>> paths;
-	paths.reserve(N_NODES/2);
-
-	for(IncEdgeIt e(g, s); e != INVALID; ++e) {
-		Node u = g.u(e) == s ? g.v(e) : g.u(e);
-
-		paths.push_back(array<Node, 2>());
-		extract_path(g, f, subtr, u, t, paths[paths.size()-1]);
-	}
-
-	return paths;
-}
-
-template<typename G>
-vector<array<typename G::Node, 2>> decompose_paths_fast(
-	const G& g,
-	const unique_ptr<Preflow<G, typename G::template EdgeMap<int>>>& f,
-	typename G::Node s,
-	typename G::Node t
-) {
-	using Snapshot = typename G::Snapshot;
-	using Node = typename G::Node;
-	using Edge = typename G::Edge;
-	using NodeIt = typename G::NodeIt;
-	using EdgeIt = typename G::EdgeIt;
-	using IncEdgeIt = typename G::IncEdgeIt;
-	using EdgeMap = typename G::template EdgeMap<int>;
-	using NodeNeighborMap = typename G::template NodeMap<vector<tuple<Node, int>>>;
-	using ArcLookup = ArcLookUp<G>;
-
-	cout << "Starting to decompose paths" << endl;
-	f->startSecondPhase();
-	EdgeMap subtr(g, 0);
-	NodeNeighborMap flow_children(g, vector<tuple<Node, int>>());
-	vector<array<Node, 2>> paths;
-	paths.reserve(countNodes(g)/2);
-
-	cout << "Starting to pre-calc flow children" << endl;
-	auto start = high_resolution_clock::now();
-	// Calc flow children (one pass)
-	ArcLookup alp(g);
-	for(EdgeIt e(g); e != INVALID; ++e) {
-		Node u = g.u(e);
-		Node v = g.v(e);
-		long e_flow = flow(alp, f, u, v);
-		if(e_flow > 0) {
-			flow_children[u].push_back(tuple(v, e_flow));
-		} else
-		if(e_flow < 0) {
-			flow_children[v].push_back(tuple(u, -e_flow));
-		}
-	}
-	auto stop = high_resolution_clock::now();
-	auto duration = duration_cast<microseconds>(stop - start);
-	cout << "Pre-calculated path children in (microsec) " << duration.count() << endl;
-	// Now path decomp is much faster
-
-	for(IncEdgeIt e(g, s); e != INVALID; ++e) {
-		assert(g.u(e) == s || g.v(e) == s);
-		Node u = g.u(e) == s ? g.v(e) : g.u(e);
-
-		paths.push_back(array<Node, 2>());
-		extract_path_fast(g, f, flow_children, u, t, paths[paths.size()-1]);
-	}
-
-	return paths;
-}
+        return paths;
+    }
 
 
 // TODO acutally spit out mathcing
 // ant then maybe also create cut, and save all?
-template<typename G>
-void matching_player(G& g, const set<typename G::Node>& cut, ListEdgeSet<G>& m_out) {
-	using Snapshot = typename G::Snapshot;
-	using Node = typename G::Node;
-	using Edge = typename G::Edge;
-	using NodeIt = typename G::NodeIt;
-	using EdgeIt = typename G::EdgeIt;
-// TODO maybe we want to go with longs
-	using EdgeMap = typename G::template EdgeMap<int>;
+    void matching_player(G &g, const set<Node> &cut, ListEdgeSet<G> &m_out) {
 
-	size_t num_verts = countNodes(g);
-	assert(num_verts%2 == 0);
+        size_t num_verts = countNodes(g);
+        assert(num_verts % 2 == 0);
 
-	Snapshot snap(g);
+        Snapshot snap(g);
 
-	Node s = g.addNode();
-	Node t = g.addNode();
-	EdgeMap capacity(g);
-	int s_added = 0; 
-	int t_added = 0; 
-	for(NodeIt n(g); n != INVALID; ++n) {
-		if (n == s) continue;
-		if (n == t) continue;
-		Edge e;
-		if(cut.count(n)) {
-			e = g.addEdge(s, n);
-			s_added++;
-		} else {
-			e = g.addEdge(n, t);
-			t_added++;
-		}
-		capacity[e] = 1;
-	}
-	assert(s_added == t_added);
+        Node s = g.addNode();
+        Node t = g.addNode();
+        EdgeMapi capacity(g);
 
-	cout << "Running binary search on flows" << endl;
-	auto start = high_resolution_clock::now();
-	unique_ptr<Preflow<G, EdgeMap>> p(new Preflow<G, EdgeMap>(g, capacity, s, t));
-	for(unsigned long long i = 1; i < num_verts; i *= 2) { 
+        int s_added = 0;
+        int t_added = 0;
+        for (NodeIt n(g); n != INVALID; ++n) {
+            if (n == s) continue;
+            if (n == t) continue;
+            Edge e;
+            if (cut.count(n)) {
+                e = g.addEdge(s, n);
+                s_added++;
+            } else {
+                e = g.addEdge(n, t);
+                t_added++;
+            }
+            capacity[e] = 1;
+        }
 
-		for(EdgeIt e(g); e != INVALID; ++e) {
-			if(g.u(e) == s || g.v(e) == s) continue;
-			if(g.u(e) == t || g.v(e) == t) continue;
-			capacity[e] = i;
-		}
+        assert(s_added == t_added);
 
-		p.reset(new Preflow<G, EdgeMap>(g, capacity, s, t));
+        cout << "Running binary search on flows" << endl;
+        auto start = high_resolution_clock::now();
+        unique_ptr<Preflow<G, EdgeMapi>> p(new Preflow<G, EdgeMapi>(g, capacity, s, t));
+        for (unsigned long long i = 1; i < num_verts; i *= 2) {
 
-		cout << "Cap " << i << " ... " << flush;
+            for (EdgeIt e(g); e != INVALID; ++e) {
+                if (g.u(e) == s || g.v(e) == s) continue;
+                if (g.u(e) == t || g.v(e) == t) continue;
+                capacity[e] = i;
+            }
 
-		auto start = high_resolution_clock::now();
-		p->runMinCut(); // Note that "startSecondPhase" must be run to get flows for individual verts
-		auto stop = high_resolution_clock::now();
-		auto duration = duration_cast<microseconds>(stop - start);
+            p.reset(new Preflow<G, EdgeMapi>(g, capacity, s, t));
 
-		cout << "flow: " << p->flowValue() << " (" << duration.count() << " microsecs)" << endl;
-		if(p->flowValue() == num_verts/2) {
-			cout << "We have achieved full flow, but half this capacity didn't manage that!" << endl;
-			break;
-		}
-	}
-	auto stop = high_resolution_clock::now();
-	auto duration = duration_cast<microseconds>(stop - start);
-	cout << "Flow search took (microsec) " << duration.count() << endl;
+            cout << "Cap " << i << " ... " << flush;
 
-	cout << "Decomposing paths." << endl;
-	start = high_resolution_clock::now();
-	auto paths = decompose_paths_fast(g, p, s, t);
-	stop = high_resolution_clock::now();
-	duration = duration_cast<microseconds>(stop - start);
-	cout << "Path decomposition took (microsec) " << duration.count() << endl;
+            auto start2 = high_resolution_clock::now();
+            p->runMinCut(); // Note that "startSecondPhase" must be run to get flows for individual verts
+            auto stop = high_resolution_clock::now();
+            auto duration = duration_cast<microseconds>(stop - start2);
 
-	snap.restore();
+            cout << "flow: " << p->flowValue() << " (" << duration.count() << " microsecs)" << endl;
+            if (p->flowValue() == num_verts / 2) {
+                cout << "We have achieved full flow, but half this capacity didn't manage that!" << endl;
+                break;
+            }
+        }
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
+        cout << "Flow search took (microsec) " << duration.count() << endl;
 
-	for(auto &path : paths) {
-		m_out.addEdge(path[0], path.back());
-	}
+        cout << "Decomposing paths." << endl;
+        start = high_resolution_clock::now();
+        auto paths = decompose_paths_fast(g, p, s, t);
+        stop = high_resolution_clock::now();
+        duration = duration_cast<microseconds>(stop - start);
+        cout << "Path decomposition took (microsec) " << duration.count() << endl;
 
-	// Set up source and sink to both sides
-	// give all internal ones capacity of 1
-	// If we find a flow of n/2
-	// 	then we're done, since the cut player couldn't find a good cut,
-	// 	G is already an expander...
-	// 	However we're supposed to output a certification in that case right? 
-	// 	And H isn't necessarily an expander yet (how will we know?) TODO
-	// 	But for now if this is the case, we output claim "G is expander".
-	// If not, then we double all the capacities and see if we can do it now
-	// When you finally can do it and have a flow F
-	// Decompose F into flow paths
-	// and output those matchings. 
-	//
-	// I think we can do decomposition by simply going vertex by vertex and tracing their flows,
-	// then subtracting that from the total flow...
-	
-}
+        snap.restore();
 
-void generate_large(ListGraph& g) {
-	vector<ListGraph::Node> nodes;
-	for(int i = 0; i < N_NODES; i++) {
-		nodes.push_back(g.addNode());
-	}
+        for (auto &path : paths) {
+            m_out.addEdge(path[0], path.back());
+        }
 
-	g.addEdge(nodes[0], nodes[1]);
-	g.addEdge(nodes[1], nodes[2]);
-	g.addEdge(nodes[2], nodes[0]);
+        // Set up source and sink to both sides
+        // give all internal ones capacity of 1
+        // If we find a flow of n/2
+        // 	then we're done, since the cut player couldn't find a good cut,
+        // 	G is already an expander...
+        // 	However we're supposed to output a certification in that case right?
+        // 	And H isn't necessarily an expander yet (how will we know?) TODO
+        // 	But for now if this is the case, we output claim "G is expander".
+        // If not, then we double all the capacities and see if we can do it now
+        // When you finally can do it and have a flow F
+        // Decompose F into flow paths
+        // and output those matchings.
+        //
+        // I think we can do decomposition by simply going vertex by vertex and tracing their flows,
+        // then subtracting that from the total flow...
 
-	int lim1 = N_NODES/3;
-	int lim2 = 2*N_NODES/3;
+    }
 
-	for(int i = 3; i < lim1; i++) {
-		ListGraph::Node u = nodes[i];
-		ListGraph::Node v = nodes[0];
-		g.addEdge(u, v);
-	}
-	for(int i = lim1; i < lim2; i++) {
-		ListGraph::Node u = nodes[i];
-		ListGraph::Node v = nodes[1];
-		g.addEdge(u, v);
-	}
-	for(int i = lim2; i < N_NODES; i++) {
-		ListGraph::Node u = nodes[i];
-		ListGraph::Node v = nodes[2];
-		g.addEdge(u, v);
-	}
-}
+    void generate_large_graph(ListGraph &g) {
+        vector<ListGraph::Node> nodes;
+        nodes.reserve(N_NODES);
+        for (int i = 0; i < N_NODES; i++) {
+            nodes.push_back(g.addNode());
+        }
 
+        g.addEdge(nodes[0], nodes[1]);
+        g.addEdge(nodes[1], nodes[2]);
+        g.addEdge(nodes[2], nodes[0]);
 
-void generate_small(ListGraph& g) {
-	vector<ListGraph::Node> nodes;
-	for(int i = 0; i < 10; i++) {
-		nodes.push_back(g.addNode());
-	}
+        int lim1 = N_NODES / 3;
+        int lim2 = 2 * N_NODES / 3;
 
-	g.addEdge(nodes[0], nodes[1]);
+        for (int i = 3; i < lim1; i++) {
+            ListGraph::Node u = nodes[i];
+            ListGraph::Node v = nodes[0];
+            g.addEdge(u, v);
+        }
+        for (int i = lim1; i < lim2; i++) {
+            ListGraph::Node u = nodes[i];
+            ListGraph::Node v = nodes[1];
+            g.addEdge(u, v);
+        }
+        for (int i = lim2; i < N_NODES; i++) {
+            ListGraph::Node u = nodes[i];
+            ListGraph::Node v = nodes[2];
+            g.addEdge(u, v);
+        }
+    }
 
-	g.addEdge(nodes[0], nodes[2]);
-	g.addEdge(nodes[0], nodes[3]);
-	g.addEdge(nodes[0], nodes[4]);
-	g.addEdge(nodes[0], nodes[5]);
-	g.addEdge(nodes[1], nodes[6]);
-	g.addEdge(nodes[1], nodes[7]);
-	g.addEdge(nodes[1], nodes[8]);
-	g.addEdge(nodes[1], nodes[9]);
-}
+    void parse_chaco_format(const string& filename, ListGraph &g) {
+        cout << "Reading graph from " << filename << endl;
+        ifstream file;
+        file.open(filename);
+        if (!file) {
+            cerr << "Unable to read file " << filename << endl;
+            exit(1);
+        }
 
-void generate_graph(ListGraph& g) {
-	cout << "Generating graph with " << N_NODES << " nodes." << endl;
-	generate_large(g);
-}
+        string line;
+        stringstream ss;
+        getline(file, line);
+        ss.str(line);
 
-void parse_chaco_format(string filename, ListGraph& g) {
-	using Node = ListGraph::Node;
-	cout << "Reading graph from " << filename << endl;
-	ifstream file;
-	file.open(filename);
-	if(!file) {
-		cerr << "Unable to read file " << filename << endl;
-		exit(1);
-	}
+        int n_verts, n_edges;
+        ss >> n_verts >> n_edges;
+        cout << "Reading a graph with V " << n_verts << "E " << n_edges << endl;
+        g.reserveNode(n_verts);
+        g.reserveNode(n_edges);
 
-	string line;
-	stringstream ss;
-	getline(file, line);
-	ss.str(line);
+        vector<ListGraph::Node> nodes;
+        for (size_t i = 0; i < n_verts; i++) {
+            nodes.push_back(g.addNode());
+        }
 
-	long n_verts, n_edges;
-	ss >> n_verts >> n_edges;
-	cout << "Reading a graph with V " << n_verts << "E " << n_edges << endl;
-	g.reserveNode(n_verts);
-	g.reserveNode(n_edges);
+        for (size_t i = 0; i < n_verts; i++) {
+            getline(file, line);
+            ss.clear();
+            ss << line;
+            Node u = nodes[i];
+            size_t v_name;
+            while (ss >> v_name) {
+                Node v = nodes[v_name - 1];
+                if (findEdge(g, u, v) == INVALID) {
+                    g.addEdge(u, v);
+                }
+            }
+        }
 
-	vector<ListGraph::Node> nodes;
-	for(size_t i = 0; i < n_verts; i++) {
-		nodes.push_back(g.addNode());
-	}
+        if (n_verts % 2 != 0) {
+            cout << "Odd number of vertices, adding extra one." << endl;
+            g.addEdge(nodes[0], g.addNode());
+        }
+    }
 
-	for(size_t i = 0; i < n_verts; i++) {
-		getline(file, line);
-		ss.clear();
-		ss << line;
-		Node u = nodes[i];
-		size_t v_name;
-		while(ss >> v_name) {
-			Node v = nodes[v_name-1];
-			if(findEdge(g, u, v) == INVALID) {
-				g.addEdge(u, v);
-			}
-		}
-	}
+    void create_graph(ListGraph &g) {
+        if (READ_GRAPH_FROM_FILE)
+            parse_chaco_format(IN_GRAPH_FILE, g);
+        else {
+            ListGraph &g1 = g;
+            cout << "Generating graph with " << N_NODES << " nodes." << endl;
+            generate_large_graph(g1);
+        }
+    }
 
-	if(n_verts%2!=0) {
-		cout << "Odd number of vertices, adding extra one." << endl;
-		g.addEdge(nodes[0], g.addNode());
-	}
-}
+    void one_round(ListGraph &g, vector<unique_ptr<ListEdgeSet<ListGraph>>> &matchings) {
+        cout << "Running Cut player" << endl;
+        vector<ListGraph::Node> out = cut_player(g, matchings);
+        if (PRINT_NODES) {
+            cout << "Cut player gave the following cut: " << endl;
+            for (ListGraph::Node n : out) {
+                cout << ListGraph::id(n) << ", ";
+            }
+            cout << endl;
+        }
 
-void create_graph(ListGraph& g) {
-	if(READ_GRAPH_FROM_FILE)
-		parse_chaco_format(IN_GRAPH_FILE, g);
-	else
-		generate_graph(g);
-}
+        unique_ptr<ListEdgeSet<ListGraph>> m(new ListEdgeSet<ListGraph>(g));
+        set<ListGraph::Node> cut(out.begin(), out.end());
+        cout << "Running Matching player" << endl;
+        matching_player(g, cut, *m);
+        if (PRINT_NODES) {
+            cout << "Matching player gave the following matching: " << endl;
+            for (ListEdgeSet<ListGraph>::EdgeIt e(*m); e != INVALID; ++e) {
+                cout << "(" << m->id(m->u(e)) << ", " << m->id(m->v(e)) << "), ";
+            }
+            cout << endl;
+        }
 
-void one_round(ListGraph& g, vector<unique_ptr<ListEdgeSet<ListGraph>>>& matchings) {
-	cout << "Running Cut player" << endl;
-	vector<ListGraph::Node> out = cut_player<ListGraph>(g, matchings);
-	if(PRINT_NODES) {
-		cout << "Cut player gave the following cut: " << endl;
-		for(ListGraph::Node n : out) {
-			cout << g.id(n) << ", ";
-		}
-		cout << endl;
-	}
+        matchings.push_back(move(m));
+    }
 
-	unique_ptr<ListEdgeSet<ListGraph>> m(new ListEdgeSet<ListGraph>(g));
-	set<ListGraph::Node> cut(out.begin(), out.end());
-	cout << "Running Matching player" << endl;
-	matching_player<ListGraph>(g, cut, *m);
-	if(PRINT_NODES) {
-		cout << "Matching player gave the following matching: " << endl;
-		for(ListEdgeSet<ListGraph>::EdgeIt e(*m); e != INVALID; ++e) {
-			cout << "(" << m->id(m->u(e)) << ", " << m->id(m->v(e)) << "), ";
-		}
-		cout << endl;
-	}
+    void run() {
+        ListGraph g;
+        create_graph(g);
 
-	matchings.push_back(move(m));
-}
+        // Matchings
+        vector<unique_ptr<ListEdgeSet<ListGraph>>> matchings;
+        for (int i = 0; i < N_ROUNDS; i++) {
+            one_round(g, matchings);
+            cout << "======================" << endl;
+            cout << "== End round " << i << endl;
+            cout << "======================" << endl;
+        }
+    }
 
-void run() {
-	ListGraph g;
-	create_graph(g);
-
-	// Matchings
-	vector<unique_ptr<ListEdgeSet<ListGraph>>> matchings;
-	for(int i = 0; i < N_ROUNDS; i++) {
-		one_round(g, matchings);
-		cout << "======================" << endl;
-		cout << "== End round " << i << endl;
-		cout << "======================" << endl;
-	}
-}
+};
 
 cxxopts::Options create_options() {
 	cxxopts::Options options("Janiuk graph partition", "Individual project implementation if thatchapon's paper to find graph partitions. Currently only cut-matching game.");
@@ -572,7 +454,8 @@ void parse_options(int argc, char** argv) {
 int main(int  argc, char** argv)
 {
 	parse_options(argc, argv);
-	run();
+	CutMatching<ListGraph> cm;
+	cm.run();
 	return 0;
 }
 
