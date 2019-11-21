@@ -56,30 +56,46 @@ struct CutMatching {
     using NodeMap = typename G::template NodeMap<T>;
     using NodeNeighborMap = NodeMap<vector<tuple<Node, int>>>;
     using FlowAlgo = Preflow<G, EdgeMapi>;
+    using Matching = ListEdgeSet<ListGraph>;
+    using Matchingp = unique_ptr<Matching>;
+    using Cut = set<Node>;
+    using Cutp = unique_ptr<Cut>;
 
     default_random_engine engine;
     uniform_int_distribution<int> uniform_dist;
+
+    struct MatchingGraph {
+        G& g;
+        Node s;
+        Node t;
+        EdgeMapi capacity;
+        size_t num_vertices;
+        explicit MatchingGraph(G& g_): g(g_), capacity(g) {
+            num_vertices = countNodes(g);
+        }
+    };
+
+
 
     CutMatching() : uniform_dist(0, 1) {};
 
     // Actually, cut player gets H
 // Actually Actually, sure it gets H but it just needs the matchings...
     template<typename M>
-    vector<Node> cut_player(const G &g, const vector<unique_ptr<M>> &matchings) {
+    Cutp cut_player(const G &g, const vector<unique_ptr<M>> &matchings) {
         using MEdgeIt = typename M::EdgeIt;
 
-
         NodeMapd probs(g);
-        vector<Node> allNodes;
+        vector<Node> all_nodes;
 
         for (NodeIt n(g); n != INVALID; ++n) {
-            allNodes.push_back(n);
-            probs[n] = uniform_dist(engine) ? 1.0 / allNodes.size() : -1.0 / allNodes.size(); // TODO
+            all_nodes.push_back(n);
+            probs[n] = uniform_dist(engine) ? 1.0 / all_nodes.size() : -1.0 / all_nodes.size(); // TODO
         }
 
         if (PRINT_NODES) {
             cout << "All nodes: " << endl;
-            for (const Node &n : allNodes) {
+            for (const Node &n : all_nodes) {
                 cout << g.id(n) << " ";
             }
             cout << endl;
@@ -95,14 +111,14 @@ struct CutMatching {
             }
         }
 
-        sort(allNodes.begin(), allNodes.end(), [&](Node a, Node b) {
+        sort(all_nodes.begin(), all_nodes.end(), [&](Node a, Node b) {
             return probs[a] < probs[b];
         });
 
-        size_t size = allNodes.size();
+        size_t size = all_nodes.size();
         assert(size % 2 == 0);
-        allNodes.resize(size / 2);
-        return allNodes;
+        all_nodes.resize(size / 2);
+        return Cutp(new Cut(all_nodes.begin(), all_nodes.end()));
 
         // for each vertex v
         // 	weight[v] = rand(0, 1) ? 1/n : -1/n
@@ -160,20 +176,20 @@ struct CutMatching {
         }
     }
 
-    void decompose_paths_fast(const G &g, const unique_ptr<FlowAlgo> &f, Node s, Node t, Paths &out_paths) {
+    void decompose_paths_fast(const MatchingGraph &mg, const unique_ptr<FlowAlgo> &f, Paths &out_paths) {
         cout << "Starting to decompose paths" << endl;
         f->startSecondPhase();
-        EdgeMapi subtr(g, 0);
-        NodeNeighborMap flow_children(g, vector<tuple<Node, int>>());
-        out_paths.reserve(countNodes(g) / 2);
+        EdgeMapi subtr(mg.g, 0);
+        NodeNeighborMap flow_children(mg.g, vector<tuple<Node, int>>());
+        out_paths.reserve(countNodes(mg.g) / 2);
 
         cout << "Starting to pre-calc flow children" << endl;
         auto start = high_resolution_clock::now();
         // Calc flow children (one pass)
-        ArcLookup alp(g);
-        for (EdgeIt e(g); e != INVALID; ++e) {
-            Node u = g.u(e);
-            Node v = g.v(e);
+        ArcLookup alp(mg.g);
+        for (EdgeIt e(mg.g); e != INVALID; ++e) {
+            Node u = mg.g.u(e);
+            Node v = mg.g.v(e);
             long e_flow = flow(alp, f, u, v);
             if (e_flow > 0) {
                 flow_children[u].push_back(tuple(v, e_flow));
@@ -186,29 +202,29 @@ struct CutMatching {
         cout << "Pre-calculated path children in (microsec) " << duration.count() << endl;
         // Now path decomp is much faster
 
-        for (IncEdgeIt e(g, s); e != INVALID; ++e) {
-            assert(g.u(e) == s || g.v(e) == s);
-            Node u = g.u(e) == s ? g.v(e) : g.u(e);
+        for (IncEdgeIt e(mg.g, mg.s); e != INVALID; ++e) {
+            assert(mg.g.u(e) == mg.s || mg.g.v(e) == mg.s);
+            Node u = mg.g.u(e) == mg.s ? mg.g.v(e) : mg.g.u(e);
 
             out_paths.push_back(array<Node, 2>());
-            extract_path_fast(g, f, flow_children, u, t, out_paths[out_paths.size() - 1]);
+            extract_path_fast(mg.g, f, flow_children, u, mg.t, out_paths[out_paths.size() - 1]);
         }
     }
 
-    void
-    bin_search_flows(const G &g, unique_ptr<FlowAlgo> &p, EdgeMapi &capacity, size_t num_verts, Node t, Node s) const {
+    size_t bin_search_flows(MatchingGraph &mg, unique_ptr<FlowAlgo> &p) const {
         cout << "Running binary search on flows" << endl;
         auto start = high_resolution_clock::now();
-        for (size_t i = 1; i < num_verts; i *= 2) {
-            for (EdgeIt e(g); e != INVALID; ++e) {
-                if (g.u(e) == s || g.v(e) == s) continue;
-                if (g.u(e) == t || g.v(e) == t) continue;
-                capacity[e] = i;
+        size_t cap = 1;
+        for (; cap < mg.num_vertices; cap *= 2) {
+            for (EdgeIt e(mg.g); e != INVALID; ++e) {
+                if (mg.g.u(e) == mg.s || mg.g.v(e) == mg.s) continue;
+                if (mg.g.u(e) == mg.t || mg.g.v(e) == mg.t) continue;
+                mg.capacity[e] = cap;
             }
 
-            p.reset(new Preflow<G, EdgeMapi>(g, capacity, s, t));
+            p.reset(new Preflow<G, EdgeMapi>(mg.g, mg.capacity, mg.s, mg.t));
 
-            cout << "Cap " << i << " ... " << flush;
+            cout << "Cap " << cap << " ... " << flush;
 
             auto start2 = high_resolution_clock::now();
             p->runMinCut(); // Note that "startSecondPhase" must be run to get flows for individual verts
@@ -216,7 +232,7 @@ struct CutMatching {
             auto duration2 = duration_cast<microseconds>(stop2 - start2);
 
             cout << "flow: " << p->flowValue() << " (" << duration2.count() << " microsecs)" << endl;
-            if (p->flowValue() == num_verts / 2) {
+            if (p->flowValue() == mg.num_vertices / 2) {
                 cout << "We have achieved full flow, but half this capacity didn't manage that!" << endl;
                 break;
             }
@@ -224,56 +240,67 @@ struct CutMatching {
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
         cout << "Flow search took (microsec) " << duration.count() << endl;
+
+        return cap;
     }
 
-// TODO create sparse cut
-    void matching_player(G &g, const set<Node> &cut, ListEdgeSet<G> &m_out) {
-        size_t num_verts = countNodes(g);
-        assert(num_verts % 2 == 0);
-
-        Snapshot snap(g);
-
-        Node s, t;
-        EdgeMapi capacity(g);
-        make_sink_source(g, cut, capacity, t, s);
-
-        unique_ptr<FlowAlgo> p;
-        bin_search_flows(g, p, capacity, num_verts, t, s);
-
-        vector<array<Node, 2>> paths;
-
+    void decompose_paths(const MatchingGraph &mg, const unique_ptr<FlowAlgo> &p, vector<array<Node, 2>> &paths) {
         cout << "Decomposing paths." << endl;
         auto start = high_resolution_clock::now();
-        decompose_paths_fast(g, p, s, t, paths);
+        decompose_paths_fast(mg, p, paths);
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
         cout << "Path decomposition took (microsec) " << duration.count() << endl;
+    }
 
-        snap.restore();
+// returns capacity that was required
+// TODO make the binsearch an actual binsearch
+    size_t matching_player(G &g, const set<Node> &cut, ListEdgeSet<G> &m_out) {
+        size_t num_verts = countNodes(g);
+        assert(num_verts % 2 == 0);
+        Snapshot snap(g);
+
+        MatchingGraph mg(g);
+        make_sink_source(mg, cut);
+
+        unique_ptr<FlowAlgo> p;
+        size_t cap_needed = bin_search_flows(mg, p);
+
+        vector<array<Node, 2>> paths;
+        decompose_paths(mg, p, paths);
 
         for (auto &path : paths) {
             m_out.addEdge(path[0], path.back());
         }
+        snap.restore();
+
+        // Now how do we extract the cut?
+        // In this version, in one run of the matching the cut is strictly decided. We just need
+        // to decide which one of them.
+        // Only when we change to edge will the cut need to be explicitly extracted.
+        // Rn the important thing is to save cuts between rounds so I can choose the best.
+
+        return cap_needed;
     }
 
-    void
-    make_sink_source(G &g, const set<Node> &cut, EdgeMapi &capacity, Node &t, Node &s) const {
-        s = g.addNode();
-        t = g.addNode();
+    void make_sink_source(MatchingGraph &mg, const set<Node> &cut) const {
+        G& g = mg.g;
+        mg.s = g.addNode();
+        mg.t = g.addNode();
         int s_added = 0;
         int t_added = 0;
         for (NodeIt n(g); n != INVALID; ++n) {
-            if (n == s) continue;
-            if (n == t) continue;
+            if (n == mg.s) continue;
+            if (n == mg.t) continue;
             Edge e;
             if (cut.count(n)) {
-                e = g.addEdge(s, n);
+                e = g.addEdge(mg.s, n);
                 s_added++;
             } else {
-                e = g.addEdge(n, t);
+                e = g.addEdge(n, mg.t);
                 t_added++;
             }
-            capacity[e] = 1;
+            mg.capacity[e] = 1;
         }
         assert(s_added == t_added);
     }
@@ -354,7 +381,7 @@ struct CutMatching {
         }
     }
 
-    void create_graph(ListGraph &g) {
+    void generate_graph(ListGraph &g) {
         if (READ_GRAPH_FROM_FILE)
             parse_chaco_format(IN_GRAPH_FILE, g);
         else {
@@ -364,46 +391,87 @@ struct CutMatching {
         }
     }
 
-    void one_round(ListGraph &g, vector<unique_ptr<ListEdgeSet<ListGraph>>> &matchings) {
+    size_t one_round(G &g, vector<Cutp> &cuts, vector<Matchingp> &matchings) {
         cout << "Running Cut player" << endl;
-        vector<ListGraph::Node> out = cut_player(g, matchings);
-        if (PRINT_NODES) {
-            cout << "Cut player gave the following cut: " << endl;
-            for (ListGraph::Node n : out) {
-                cout << ListGraph::id(n) << ", ";
-            }
-            cout << endl;
-        }
+        Cutp cut = cut_player(g, matchings);
+        if (PRINT_NODES) { print_cut(*cut); }
 
-        unique_ptr<ListEdgeSet<ListGraph>> m(new ListEdgeSet<ListGraph>(g));
-        set<ListGraph::Node> cut(out.begin(), out.end());
+        Matchingp m(new Matching(g));
+
         cout << "Running Matching player" << endl;
-        matching_player(g, cut, *m);
-        if (PRINT_NODES) {
-            cout << "Matching player gave the following matching: " << endl;
-            for (ListEdgeSet<ListGraph>::EdgeIt e(*m); e != INVALID; ++e) {
-                cout << "(" << m->id(m->u(e)) << ", " << m->id(m->v(e)) << "), ";
-            }
-            cout << endl;
-        }
+        size_t cap = matching_player(g, *cut, *m);
+        if (PRINT_NODES) { print_matching(m); }
 
         matchings.push_back(move(m));
+        cuts.push_back(move(cut));
+        return cap;
+    }
+
+    void print_matching(const Matchingp& m) {
+        cout << "Matching player gave the following matching: " << endl;
+        for (Matching::EdgeIt e(*m); e != INVALID; ++e) {
+            cout << "(" << m->id(m->u(e)) << ", " << m->id(m->v(e)) << "), ";
+        }
+        cout << endl;
+    }
+
+    void print_cut(const Cut &out_cut) const {
+        cout << "Cut player gave the following cut: " << endl;
+        for (Node n : out_cut) {
+            cout << G::id(n) << ", ";
+        }
+        cout << endl;
     }
 
     void run() {
         ListGraph g;
-        create_graph(g);
+        generate_graph(g);
+        size_t num_vertices = countNodes(g);
 
         // Matchings
-        vector<unique_ptr<ListEdgeSet<ListGraph>>> matchings;
+        vector<Matchingp> matchings;
+        vector<Cutp> cuts;
+
+        size_t best_cap = 0;
+        size_t best_cap_index = 999999;
         for (int i = 0; i < N_ROUNDS; i++) {
-            one_round(g, matchings);
-            cout << "======================" << endl;
-            cout << "== End round " << i << endl;
-            cout << "======================" << endl;
+            size_t cap = one_round(g, cuts, matchings);
+            print_end_round(i);
+
+            if(cap > best_cap) {
+                best_cap = cap;
+                best_cap_index = i;
+            }
         }
+
+        const Matchingp& m = matchings[best_cap_index];
+        const Cutp& cut = cuts[best_cap_index];
+        cout << "The cut with highest capacity required was found on round" << best_cap_index << endl;
+        cout << "Here's how sparse it was:" << endl;
+
+        double crossing_edges = 0;
+        for(EdgeIt e(g); e != INVALID; ++e) {
+            if(is_crossing(g, *cut, e)) crossing_edges += 1;
+        }
+        assert(cut->size() <= num_vertices);
+        cout << "Edge crossings (E) : " << crossing_edges << endl;
+        double min_side = min(cut->size(), num_vertices - cut->size());
+        double expansion_maybe = crossing_edges / min_side;
+
+        cout << "E/min(|S|, |comp(S)|) = " << expansion_maybe << endl;
     }
 
+    bool is_crossing(const G& g, const Cut& c, const Edge& e) {
+        bool u_in = c.count(g.u(e));
+        bool v_in = c.count(g.v(e));
+        return u_in != v_in;
+    }
+
+    void print_end_round(int i) const {
+        cout << "======================" << endl;
+        cout << "== End round " << i << endl;
+        cout << "======================" << endl;
+    }
 };
 
 cxxopts::Options create_options() {
