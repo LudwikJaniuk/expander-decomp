@@ -58,8 +58,11 @@ struct CutMatching {
     using FlowAlgo = Preflow<G, EdgeMapi>;
     using Matching = ListEdgeSet<ListGraph>;
     using Matchingp = unique_ptr<Matching>;
+    using Bisection = set<Node>;
+    using Bisectionp = unique_ptr<Bisection>;
     using Cut = set<Node>;
     using Cutp = unique_ptr<Cut>;
+    using CutMap = NodeMap<bool>;
 
     default_random_engine engine;
     uniform_int_distribution<int> uniform_dist;
@@ -69,20 +72,40 @@ struct CutMatching {
         Node s;
         Node t;
         EdgeMapi capacity;
+        CutMap cut_map;
         size_t num_vertices;
-        explicit MatchingGraph(G& g_): g(g_), capacity(g) {
+        explicit MatchingGraph(G& g_): g(g_), capacity(g), cut_map(g){
             num_vertices = countNodes(g);
         }
+
+        bool touches_source_or_sink(Edge& e) {
+            return g.u(e) == s
+                   || g.v(e) == s
+                   || g.u(e) == t
+                   || g.v(e) == t;
+        }
+
+        void copy_cut(Cutp& cut) {
+            cut.reset(new Cut);
+            for(NodeIt n(g); n != INVALID; ++n) {
+                if(n == s || n == t) continue;
+                if(cut_map[n]) cut->insert(n);
+            }
+        }
+
+        void reset_cut_map() {
+            for(NodeIt n(g); n != INVALID; ++n) {
+                cut_map[n] = false;
+            }
+        }
     };
-
-
 
     CutMatching() : uniform_dist(0, 1) {};
 
     // Actually, cut player gets H
 // Actually Actually, sure it gets H but it just needs the matchings...
     template<typename M>
-    Cutp cut_player(const G &g, const vector<unique_ptr<M>> &matchings) {
+    Bisectionp cut_player(const G &g, const vector<unique_ptr<M>> &matchings) {
         using MEdgeIt = typename M::EdgeIt;
 
         NodeMapd probs(g);
@@ -118,7 +141,7 @@ struct CutMatching {
         size_t size = all_nodes.size();
         assert(size % 2 == 0);
         all_nodes.resize(size / 2);
-        return Cutp(new Cut(all_nodes.begin(), all_nodes.end()));
+        return Bisectionp(new Bisection(all_nodes.begin(), all_nodes.end()));
 
         // for each vertex v
         // 	weight[v] = rand(0, 1) ? 1/n : -1/n
@@ -211,14 +234,15 @@ struct CutMatching {
         }
     }
 
-    size_t bin_search_flows(MatchingGraph &mg, unique_ptr<FlowAlgo> &p) const {
+    size_t bin_search_flows(MatchingGraph &mg, unique_ptr<FlowAlgo> &p, Cutp& out_cut) const {
+        // TODO Output cut
         cout << "Running binary search on flows" << endl;
         auto start = high_resolution_clock::now();
+
         size_t cap = 1;
         for (; cap < mg.num_vertices; cap *= 2) {
             for (EdgeIt e(mg.g); e != INVALID; ++e) {
-                if (mg.g.u(e) == mg.s || mg.g.v(e) == mg.s) continue;
-                if (mg.g.u(e) == mg.t || mg.g.v(e) == mg.t) continue;
+                if(mg.touches_source_or_sink(e)) continue;
                 mg.capacity[e] = cap;
             }
 
@@ -234,9 +258,24 @@ struct CutMatching {
             cout << "flow: " << p->flowValue() << " (" << duration2.count() << " microsecs)" << endl;
             if (p->flowValue() == mg.num_vertices / 2) {
                 cout << "We have achieved full flow, but half this capacity didn't manage that!" << endl;
+                // Already an expander I guess?
+                if(cap == 1) {
+                    // TODO code duplication
+                    mg.reset_cut_map();
+                    p->minCutMap(mg.cut_map);
+                }
                 break;
             }
+
+            // So it will always have the mincutmap of "before"
+            // recomputed too many times of course but whatever
+            mg.reset_cut_map();
+            p->minCutMap(mg.cut_map);
         }
+
+        // Not we copy out the cut
+        mg.copy_cut(out_cut);
+
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
         cout << "Flow search took (microsec) " << duration.count() << endl;
@@ -255,16 +294,17 @@ struct CutMatching {
 
 // returns capacity that was required
 // TODO make the binsearch an actual binsearch
-    size_t matching_player(G &g, const set<Node> &cut, ListEdgeSet<G> &m_out) {
+    size_t matching_player(G &g, const set<Node> &bisection, ListEdgeSet<G> &m_out, Cutp& cut) {
         size_t num_verts = countNodes(g);
         assert(num_verts % 2 == 0);
         Snapshot snap(g);
 
         MatchingGraph mg(g);
-        make_sink_source(mg, cut);
+        make_sink_source(mg, bisection);
 
         unique_ptr<FlowAlgo> p;
-        size_t cap_needed = bin_search_flows(mg, p);
+        size_t cap_needed = bin_search_flows(mg, p, cut);
+
 
         vector<array<Node, 2>> paths;
         decompose_paths(mg, p, paths);
@@ -393,13 +433,14 @@ struct CutMatching {
 
     size_t one_round(G &g, vector<Cutp> &cuts, vector<Matchingp> &matchings) {
         cout << "Running Cut player" << endl;
-        Cutp cut = cut_player(g, matchings);
-        if (PRINT_NODES) { print_cut(*cut); }
+        Bisectionp bisection = cut_player(g, matchings);
+        if (PRINT_NODES) { print_cut(*bisection); }
 
         Matchingp m(new Matching(g));
 
         cout << "Running Matching player" << endl;
-        size_t cap = matching_player(g, *cut, *m);
+        Cutp cut;
+        size_t cap = matching_player(g, *bisection, *m, cut);
         if (PRINT_NODES) { print_matching(m); }
 
         matchings.push_back(move(m));
@@ -415,7 +456,7 @@ struct CutMatching {
         cout << endl;
     }
 
-    void print_cut(const Cut &out_cut) const {
+    void print_cut(const Bisection &out_cut) const {
         cout << "Cut player gave the following cut: " << endl;
         for (Node n : out_cut) {
             cout << G::id(n) << ", ";
@@ -456,12 +497,14 @@ struct CutMatching {
         assert(cut->size() <= num_vertices);
         cout << "Edge crossings (E) : " << crossing_edges << endl;
         double min_side = min(cut->size(), num_vertices - cut->size());
+        cout << "cut size: " << cut->size() << endl;
+        cout << "Min side: " << min_side << endl;
         double expansion_maybe = crossing_edges / min_side;
 
         cout << "E/min(|S|, |comp(S)|) = " << expansion_maybe << endl;
     }
 
-    bool is_crossing(const G& g, const Cut& c, const Edge& e) {
+    bool is_crossing(const G& g, const Bisection& c, const Edge& e) {
         bool u_in = c.count(g.u(e));
         bool v_in = c.count(g.v(e));
         return u_in != v_in;
