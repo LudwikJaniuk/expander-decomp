@@ -1,0 +1,417 @@
+/home/janiuk/Code/individuellt/cmake-build-debug/a.out -f graphs/fe_rotor.graph -p partitions/fe_rotor.imb-5.2.ptn -r 25 -s -o fe_rotor.ptn
+Got flag for output: fe_rotor.ptn
+Reading graph from graphs/fe_rotor.graph
+Reading a graph with V 99617E 662431
+Odd number of vertices, adding extra one.
+Reference patition size: 52284
+Running Cut player
+Running Matching player
+Running binary search on flows
+Cap 1 ... flow: 49809 (977384 microsecs)
+We have achieved full flow, but half this capacity didn't manage that!
+Flow search took (microsec) 994637
+Decomposing paths.
+Starting to decompose paths
+Starting to pre-calc flow children
+Pre-calculated path children in (microsec) 222691
+Path decomposition took (microsec) 288175
+======================
+== End round 0
+======================
+Running Cut player
+Running Matching player
+Running binary search on flows
+Cap 1 ... flow: 49809 (1157824 microsecs)
+We have achieved full flow, but half this capacity didn't manage that!
+Flow search took (microsec) 1174652
+Decomposing paths.
+Starting to decompose paths
+Starting to pre-calc flow children
+Pre-calculated path children in (microsec) 206466
+Path decomposition took (microsec) 269198
+======================
+== End round 1
+======================
+Running Cut player
+Running Matching player
+Running binary search on flows
+Cap 1 ... flow: 49809 (904934 microsecs)
+We have achieved full flow, but half this capacity didn't manage that!
+Flow search took (microsec) 925877
+Decomposing paths.
+Starting to decompose paths
+Starting to pre-calc flow children
+Pre-calculated path children in (microsec) 212439
+Path decomposition took (microsec) 276373
+======================
+== End round 2
+======================
+Running Cut player
+Running Matching player
+Running binary search on flows
+Cap 1 ... flow: 49809 (1428594 microsecs)
+We have achieved full flow, but half this capacity didn't manage that!
+Flow search took (microsec) 1445465
+Decomposing paths.
+Starting to decompose paths
+Starting to pre-calc flow children
+Pre-calculated path children in (microsec) 209071
+Path decomposition took (microsec) 268890
+======================
+== End round 3
+======================
+Running Cut player
+Running Matching player
+Running binary search on flows
+Cap 1 ... flow: 49809 (1376548 microsecs)
+We have achieved full flow, but half this capacity didn't manage that!
+Flow search took (microsec) 1395743
+Decomposing paths.
+Starting to decompose paths
+Starting to pre-calc flow children
+Pre-calculated path children in (microsec) 232370
+Path decomposition took (microsec) 294677
+======================
+== End round 4
+======================
+Running Cut player
+Running Matching player
+Running binary search on flows
+Cap 1 ... flow: 49809 (1575709 microsecs)
+We have achieved full flow, but half this capacity didn't manage that!
+Flow search took (microsec) 1594379
+Decomposing paths.
+Starting to decompose paths
+Starting to pre-calc flow children
+Pre-calculated path children in (microsec) 193906
+Path decomposition took (microsec) 257273
+======================
+== End round 5
+======================
+Running Cut player
+Running Matching player
+Running binary search on flows
+Cap 1 ... flow: 49809 (3837724 microsecs)
+We have achieved full flow, but half this capacity didn't manage that!
+Flow search took (microsec) 3856083
+Decomposing paths.
+Starting to decompose paths
+Starting to pre-calc flow children
+Pre-calculated path children in (microsec) 209218
+Path decomposition took (microsec) 267734
+======================
+== End round 6
+======================
+Running Cut player
+Running Matching player
+Running binary search on flows
+Cap 1 ... flow: 49537 (3429568 microsecs)
+Cap 2 ... flow: 49809 (1801537 microsecs)
+We have achieved full flow, but half this capacity didn't manage that!
+Flow search took (microsec) 5279543
+Decomposing paths.
+Starting to decompose paths
+Starting to pre-calc flow children
+Pre-calculated path children in (microsec) 211500
+Path decomposition took (microsec) 281264
+======================
+== End round 7
+======================
+Running Cut player
+Running Matching player
+Running binary search on flows
+Cap 1 ... flow: 49739 (2080647 microsecs)
+Cap 2 ... flow: 49809 (871957 microsecs)
+We have achieved full flow, but half this capacity didn't manage that!
+Flow search took (microsec) 2989347
+Decomposing paths.
+Starting to decompose paths
+Starting to pre-calc flow children
+Pre-calculated path children in (microsec) 209490
+Path decomposition took (microsec) 281664
+======================
+== End round 8
+======================
+Running Cut player
+Running Matching player
+Running binary search on flows
+Cap 1 ... flow: 49467 (3582429 microsecs)
+Cap 2 ... flow: 49809 (1469477 microsecs)
+We have achieved full flow, but half this capacity didn't manage that!
+Flow search took (microsec) 5097101
+Decomposing paths.
+Starting to decompose paths
+Starting to pre-calc flow children
+Pre-calculated path children in (microsec) 213422
+Path decomposition took (microsec) 283826
+======================
+== End round 9
+======================
+Running Cut player
+Running Matching player
+Running binary search on flows
+Cap 1 ... flow: 47585 (5642809 microsecs)
+Cap 2 ... flow: 49609 (4788494 microsecs)
+Cap 4 ... flow: 49809 (2305016 microsecs)
+We have achieved full flow, but half this capacity didn't manage that!
+Flow search took (microsec) 12802986
+Decomposing paths.
+Starting to decompose paths
+Starting to pre-calc flow children
+Pre-calculated path children in (microsec) 213175
+Path decomposition took (microsec) 299698
+======================
+== End round 10
+======================
+Running Cut player
+Running Matching player
+Running binary search on flows
+Cap 1 ... flow: 46979 (3493610 microsecs)
+Cap 2 ... flow: 49809 (1976602 microsecs)
+We have achieved full flow, but half this capacity didn't manage that!
+Flow search took (microsec) 5510240
+Decomposing paths.
+Starting to decompose paths
+Starting to pre-calc flow children
+Pre-calculated path children in (microsec) 208393
+Path decomposition took (microsec) 280364
+======================
+== End round 11
+======================
+Running Cut player
+Running Matching player
+Running binary search on flows
+Cap 1 ... flow: 42093 (6362427 microsecs)
+Cap 2 ... flow: 45214 (10162002 microsecs)
+Cap 4 ... flow: 47127 (4532220 microsecs)
+Cap 8 ... flow: 49809 (3331746 microsecs)
+We have achieved full flow, but half this capacity didn't manage that!
+Flow search took (microsec) 24474823
+Decomposing paths.
+Starting to decompose paths
+Starting to pre-calc flow children
+Pre-calculated path children in (microsec) 220935
+Path decomposition took (microsec) 320525
+======================
+== End round 12
+======================
+Running Cut player
+Running Matching player
+Running binary search on flows
+Cap 1 ... flow: 44762 (6974266 microsecs)
+Cap 2 ... flow: 46961 (7731408 microsecs)
+Cap 4 ... flow: 49619 (5859130 microsecs)
+Cap 8 ... flow: 49809 (2787692 microsecs)
+We have achieved full flow, but half this capacity didn't manage that!
+Flow search took (microsec) 23434937
+Decomposing paths.
+Starting to decompose paths
+Starting to pre-calc flow children
+Pre-calculated path children in (microsec) 215205
+Path decomposition took (microsec) 315449
+======================
+== End round 13
+======================
+Running Cut player
+Running Matching player
+Running binary search on flows
+Cap 1 ... flow: 40552 (3311169 microsecs)
+Cap 2 ... flow: 44950 (3967008 microsecs)
+Cap 4 ... flow: 49415 (6588879 microsecs)
+Cap 8 ... flow: 49809 (2779076 microsecs)
+We have achieved full flow, but half this capacity didn't manage that!
+Flow search took (microsec) 16723660
+Decomposing paths.
+Starting to decompose paths
+Starting to pre-calc flow children
+Pre-calculated path children in (microsec) 229017
+Path decomposition took (microsec) 352754
+======================
+== End round 14
+======================
+Running Cut player
+Running Matching player
+Running binary search on flows
+Cap 1 ... flow: 26620 (4964714 microsecs)
+Cap 2 ... flow: 28517 (6039842 microsecs)
+Cap 4 ... flow: 32288 (5731715 microsecs)
+Cap 8 ... flow: 39812 (6144735 microsecs)
+Cap 16 ... flow: 49809 (4552505 microsecs)
+We have achieved full flow, but half this capacity didn't manage that!
+Flow search took (microsec) 27530626
+Decomposing paths.
+Starting to decompose paths
+Starting to pre-calc flow children
+Pre-calculated path children in (microsec) 219938
+Path decomposition took (microsec) 378877
+======================
+== End round 15
+======================
+Running Cut player
+Running Matching player
+Running binary search on flows
+Cap 1 ... flow: 40264 (2646068 microsecs)
+Cap 2 ... flow: 42189 (3038616 microsecs)
+Cap 4 ... flow: 46010 (4509910 microsecs)
+Cap 8 ... flow: 49809 (2406964 microsecs)
+We have achieved full flow, but half this capacity didn't manage that!
+Flow search took (microsec) 12678081
+Decomposing paths.
+Starting to decompose paths
+Starting to pre-calc flow children
+Pre-calculated path children in (microsec) 215283
+Path decomposition took (microsec) 321353
+======================
+== End round 16
+======================
+Running Cut player
+Running Matching player
+Running binary search on flows
+Cap 1 ... flow: 43912 (2685291 microsecs)
+Cap 2 ... flow: 45888 (2534302 microsecs)
+Cap 4 ... flow: 48324 (1906192 microsecs)
+Cap 8 ... flow: 49809 (1004283 microsecs)
+We have achieved full flow, but half this capacity didn't manage that!
+Flow search took (microsec) 8204688
+Decomposing paths.
+Starting to decompose paths
+Starting to pre-calc flow children
+Pre-calculated path children in (microsec) 206378
+Path decomposition took (microsec) 302696
+======================
+== End round 17
+======================
+Running Cut player
+Running Matching player
+Running binary search on flows
+Cap 1 ... flow: 48511 (2169578 microsecs)
+Cap 2 ... flow: 49809 (1483245 microsecs)
+We have achieved full flow, but half this capacity didn't manage that!
+Flow search took (microsec) 3691603
+Decomposing paths.
+Starting to decompose paths
+Starting to pre-calc flow children
+Pre-calculated path children in (microsec) 206411
+Path decomposition took (microsec) 276632
+======================
+== End round 18
+======================
+Running Cut player
+Running Matching player
+Running binary search on flows
+Cap 1 ... flow: 47255 (8079151 microsecs)
+Cap 2 ... flow: 49566 (5383900 microsecs)
+Cap 4 ... flow: 49809 (2524650 microsecs)
+We have achieved full flow, but half this capacity didn't manage that!
+Flow search took (microsec) 16056633
+Decomposing paths.
+Starting to decompose paths
+Starting to pre-calc flow children
+Pre-calculated path children in (microsec) 220674
+Path decomposition took (microsec) 304304
+======================
+== End round 19
+======================
+Running Cut player
+Running Matching player
+Running binary search on flows
+Cap 1 ... flow: 40685 (2880503 microsecs)
+Cap 2 ... flow: 42675 (2637633 microsecs)
+Cap 4 ... flow: 46493 (3654016 microsecs)
+Cap 8 ... flow: 49809 (1763512 microsecs)
+We have achieved full flow, but half this capacity didn't manage that!
+Flow search took (microsec) 11010598
+Decomposing paths.
+Starting to decompose paths
+Starting to pre-calc flow children
+Pre-calculated path children in (microsec) 222163
+Path decomposition took (microsec) 323295
+======================
+== End round 20
+======================
+Running Cut player
+Running Matching player
+Running binary search on flows
+Cap 1 ... flow: 31269 (3032219 microsecs)
+Cap 2 ... flow: 33171 (2601089 microsecs)
+Cap 4 ... flow: 36942 (3083659 microsecs)
+Cap 8 ... flow: 44482 (4490727 microsecs)
+Cap 16 ... flow: 49809 (2086845 microsecs)
+We have achieved full flow, but half this capacity didn't manage that!
+Flow search took (microsec) 15385651
+Decomposing paths.
+Starting to decompose paths
+Starting to pre-calc flow children
+Pre-calculated path children in (microsec) 215851
+Path decomposition took (microsec) 349715
+======================
+== End round 21
+======================
+Running Cut player
+Running Matching player
+Running binary search on flows
+Cap 1 ... flow: 47366 (1229158 microsecs)
+Cap 2 ... flow: 48788 (1131621 microsecs)
+Cap 4 ... flow: 49809 (1295492 microsecs)
+We have achieved full flow, but half this capacity didn't manage that!
+Flow search took (microsec) 3713684
+Decomposing paths.
+Starting to decompose paths
+Starting to pre-calc flow children
+Pre-calculated path children in (microsec) 211922
+Path decomposition took (microsec) 306243
+======================
+== End round 22
+======================
+Running Cut player
+Running Matching player
+Running binary search on flows
+Cap 1 ... flow: 41316 (2837752 microsecs)
+Cap 2 ... flow: 45111 (1958547 microsecs)
+Cap 4 ... flow: 47571 (1485194 microsecs)
+Cap 8 ... flow: 49809 (1766586 microsecs)
+We have achieved full flow, but half this capacity didn't manage that!
+Flow search took (microsec) 8121580
+Decomposing paths.
+Starting to decompose paths
+Starting to pre-calc flow children
+Pre-calculated path children in (microsec) 289900
+Path decomposition took (microsec) 432146
+======================
+== End round 23
+======================
+Running Cut player
+Running Matching player
+Running binary search on flows
+Cap 1 ... flow: 33707 (3407571 microsecs)
+Cap 2 ... flow: 35618 (3898032 microsecs)
+Cap 4 ... flow: 39433 (4847976 microsecs)
+Cap 8 ... flow: 46954 (7542425 microsecs)
+Cap 16 ... flow: 49809 (3180159 microsecs)
+We have achieved full flow, but half this capacity didn't manage that!
+Flow search took (microsec) 22990792
+Decomposing paths.
+Starting to decompose paths
+Starting to pre-calc flow children
+Pre-calculated path children in (microsec) 224972
+Path decomposition took (microsec) 383588
+======================
+== End round 24
+======================
+The cut with highest capacity required was found on round15
+Best cut sparsity: 
+Edge crossings (E) : 1881
+cut size: (46959 | 52659)
+diff: 5700 (0.0572186 of total n vertices)
+Min side: 46959
+E/min(|S|, |comp(S)|) = 0.0400562
+Writing partition with 99618 nodes to file fe_rotor.ptn
+
+The given partition achieved the following:
+Edge crossings (E) : 1940
+cut size: (47334 | 52284)
+diff: 4950 (0.0496898 of total n vertices)
+Min side: 47334
+E/min(|S|, |comp(S)|) = 0.0409853
+)
+Process finished with exit code 0

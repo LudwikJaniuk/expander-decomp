@@ -35,6 +35,8 @@ bool READ_GRAPH_FROM_FILE = false;
 string IN_GRAPH_FILE;
 bool COMPARE_PARTITION = false;
 string PARTITION_FILE;
+bool OUTPUT_CUT = false;
+string OUTPUT_FILE;
 // END PARAMETERS
 
 // Choose a random mean between 1 and 6
@@ -90,7 +92,7 @@ struct CutMatching {
                 }
             } else {
                 cout << "Generating graph with " << N_NODES << " nodes." << endl;
-                generate_large_graph(g);
+                generate_large_graph(g, nodes);
             }
 
             num_vertices = countNodes(g);
@@ -389,8 +391,7 @@ struct CutMatching {
         assert(s_added == t_added);
     }
 
-    static void generate_large_graph(ListGraph &g) {
-        vector<ListGraph::Node> nodes;
+    static void generate_large_graph(G &g, vector<Node>& nodes) {
         nodes.reserve(N_NODES);
         for (int i = 0; i < N_NODES; i++) {
             nodes.push_back(g.addNode());
@@ -556,13 +557,34 @@ struct CutMatching {
         return best_cap_index;
     }
 
+    void write_cut(const Context& c, const Cut& cut) {
+        ofstream file;
+        file.open(OUTPUT_FILE);
+        if(!file) {
+            cout << "Cannot open file " << OUTPUT_FILE << endl;
+            return;
+        }
+
+        cout << "Writing partition with "
+        << c.nodes.size()
+        << " nodes to file "
+        << OUTPUT_FILE
+        << endl;
+        for(const auto& n : c.nodes) {
+            file << (cut.count(n) ? "1" : "0") << "\n";
+        }
+        file.close();
+    }
+
     void run() {
         Context c;
         if(N_ROUNDS >= 1) {
             auto best_round = run_rounds(c);
             cout << "The cut with highest capacity required was found on round" << best_round << endl;
             cout << "Best cut sparsity: " << endl;
-            print_cut_sparsity(c, *c.cuts[best_round]);
+            auto& best_cut = *c.cuts[best_round];
+            print_cut_sparsity(c, best_cut);
+            if(OUTPUT_CUT) { write_cut(c, best_cut); }
         }
 
         if (COMPARE_PARTITION) { // Output reference cut
@@ -586,6 +608,7 @@ cxxopts::Options create_options() {
             ("v,verbose", "Whether to print nodes and cuts (does not include paths)")
             ("s,seed", "Use a seed for RNG (optionally set seed manually)",
              cxxopts::value<int>()->implicit_value("1337"))
+            ("o,output", "Output computed cut into file", cxxopts::value<std::string>())
             ("p,partition", "Partition file to compare with", cxxopts::value<std::string>());
     return options;
 }
@@ -596,7 +619,6 @@ void parse_options(int argc, char **argv, CutMatching<ListGraph> &cm) {
     if (result.count("file")) {
         READ_GRAPH_FROM_FILE = true;
         IN_GRAPH_FILE = result["file"].as<string>();
-
     }
     if (result.count("nodes"))
         N_NODES = result["nodes"].as<long>();
@@ -610,12 +632,18 @@ void parse_options(int argc, char **argv, CutMatching<ListGraph> &cm) {
         cm.engine = default_random_engine(result["seed"].as<int>());
     else
         cm.engine = default_random_engine(random_device()());
+    if(result.count("output")) {
+        OUTPUT_CUT = true;
+        cout << "Got flag for output: " << result["output"].as<string>() << endl;
+        OUTPUT_FILE = result["output"].as<string>();
+    }
     if (result.count("partition")) {
         COMPARE_PARTITION = true;
         PARTITION_FILE = result["partition"].as<string>();
     }
 }
 
+// TODO Selecting best cut not only hightest cap
 int main(int argc, char **argv) {
     CutMatching<ListGraph> cm;
     parse_options(argc, argv, cm);
