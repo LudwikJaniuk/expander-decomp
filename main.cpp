@@ -13,6 +13,7 @@
 #include <cstdlib>
 #include <bits/stdc++.h>
 #include <lemon/core.h>
+#include <lemon/connectivity.h>
 #include <lemon/adaptors.h>
 #include <lemon/list_graph.h>
 #include <lemon/edge_set.h>
@@ -32,6 +33,8 @@ bool PRINT_PATHS = false;
 bool PRINT_NODES = false;
 bool READ_GRAPH_FROM_FILE = false;
 string IN_GRAPH_FILE;
+bool COMPARE_PARTITION = false;
+string PARTITION_FILE;
 // END PARAMETERS
 
 // Choose a random mean between 1 and 6
@@ -54,6 +57,7 @@ struct CutMatching {
     using EdgeMapi = EdgeMap<int>;
     template<class T>
     using NodeMap = typename G::template NodeMap<T>;
+    using NodeMapi = NodeMap<int>;
     using NodeNeighborMap = NodeMap<vector<tuple<Node, int>>>;
     using FlowAlgo = Preflow<G, EdgeMapi>;
     using Matching = ListEdgeSet<ListGraph>;
@@ -67,34 +71,63 @@ struct CutMatching {
     default_random_engine engine;
     uniform_int_distribution<int> uniform_dist;
 
-    struct MatchingGraph {
-        G& g;
+    struct Context {
+    public:
+        G g;
+        vector<Node> nodes; // Indexed by file id - 1.
+        Cut reference_cut;
+        NodeMapi original_ids;
+        size_t num_vertices;
+
+        explicit Context() : original_ids(g) {
+            if (READ_GRAPH_FROM_FILE) {
+                parse_chaco_format(IN_GRAPH_FILE, g, nodes, original_ids);
+                // TODO
+                num_vertices = countNodes(g);
+                assert(num_vertices == nodes.size());
+
+                if (COMPARE_PARTITION) {
+                    read_partition_file(PARTITION_FILE, nodes, reference_cut);
+                }
+            } else {
+                cout << "Generating graph with " << N_NODES << " nodes." << endl;
+                generate_large_graph(g);
+                num_vertices = countNodes(g);
+            }
+
+            assert(connected(g));
+        }
+    };
+
+    struct MatchingContext {
+        G &g;
         Node s;
         Node t;
         EdgeMapi capacity;
         CutMap cut_map;
         size_t num_vertices;
-        explicit MatchingGraph(G& g_): g(g_), capacity(g), cut_map(g){
+
+        explicit MatchingContext(G &g_) : g(g_), capacity(g_), cut_map(g_) {
             num_vertices = countNodes(g);
         }
 
-        bool touches_source_or_sink(Edge& e) {
-            return g.u(e) == s
-                   || g.v(e) == s
-                   || g.u(e) == t
-                   || g.v(e) == t;
+        bool touches_source_or_sink(Edge &e) {
+            return this->g.u(e) == s
+                   || this->g.v(e) == s
+                   || this->g.u(e) == t
+                   || this->g.v(e) == t;
         }
 
-        void copy_cut(Cutp& cut) {
+        void copy_cut(Cutp &cut) {
             cut.reset(new Cut);
-            for(NodeIt n(g); n != INVALID; ++n) {
-                if(n == s || n == t) continue;
-                if(cut_map[n]) cut->insert(n);
+            for (NodeIt n(this->g); n != INVALID; ++n) {
+                if (n == s || n == t) continue;
+                if (cut_map[n]) cut->insert(n);
             }
         }
 
         void reset_cut_map() {
-            for(NodeIt n(g); n != INVALID; ++n) {
+            for (NodeIt n(this->g); n != INVALID; ++n) {
                 cut_map[n] = false;
             }
         }
@@ -102,10 +135,29 @@ struct CutMatching {
 
     CutMatching() : uniform_dist(0, 1) {};
 
+    static void read_partition_file(const string &filename, const vector<Node> &nodes, Cut &partition) {
+        ifstream file;
+        file.open(filename);
+        if (!file) {
+            cerr << "Unable to read file " << filename << endl;
+            exit(1);
+        }
+        bool b;
+        size_t i = 0;
+        while (file >> b) {
+            if (b) partition.insert(nodes[i]);
+            ++i;
+        }
+        cout << "Reference patition size: " << partition.size() << endl;
+    }
+
+    // Soooooo, we want to develop the partition comparison stuff.
+
     // Actually, cut player gets H
 // Actually Actually, sure it gets H but it just needs the matchings...
     template<typename M>
     Bisectionp cut_player(const G &g, const vector<unique_ptr<M>> &matchings) {
+        cout << "Running Cut player" << endl;
         using MEdgeIt = typename M::EdgeIt;
 
         NodeMapd probs(g);
@@ -199,7 +251,7 @@ struct CutMatching {
         }
     }
 
-    void decompose_paths_fast(const MatchingGraph &mg, const unique_ptr<FlowAlgo> &f, Paths &out_paths) {
+    void decompose_paths_fast(const MatchingContext &mg, const unique_ptr<FlowAlgo> &f, Paths &out_paths) {
         cout << "Starting to decompose paths" << endl;
         f->startSecondPhase();
         EdgeMapi subtr(mg.g, 0);
@@ -234,7 +286,7 @@ struct CutMatching {
         }
     }
 
-    size_t bin_search_flows(MatchingGraph &mg, unique_ptr<FlowAlgo> &p, Cutp& out_cut) const {
+    size_t bin_search_flows(MatchingContext &mg, unique_ptr<FlowAlgo> &p, Cutp &out_cut) const {
         // TODO Output cut
         cout << "Running binary search on flows" << endl;
         auto start = high_resolution_clock::now();
@@ -242,7 +294,7 @@ struct CutMatching {
         size_t cap = 1;
         for (; cap < mg.num_vertices; cap *= 2) {
             for (EdgeIt e(mg.g); e != INVALID; ++e) {
-                if(mg.touches_source_or_sink(e)) continue;
+                if (mg.touches_source_or_sink(e)) continue;
                 mg.capacity[e] = cap;
             }
 
@@ -259,7 +311,7 @@ struct CutMatching {
             if (p->flowValue() == mg.num_vertices / 2) {
                 cout << "We have achieved full flow, but half this capacity didn't manage that!" << endl;
                 // Already an expander I guess?
-                if(cap == 1) {
+                if (cap == 1) {
                     // TODO code duplication
                     mg.reset_cut_map();
                     p->minCutMap(mg.cut_map);
@@ -283,7 +335,7 @@ struct CutMatching {
         return cap;
     }
 
-    void decompose_paths(const MatchingGraph &mg, const unique_ptr<FlowAlgo> &p, vector<array<Node, 2>> &paths) {
+    void decompose_paths(const MatchingContext &mg, const unique_ptr<FlowAlgo> &p, vector<array<Node, 2>> &paths) {
         cout << "Decomposing paths." << endl;
         auto start = high_resolution_clock::now();
         decompose_paths_fast(mg, p, paths);
@@ -294,12 +346,12 @@ struct CutMatching {
 
 // returns capacity that was required
 // TODO make the binsearch an actual binsearch
-    size_t matching_player(G &g, const set<Node> &bisection, ListEdgeSet<G> &m_out, Cutp& cut) {
+    size_t matching_player(G &g, const set<Node> &bisection, ListEdgeSet<G> &m_out, Cutp &cut) {
         size_t num_verts = countNodes(g);
         assert(num_verts % 2 == 0);
         Snapshot snap(g);
 
-        MatchingGraph mg(g);
+        MatchingContext mg(g);
         make_sink_source(mg, bisection);
 
         unique_ptr<FlowAlgo> p;
@@ -323,8 +375,8 @@ struct CutMatching {
         return cap_needed;
     }
 
-    void make_sink_source(MatchingGraph &mg, const set<Node> &cut) const {
-        G& g = mg.g;
+    void make_sink_source(MatchingContext &mg, const set<Node> &cut) const {
+        G &g = mg.g;
         mg.s = g.addNode();
         mg.t = g.addNode();
         int s_added = 0;
@@ -345,7 +397,7 @@ struct CutMatching {
         assert(s_added == t_added);
     }
 
-    void generate_large_graph(ListGraph &g) {
+    static void generate_large_graph(ListGraph &g) {
         vector<ListGraph::Node> nodes;
         nodes.reserve(N_NODES);
         for (int i = 0; i < N_NODES; i++) {
@@ -376,7 +428,13 @@ struct CutMatching {
         }
     }
 
-    void parse_chaco_format(const string &filename, ListGraph &g) {
+    // Reads the file filename,
+    // creates that graph in graph g which is assumed to be empty
+    // In the process fills nodes with each node created at the index of (its id in the file minus one)
+    // And sets each node's original_ids id to be (its id in the file minus one).
+    // Of course original_ids must be initialized onto the graph g already earlier.
+    static void parse_chaco_format(const string &filename, ListGraph &g, vector<Node> &nodes, NodeMapi &original_ids) {
+        assert(nodes.empty());
         cout << "Reading graph from " << filename << endl;
         ifstream file;
         file.open(filename);
@@ -396,9 +454,10 @@ struct CutMatching {
         g.reserveNode(n_verts);
         g.reserveNode(n_edges);
 
-        vector<ListGraph::Node> nodes;
         for (size_t i = 0; i < n_verts; i++) {
-            nodes.push_back(g.addNode());
+            Node n = g.addNode();
+            nodes.push_back(n);
+            original_ids[n] = i;
         }
 
         for (size_t i = 0; i < n_verts; i++) {
@@ -417,38 +476,32 @@ struct CutMatching {
 
         if (n_verts % 2 != 0) {
             cout << "Odd number of vertices, adding extra one." << endl;
-            g.addEdge(nodes[0], g.addNode());
-        }
-    }
-
-    void generate_graph(ListGraph &g) {
-        if (READ_GRAPH_FROM_FILE)
-            parse_chaco_format(IN_GRAPH_FILE, g);
-        else {
-            ListGraph &g1 = g;
-            cout << "Generating graph with " << N_NODES << " nodes." << endl;
-            generate_large_graph(g1);
+            Node n = g.addNode();
+            g.addEdge(nodes[0], n);
+            nodes.push_back(n);
         }
     }
 
     size_t one_round(G &g, vector<Cutp> &cuts, vector<Matchingp> &matchings) {
-        cout << "Running Cut player" << endl;
         Bisectionp bisection = cut_player(g, matchings);
         if (PRINT_NODES) { print_cut(*bisection); }
 
-        Matchingp m(new Matching(g));
+        Matchingp matchingp(new Matching(g));
 
         cout << "Running Matching player" << endl;
         Cutp cut;
-        size_t cap = matching_player(g, *bisection, *m, cut);
-        if (PRINT_NODES) { print_matching(m); }
+        size_t cap = matching_player(g, *bisection, *matchingp, cut);
+        if (PRINT_NODES) { print_matching(matchingp); }
 
-        matchings.push_back(move(m));
+        matchings.push_back(move(matchingp));
         cuts.push_back(move(cut));
         return cap;
+
+        // We want to implement that it parses partitions
+        // That has nothing to do with the rounds lol
     }
 
-    void print_matching(const Matchingp& m) {
+    void print_matching(const Matchingp &m) {
         cout << "Matching player gave the following matching: " << endl;
         for (Matching::EdgeIt e(*m); e != INVALID; ++e) {
             cout << "(" << m->id(m->u(e)) << ", " << m->id(m->v(e)) << "), ";
@@ -464,47 +517,7 @@ struct CutMatching {
         cout << endl;
     }
 
-    void run() {
-        ListGraph g;
-        generate_graph(g);
-        size_t num_vertices = countNodes(g);
-
-        // Matchings
-        vector<Matchingp> matchings;
-        vector<Cutp> cuts;
-
-        size_t best_cap = 0;
-        size_t best_cap_index = 999999;
-        for (int i = 0; i < N_ROUNDS; i++) {
-            size_t cap = one_round(g, cuts, matchings);
-            print_end_round(i);
-
-            if(cap > best_cap) {
-                best_cap = cap;
-                best_cap_index = i;
-            }
-        }
-
-        const Matchingp& m = matchings[best_cap_index];
-        const Cutp& cut = cuts[best_cap_index];
-        cout << "The cut with highest capacity required was found on round" << best_cap_index << endl;
-        cout << "Here's how sparse it was:" << endl;
-
-        double crossing_edges = 0;
-        for(EdgeIt e(g); e != INVALID; ++e) {
-            if(is_crossing(g, *cut, e)) crossing_edges += 1;
-        }
-        assert(cut->size() <= num_vertices);
-        cout << "Edge crossings (E) : " << crossing_edges << endl;
-        double min_side = min(cut->size(), num_vertices - cut->size());
-        cout << "cut size: " << cut->size() << endl;
-        cout << "Min side: " << min_side << endl;
-        double expansion_maybe = crossing_edges / min_side;
-
-        cout << "E/min(|S|, |comp(S)|) = " << expansion_maybe << endl;
-    }
-
-    bool is_crossing(const G& g, const Bisection& c, const Edge& e) {
+    bool is_crossing(const G &g, const Bisection &c, const Edge &e) {
         bool u_in = c.count(g.u(e));
         bool v_in = c.count(g.v(e));
         return u_in != v_in;
@@ -515,20 +528,69 @@ struct CutMatching {
         cout << "== End round " << i << endl;
         cout << "======================" << endl;
     }
+
+    void print_cut_sparsity(const Context &c, const Cut &cut) {
+        double crossing_edges = 0;
+        for (EdgeIt e(c.g); e != INVALID; ++e) {
+            if (is_crossing(c.g, cut, e)) crossing_edges += 1;
+        }
+        assert(cut.size() <= c.num_vertices);
+        cout << "Edge crossings (E) : " << crossing_edges << endl;
+        double min_side = min(cut.size(), c.num_vertices - cut.size());
+        cout << "cut size: " << cut.size() << endl;
+        cout << "Min side: " << min_side << endl;
+        double expansion_maybe = crossing_edges / min_side;
+
+        cout << "E/min(|S|, |comp(S)|) = " << expansion_maybe << endl;
+    }
+
+    void run() {
+        Context c;
+
+        // Matchings
+        vector<Matchingp> matchings;
+        vector<Cutp> cuts;
+
+        size_t best_cap = 0;
+        size_t best_cap_index = 999999;
+        for (int i = 0; i < N_ROUNDS; i++) {
+            size_t cap = one_round(c.g, cuts, matchings);
+            print_end_round(i);
+
+            if (cap > best_cap) {
+                best_cap = cap;
+                best_cap_index = i;
+            }
+        }
+
+        const Cutp &cut = cuts[best_cap_index];
+        cout << "The cut with highest capacity required was found on round" << best_cap_index << endl;
+        cout << "Here's how sparse it was:" << endl;
+        print_cut_sparsity(c, *cut);
+
+        // Output reference cut
+        if (COMPARE_PARTITION) {
+            cout << endl
+                 << "For comparison, the given partition achieved the following:"
+                 << endl;
+            print_cut_sparsity(c, c.reference_cut);
+        }
+    }
 };
 
 cxxopts::Options create_options() {
     cxxopts::Options options("Janiuk graph partition",
                              "Individual project implementation if thatchapon's paper to find graph partitions. Currently only cut-matching game.");
     options.add_options()
-            ("f,file", "File to read graph from", cxxopts::value<std::string>()->default_value(""))
+            ("f,file", "File to read graph from", cxxopts::value<std::string>())
             ("n,nodes", "Number of nodes in graph to generate. Should be even. Ignored if -f is set.",
              cxxopts::value<long>()->default_value("100"))
             ("r,rounds", "Number of rounds to run cut-matching game", cxxopts::value<long>()->default_value("5"))
-            ("p,paths", "Whether to print paths")
+            ("d,paths", "Whether to print paths")
             ("v,verbose", "Whether to print nodes and cuts (does not include paths)")
             ("s,seed", "Use a seed for RNG (optionally set seed manually)",
-             cxxopts::value<int>()->implicit_value("1337"));
+             cxxopts::value<int>()->implicit_value("1337"))
+            ("p,partition", "Partition file to compare with", cxxopts::value<std::string>());
     return options;
 }
 
@@ -552,7 +614,10 @@ void parse_options(int argc, char **argv, CutMatching<ListGraph> &cm) {
         cm.engine = default_random_engine(result["seed"].as<int>());
     else
         cm.engine = default_random_engine(random_device()());
-
+    if (result.count("partition")) {
+        COMPARE_PARTITION = true;
+        PARTITION_FILE = result["partition"].as<string>();
+    }
 }
 
 int main(int argc, char **argv) {
