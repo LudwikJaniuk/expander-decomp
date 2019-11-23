@@ -78,13 +78,12 @@ struct CutMatching {
         Cut reference_cut;
         NodeMapi original_ids;
         size_t num_vertices;
+        vector<Matchingp> matchings;
+        vector<Cutp> cuts;
 
         explicit Context() : original_ids(g) {
             if (READ_GRAPH_FROM_FILE) {
                 parse_chaco_format(IN_GRAPH_FILE, g, nodes, original_ids);
-                // TODO
-                num_vertices = countNodes(g);
-                assert(num_vertices == nodes.size());
 
                 if (COMPARE_PARTITION) {
                     read_partition_file(PARTITION_FILE, nodes, reference_cut);
@@ -92,9 +91,10 @@ struct CutMatching {
             } else {
                 cout << "Generating graph with " << N_NODES << " nodes." << endl;
                 generate_large_graph(g);
-                num_vertices = countNodes(g);
             }
 
+            num_vertices = countNodes(g);
+            assert(num_vertices % 2 == 0);
             assert(connected(g));
         }
     };
@@ -105,10 +105,19 @@ struct CutMatching {
         Node t;
         EdgeMapi capacity;
         CutMap cut_map;
-        size_t num_vertices;
+        const size_t num_vertices;
+        Snapshot snap; //RAII
 
-        explicit MatchingContext(G &g_) : g(g_), capacity(g_), cut_map(g_) {
-            num_vertices = countNodes(g);
+        explicit MatchingContext(Context &c)
+                : g(c.g),
+                  capacity(g),
+                  cut_map(g),
+                  snap(g),
+                  num_vertices(c.num_vertices)
+        { }
+
+        ~MatchingContext() {
+            snap.restore();
         }
 
         bool touches_source_or_sink(Edge &e) {
@@ -193,19 +202,9 @@ struct CutMatching {
         size_t size = all_nodes.size();
         assert(size % 2 == 0);
         all_nodes.resize(size / 2);
-        return Bisectionp(new Bisection(all_nodes.begin(), all_nodes.end()));
-
-        // for each vertex v
-        // 	weight[v] = rand(0, 1) ? 1/n : -1/n
-        // for each mapping m (in order)
-        // 	for each edge (u,v) of m
-        // 		weights[u] = weights[v] = avg(weights[u], weights[v])
-        // NodeLIst nodes;
-        // sort(nodelist by weight[node])
-        //
-        // return slice of nodellist beginning
-        // (actually can optimize with stl)
-        // */
+        auto b = Bisectionp(new Bisection(all_nodes.begin(), all_nodes.end()));
+        if (PRINT_NODES) { print_cut(*b); }
+        return b;
     }
 
 // For some reason lemon returns arbitrary values for flow, the difference is correct tho
@@ -345,18 +344,13 @@ struct CutMatching {
     }
 
 // returns capacity that was required
-// TODO make the binsearch an actual binsearch
-    size_t matching_player(G &g, const set<Node> &bisection, ListEdgeSet<G> &m_out, Cutp &cut) {
-        size_t num_verts = countNodes(g);
-        assert(num_verts % 2 == 0);
-        Snapshot snap(g);
-
-        MatchingContext mg(g);
+// Maybe: make the binsearch an actual binsearch
+    size_t matching_player(Context &c, const set<Node> &bisection, ListEdgeSet<G> &m_out, Cutp &cut) {
+        MatchingContext mg(c);
         make_sink_source(mg, bisection);
 
         unique_ptr<FlowAlgo> p;
         size_t cap_needed = bin_search_flows(mg, p, cut);
-
 
         vector<array<Node, 2>> paths;
         decompose_paths(mg, p, paths);
@@ -364,8 +358,6 @@ struct CutMatching {
         for (auto &path : paths) {
             m_out.addEdge(path[0], path.back());
         }
-        snap.restore();
-
         // Now how do we extract the cut?
         // In this version, in one run of the matching the cut is strictly decided. We just need
         // to decide which one of them.
@@ -482,19 +474,18 @@ struct CutMatching {
         }
     }
 
-    size_t one_round(G &g, vector<Cutp> &cuts, vector<Matchingp> &matchings) {
-        Bisectionp bisection = cut_player(g, matchings);
-        if (PRINT_NODES) { print_cut(*bisection); }
+    size_t one_round(Context &c) {
+        Bisectionp bisection = cut_player(c.g, c.matchings);
 
-        Matchingp matchingp(new Matching(g));
+        Matchingp matchingp(new Matching(c.g));
 
         cout << "Running Matching player" << endl;
         Cutp cut;
-        size_t cap = matching_player(g, *bisection, *matchingp, cut);
+        size_t cap = matching_player(c, *bisection, *matchingp, cut);
         if (PRINT_NODES) { print_matching(matchingp); }
 
-        matchings.push_back(move(matchingp));
-        cuts.push_back(move(cut));
+        c.matchings.push_back(move(matchingp));
+        c.cuts.push_back(move(cut));
         return cap;
 
         // We want to implement that it parses partitions
@@ -536,25 +527,24 @@ struct CutMatching {
         }
         assert(cut.size() <= c.num_vertices);
         cout << "Edge crossings (E) : " << crossing_edges << endl;
-        double min_side = min(cut.size(), c.num_vertices - cut.size());
-        cout << "cut size: " << cut.size() << endl;
+        size_t other_size = c.num_vertices - cut.size();
+        double min_side = min(cut.size(), other_size);
+        double max_side = max(cut.size(), other_size);
+        double diff = max_side - min_side;
+        double factor = diff/c.num_vertices;
+        cout << "cut size: (" << min_side << " | " << max_side << ")" << endl
+        << "diff: " << diff << " (" << factor << " of total n vertices)" << endl;
         cout << "Min side: " << min_side << endl;
         double expansion_maybe = crossing_edges / min_side;
 
         cout << "E/min(|S|, |comp(S)|) = " << expansion_maybe << endl;
     }
 
-    void run() {
-        Context c;
-
-        // Matchings
-        vector<Matchingp> matchings;
-        vector<Cutp> cuts;
-
+    size_t run_rounds(Context& c) {
         size_t best_cap = 0;
         size_t best_cap_index = 999999;
         for (int i = 0; i < N_ROUNDS; i++) {
-            size_t cap = one_round(c.g, cuts, matchings);
+            size_t cap = one_round(c);
             print_end_round(i);
 
             if (cap > best_cap) {
@@ -563,15 +553,21 @@ struct CutMatching {
             }
         }
 
-        const Cutp &cut = cuts[best_cap_index];
-        cout << "The cut with highest capacity required was found on round" << best_cap_index << endl;
-        cout << "Here's how sparse it was:" << endl;
-        print_cut_sparsity(c, *cut);
+        return best_cap_index;
+    }
 
-        // Output reference cut
-        if (COMPARE_PARTITION) {
+    void run() {
+        Context c;
+        if(N_ROUNDS >= 1) {
+            auto best_round = run_rounds(c);
+            cout << "The cut with highest capacity required was found on round" << best_round << endl;
+            cout << "Best cut sparsity: " << endl;
+            print_cut_sparsity(c, *c.cuts[best_round]);
+        }
+
+        if (COMPARE_PARTITION) { // Output reference cut
             cout << endl
-                 << "For comparison, the given partition achieved the following:"
+                 << "The given partition achieved the following:"
                  << endl;
             print_cut_sparsity(c, c.reference_cut);
         }
@@ -580,7 +576,7 @@ struct CutMatching {
 
 cxxopts::Options create_options() {
     cxxopts::Options options("Janiuk graph partition",
-                             "Individual project implementation if thatchapon's paper to find graph partitions. Currently only cut-matching game.");
+                             "Individual project implementation of thatchapon's paper to find graph partitions. Currently only cut-matching game.");
     options.add_options()
             ("f,file", "File to read graph from", cxxopts::value<std::string>())
             ("n,nodes", "Number of nodes in graph to generate. Should be even. Ignored if -f is set.",
