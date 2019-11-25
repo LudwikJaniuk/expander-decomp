@@ -30,7 +30,7 @@ using namespace std::chrono;
 int N_NODES = 1000;
 int N_ROUNDS = 5;
 bool PRINT_PATHS = false;
-bool PRINT_NODES = false;
+bool VERBOSE = false;
 bool READ_GRAPH_FROM_FILE = false;
 string IN_GRAPH_FILE;
 bool COMPARE_PARTITION = false;
@@ -39,7 +39,7 @@ bool OUTPUT_CUT = false;
 string OUTPUT_FILE;
 // END PARAMETERS
 
-// Choose a random mean between 1 and 6
+const double MICROSECS = 1000000.0;
 
 template<class G>
 struct CutMatching {
@@ -91,7 +91,7 @@ struct CutMatching {
                     read_partition_file(PARTITION_FILE, nodes, reference_cut);
                 }
             } else {
-                cout << "Generating graph with " << N_NODES << " nodes." << endl;
+                if (VERBOSE) cout << "Generating graph with " << N_NODES << " nodes." << endl;
                 generate_large_graph(g, nodes);
             }
 
@@ -115,8 +115,7 @@ struct CutMatching {
                   capacity(g),
                   cut_map(g),
                   snap(g),
-                  num_vertices(c.num_vertices)
-        { }
+                  num_vertices(c.num_vertices) {}
 
         ~MatchingContext() {
             snap.restore();
@@ -129,12 +128,14 @@ struct CutMatching {
                    || this->g.v(e) == t;
         }
 
-        void copy_cut(Cutp &cut) {
-            cut.reset(new Cut);
+        // Fills given cut pointer with a copy of the cut map
+        Cutp extract_cut() {
+            Cutp cut(new Cut);
             for (NodeIt n(this->g); n != INVALID; ++n) {
                 if (n == s || n == t) continue;
                 if (cut_map[n]) cut->insert(n);
             }
+            return move(cut);
         }
 
         void reset_cut_map() {
@@ -142,6 +143,12 @@ struct CutMatching {
                 cut_map[n] = false;
             }
         }
+    };
+
+    struct MatchResult {
+        Cutp cut_from_flow;
+        // First capacity (minumum) that worked to get full flow thru
+        size_t capacity;
     };
 
     CutMatching() : uniform_dist(0, 1) {};
@@ -159,7 +166,7 @@ struct CutMatching {
             if (b) partition.insert(nodes[i]);
             ++i;
         }
-        cout << "Reference patition size: " << partition.size() << endl;
+        if (VERBOSE) cout << "Reference patition size: " << partition.size() << endl;
     }
 
     // Soooooo, we want to develop the partition comparison stuff.
@@ -168,7 +175,7 @@ struct CutMatching {
 // Actually Actually, sure it gets H but it just needs the matchings...
     template<typename M>
     Bisectionp cut_player(const G &g, const vector<unique_ptr<M>> &matchings) {
-        cout << "Running Cut player" << endl;
+        if (VERBOSE) cout << "Running Cut player" << endl;
         using MEdgeIt = typename M::EdgeIt;
 
         NodeMapd probs(g);
@@ -177,14 +184,6 @@ struct CutMatching {
         for (NodeIt n(g); n != INVALID; ++n) {
             all_nodes.push_back(n);
             probs[n] = uniform_dist(engine) ? 1.0 / all_nodes.size() : -1.0 / all_nodes.size(); // TODO
-        }
-
-        if (PRINT_NODES) {
-            cout << "All nodes: " << endl;
-            for (const Node &n : all_nodes) {
-                cout << g.id(n) << " ";
-            }
-            cout << endl;
         }
 
         for (const unique_ptr<M> &m : matchings) {
@@ -205,7 +204,7 @@ struct CutMatching {
         assert(size % 2 == 0);
         all_nodes.resize(size / 2);
         auto b = Bisectionp(new Bisection(all_nodes.begin(), all_nodes.end()));
-        if (PRINT_NODES) { print_cut(*b); }
+        if (VERBOSE) { print_cut(*b); }
         return b;
     }
 
@@ -253,14 +252,11 @@ struct CutMatching {
     }
 
     void decompose_paths_fast(const MatchingContext &mg, const unique_ptr<FlowAlgo> &f, Paths &out_paths) {
-        cout << "Starting to decompose paths" << endl;
         f->startSecondPhase();
         EdgeMapi subtr(mg.g, 0);
         NodeNeighborMap flow_children(mg.g, vector<tuple<Node, int>>());
         out_paths.reserve(countNodes(mg.g) / 2);
 
-        cout << "Starting to pre-calc flow children" << endl;
-        auto start = high_resolution_clock::now();
         // Calc flow children (one pass)
         ArcLookup alp(mg.g);
         for (EdgeIt e(mg.g); e != INVALID; ++e) {
@@ -273,10 +269,6 @@ struct CutMatching {
                 flow_children[v].push_back(tuple(u, -e_flow));
             }
         }
-        auto stop = high_resolution_clock::now();
-        auto duration = duration_cast<microseconds>(stop - start);
-        cout << "Pre-calculated path children in (microsec) " << duration.count() << endl;
-        // Now path decomp is much faster
 
         for (IncEdgeIt e(mg.g, mg.s); e != INVALID; ++e) {
             assert(mg.g.u(e) == mg.s || mg.g.v(e) == mg.s);
@@ -287,9 +279,8 @@ struct CutMatching {
         }
     }
 
-    size_t bin_search_flows(MatchingContext &mg, unique_ptr<FlowAlgo> &p, Cutp &out_cut) const {
+    MatchResult bin_search_flows(MatchingContext &mg, unique_ptr<FlowAlgo> &p) const {
         // TODO Output cut
-        cout << "Running binary search on flows" << endl;
         auto start = high_resolution_clock::now();
 
         size_t cap = 1;
@@ -308,9 +299,9 @@ struct CutMatching {
             auto stop2 = high_resolution_clock::now();
             auto duration2 = duration_cast<microseconds>(stop2 - start2);
 
-            cout << "flow: " << p->flowValue() << " (" << duration2.count() << " microsecs)" << endl;
+            cout << "flow: " << p->flowValue() << " (" << (duration2.count() / MICROSECS) << " s)" << endl;
             if (p->flowValue() == mg.num_vertices / 2) {
-                cout << "We have achieved full flow, but half this capacity didn't manage that!" << endl;
+                if (VERBOSE) cout << "We have achieved full flow, but half this capacity didn't manage that!" << endl;
                 // Already an expander I guess?
                 if (cap == 1) {
                     // TODO code duplication
@@ -327,32 +318,27 @@ struct CutMatching {
         }
 
         // Not we copy out the cut
-        mg.copy_cut(out_cut);
+        MatchResult result{mg.extract_cut(), cap};
 
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
-        cout << "Flow search took (microsec) " << duration.count() << endl;
+        cout << "Flow search took (seconds) " << (duration.count() / 1000000.0) << endl;
 
-        return cap;
+        return result;
     }
 
     void decompose_paths(const MatchingContext &mg, const unique_ptr<FlowAlgo> &p, vector<array<Node, 2>> &paths) {
-        cout << "Decomposing paths." << endl;
-        auto start = high_resolution_clock::now();
         decompose_paths_fast(mg, p, paths);
-        auto stop = high_resolution_clock::now();
-        auto duration = duration_cast<microseconds>(stop - start);
-        cout << "Path decomposition took (microsec) " << duration.count() << endl;
     }
 
 // returns capacity that was required
 // Maybe: make the binsearch an actual binsearch
-    size_t matching_player(Context &c, const set<Node> &bisection, ListEdgeSet<G> &m_out, Cutp &cut) {
+    MatchResult matching_player(Context &c, const set<Node> &bisection, ListEdgeSet<G> &m_out) {
         MatchingContext mg(c);
         make_sink_source(mg, bisection);
 
         unique_ptr<FlowAlgo> p;
-        size_t cap_needed = bin_search_flows(mg, p, cut);
+        MatchResult mr = bin_search_flows(mg, p);
 
         vector<array<Node, 2>> paths;
         decompose_paths(mg, p, paths);
@@ -366,7 +352,7 @@ struct CutMatching {
         // Only when we change to edge will the cut need to be explicitly extracted.
         // Rn the important thing is to save cuts between rounds so I can choose the best.
 
-        return cap_needed;
+        return mr;
     }
 
     void make_sink_source(MatchingContext &mg, const set<Node> &cut) const {
@@ -391,7 +377,7 @@ struct CutMatching {
         assert(s_added == t_added);
     }
 
-    static void generate_large_graph(G &g, vector<Node>& nodes) {
+    static void generate_large_graph(G &g, vector<Node> &nodes) {
         nodes.reserve(N_NODES);
         for (int i = 0; i < N_NODES; i++) {
             nodes.push_back(g.addNode());
@@ -480,13 +466,13 @@ struct CutMatching {
 
         Matchingp matchingp(new Matching(c.g));
 
-        cout << "Running Matching player" << endl;
-        Cutp cut;
-        size_t cap = matching_player(c, *bisection, *matchingp, cut);
-        if (PRINT_NODES) { print_matching(matchingp); }
+        if (VERBOSE) cout << "Running Matching player" << endl;
+        MatchResult mr = matching_player(c, *bisection, *matchingp);
+        size_t cap = mr.capacity;
+        if (VERBOSE) { print_matching(matchingp); }
 
         c.matchings.push_back(move(matchingp));
-        c.cuts.push_back(move(cut));
+        c.cuts.push_back(move(mr.cut_from_flow));
         return cap;
 
         // We want to implement that it parses partitions
@@ -509,39 +495,59 @@ struct CutMatching {
         cout << endl;
     }
 
-    bool is_crossing(const G &g, const Bisection &c, const Edge &e) {
+    static bool is_crossing(const G &g, const Bisection &c, const Edge &e) {
         bool u_in = c.count(g.u(e));
         bool v_in = c.count(g.v(e));
         return u_in != v_in;
     }
 
     void print_end_round(int i) const {
-        cout << "======================" << endl;
-        cout << "== End round " << i << endl;
-        cout << "======================" << endl;
+        if (VERBOSE) cout << "======================" << endl;
+        cout << "== End round " << i << " ==" << endl;
+        if (VERBOSE) cout << "======================" << endl;
     }
 
-    void print_cut_sparsity(const Context &c, const Cut &cut) {
-        double crossing_edges = 0;
-        for (EdgeIt e(c.g); e != INVALID; ++e) {
-            if (is_crossing(c.g, cut, e)) crossing_edges += 1;
+    struct CutStats {
+        size_t crossing_edges = 0;
+        size_t min_side = 0;
+        size_t max_side = 0;
+
+        CutStats(const Context &c, const Cut &cut) {
+            for (EdgeIt e(c.g); e != INVALID; ++e) {
+                if (is_crossing(c.g, cut, e)) crossing_edges += 1;
+            }
+            assert(cut.size() <= c.num_vertices);
+            size_t other_size = c.num_vertices - cut.size();
+            min_side = min(cut.size(), other_size);
+            max_side = max(cut.size(), other_size);
         }
-        assert(cut.size() <= c.num_vertices);
-        cout << "Edge crossings (E) : " << crossing_edges << endl;
-        size_t other_size = c.num_vertices - cut.size();
-        double min_side = min(cut.size(), other_size);
-        double max_side = max(cut.size(), other_size);
-        double diff = max_side - min_side;
-        double factor = diff/c.num_vertices;
-        cout << "cut size: (" << min_side << " | " << max_side << ")" << endl
-        << "diff: " << diff << " (" << factor << " of total n vertices)" << endl;
-        cout << "Min side: " << min_side << endl;
-        double expansion_maybe = crossing_edges / min_side;
 
-        cout << "E/min(|S|, |comp(S)|) = " << expansion_maybe << endl;
-    }
+        size_t diff() {
+            return max_side - min_side;
+        }
 
-    size_t run_rounds(Context& c) {
+        size_t num_vertices() {
+            return min_side + max_side;
+        }
+
+        double imbalance() {
+            return diff() * 1. / num_vertices();
+        }
+
+        double expansion() {
+            return crossing_edges * 1. / min_side;
+        }
+
+        void print() {
+            cout << "Edge crossings (E) : " << crossing_edges << endl;
+            cout << "cut size: (" << min_side << " | " << max_side << ")" << endl
+                 << "diff: " << diff() << " (" << imbalance() << " of total n vertices)" << endl;
+            cout << "Min side: " << min_side << endl;
+            cout << "E/min(|S|, |comp(S)|) = " << expansion() << endl;
+        }
+    };
+
+    size_t run_rounds(Context &c) {
         size_t best_cap = 0;
         size_t best_cap_index = 999999;
         for (int i = 0; i < N_ROUNDS; i++) {
@@ -557,20 +563,20 @@ struct CutMatching {
         return best_cap_index;
     }
 
-    void write_cut(const Context& c, const Cut& cut) {
+    void write_cut(const Context &c, const Cut &cut) {
         ofstream file;
         file.open(OUTPUT_FILE);
-        if(!file) {
+        if (!file) {
             cout << "Cannot open file " << OUTPUT_FILE << endl;
             return;
         }
 
         cout << "Writing partition with "
-        << c.nodes.size()
-        << " nodes to file "
-        << OUTPUT_FILE
-        << endl;
-        for(const auto& n : c.nodes) {
+             << c.nodes.size()
+             << " nodes to file "
+             << OUTPUT_FILE
+             << endl;
+        for (const auto &n : c.nodes) {
             file << (cut.count(n) ? "1" : "0") << "\n";
         }
         file.close();
@@ -578,20 +584,20 @@ struct CutMatching {
 
     void run() {
         Context c;
-        if(N_ROUNDS >= 1) {
+        if (N_ROUNDS >= 1) {
             auto best_round = run_rounds(c);
             cout << "The cut with highest capacity required was found on round" << best_round << endl;
             cout << "Best cut sparsity: " << endl;
-            auto& best_cut = *c.cuts[best_round];
-            print_cut_sparsity(c, best_cut);
-            if(OUTPUT_CUT) { write_cut(c, best_cut); }
+            auto &best_cut = *c.cuts[best_round];
+            CutStats(c, best_cut).print();
+            if (OUTPUT_CUT) { write_cut(c, best_cut); }
         }
 
         if (COMPARE_PARTITION) { // Output reference cut
             cout << endl
                  << "The given partition achieved the following:"
                  << endl;
-            print_cut_sparsity(c, c.reference_cut);
+            CutStats(c, c.reference_cut).print();
         }
     }
 };
@@ -625,14 +631,14 @@ void parse_options(int argc, char **argv, CutMatching<ListGraph> &cm) {
     if (result.count("rounds"))
         N_ROUNDS = result["rounds"].as<long>();
     if (result.count("verbose"))
-        PRINT_NODES = result["verbose"].as<bool>();
+        VERBOSE = result["verbose"].as<bool>();
     if (result.count("paths"))
         PRINT_PATHS = result["paths"].as<bool>();
     if (result.count("seed"))
         cm.engine = default_random_engine(result["seed"].as<int>());
     else
         cm.engine = default_random_engine(random_device()());
-    if(result.count("output")) {
+    if (result.count("output")) {
         OUTPUT_CUT = true;
         cout << "Got flag for output: " << result["output"].as<string>() << endl;
         OUTPUT_FILE = result["output"].as<string>();
