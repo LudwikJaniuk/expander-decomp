@@ -1,0 +1,138 @@
+Reading graph from graphs/m14b.graph
+Reading a graph with V 214765E 1679018
+Odd number of vertices, adding extra one.
+Cap 1 ... flow: 107383 (1.86807 s)
+Flow search took (seconds) 1.93017
+== End round 0 ==
+Cap 1 ... flow: 107383 (2.5181 s)
+Flow search took (seconds) 2.57929
+== End round 1 ==
+Cap 1 ... flow: 107383 (2.08308 s)
+Flow search took (seconds) 2.14412
+== End round 2 ==
+Cap 1 ... flow: 107383 (2.94997 s)
+Flow search took (seconds) 3.01097
+== End round 3 ==
+Cap 1 ... flow: 107383 (4.22876 s)
+Flow search took (seconds) 4.28979
+== End round 4 ==
+Cap 1 ... flow: 107383 (2.9662 s)
+Flow search took (seconds) 3.02749
+== End round 5 ==
+Cap 1 ... flow: 107383 (6.58708 s)
+Flow search took (seconds) 6.64931
+== End round 6 ==
+Cap 1 ... flow: 107383 (4.21127 s)
+Flow search took (seconds) 4.27217
+== End round 7 ==
+Cap 1 ... flow: 105675 (21.2967 s)
+Cap 2 ... flow: 107383 (9.79916 s)
+Flow search took (seconds) 31.245
+== End round 8 ==
+Cap 1 ... flow: 102402 (19.9142 s)
+Cap 2 ... flow: 106482 (28.8026 s)
+Cap 4 ... flow: 107383 (8.17286 s)
+Flow search took (seconds) 57.0999
+== End round 9 ==
+Cap 1 ... flow: 106674 (12.5989 s)
+Cap 2 ... flow: 107383 (5.96246 s)
+Flow search took (seconds) 18.6958
+== End round 10 ==
+Cap 1 ... flow: 95240 (31.5032 s)
+Cap 2 ... flow: 99361 (23.0083 s)
+Cap 4 ... flow: 106989 (24.17 s)
+Cap 8 ... flow: 107383 (7.49986 s)
+Flow search took (seconds) 86.4544
+== End round 11 ==
+Cap 1 ... flow: 96574 (19.9427 s)
+Cap 2 ... flow: 102829 (12.6962 s)
+Cap 4 ... flow: 107383 (13.2574 s)
+Flow search took (seconds) 46.0982
+== End round 12 ==
+Cap 1 ... flow: 91458 (21.3008 s)
+Cap 2 ... flow: 100745 (23.2469 s)
+Cap 4 ... flow: 107383 (19.9817 s)
+Flow search took (seconds) 64.7392
+== End round 13 ==
+Cap 1 ... flow: 91701 (18.3505 s)
+Cap 2 ... flow: 102439 (24.7783 s)
+Cap 4 ... flow: 107383 (17.1825 s)
+Flow search took (seconds) 60.5113
+== End round 14 ==
+Cap 1 ... flow: 90659 (25.9955 s)
+Cap 2 ... flow: 94712 (16.1872 s)
+Cap 4 ... flow: 102660 (29.8603 s)
+Cap 8 ... flow: 107383 (15.6907 s)
+Flow search took (seconds) 88.0134
+== End round 15 ==
+Cap 1 ... flow: 83866 (19.8403 s)
+Cap 2 ... flow: 92793 (17.0652 s)
+Cap 4 ... flow: 105460 (17.6893 s)
+Cap 8 ... flow: 107383 (5.96169 s)
+Flow search took (seconds) 60.8147
+== End round 16 ==
+Cap 1 ... flow: 96857 (21.4568 s)
+Cap 2 ... flow: 101325 (27.0785 s)
+Cap 4 ... flow: 107383 (17.6888 s)
+Flow search took (seconds) 66.4273
+== End round 17 ==
+Cap 1 ... flow: 66456 (27.7415 s)
+Cap 2 ... flow: 70309 (33.1378 s)
+Cap 4 ... flow: 77949 (40.2744 s)
+Cap 8 ... flow: 93185 (47.2305 s)
+Cap 16 ... flow: 107383 (22.4643 s)
+Flow search took (seconds) 171.188
+== End round 18 ==
+Cap 1 ... flow: 73591 (29.0267 s)
+Cap 2 ... flow: 85268 (26.045 s)
+Cap 4 ... flow: 96971 (23.615 s)
+Cap 8 ... flow: 107383 (16.5841 s)
+Flow search took (seconds) 95.5297
+== End round 19 ==
+Cap 1 ... flow: 77726 (17.8657 s)
+Cap 2 ... flow: 90573 (13.6667 s)
+Cap 4 ... flow: 105496 (15.5332 s)
+Cap 8 ... flow: 107383 (4.61603 s)
+Flow search took (seconds) 51.9353
+== End round 20 ==
+Cap 1 ... flow: 80615 (23.963 s)
+Cap 2 ... flow: 87321 (43.7808 s)
+Cap 4 ... flow: 95441 (41.726 s)
+Cap 8 ... flow: 107383 (28.2153 s)
+Flow search took (seconds) 137.963
+== End round 21 ==
+Cap 1 ... flow: 59598 (19.1208 s)
+Cap 2 ... flow: 68531 (13.3749 s)
+Cap 4 ... flow: 77173 (16.4058 s)
+Cap 8 ... flow: 93249 (23.5547 s)
+Cap 16 ... flow: 107383 (12.2317 s)
+Flow search took (seconds) 85.0154
+== End round 22 ==
+Cap 1 ... flow: 84160 (24.2813 s)
+Cap 2 ... flow: 92437 (33.3013 s)
+Cap 4 ... flow: 100499 (41.9071 s)
+Cap 8 ... flow: 107383 (18.4176 s)
+Flow search took (seconds) 118.188
+== End round 23 ==
+Cap 1 ... flow: 61223 (24.2374 s)
+Cap 2 ... flow: 65540 (23.077 s)
+Cap 4 ... flow: 73568 (28.1237 s)
+Cap 8 ... flow: 89115 (41.7575 s)
+Cap 16 ... flow: 107383 (25.0755 s)
+Flow search took (seconds) 142.619
+== End round 24 ==
+The cut with highest capacity required was found on round18
+Best cut sparsity: 
+Edge crossings (E) : 3807
+cut size: (71296 | 143470)
+diff: 72174 (0.336059 of total n vertices)
+Min side: 71296
+E/min(|S|, |comp(S)|) = 0.0533971
+Writing partition with 214766 nodes to file out/m14b.ptn
+
+The given partition achieved the following:
+Edge crossings (E) : 3803
+cut size: (102233 | 112533)
+diff: 10300 (0.0479592 of total n vertices)
+Min side: 102233
+E/min(|S|, |comp(S)|) = 0.0371993

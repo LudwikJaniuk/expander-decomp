@@ -1,0 +1,120 @@
+Reading graph from graphs/wave.graph
+Reading a graph with V 156317E 1059331
+Odd number of vertices, adding extra one.
+Cap 1 ... flow: 78159 (1.30996 s)
+Flow search took (seconds) 1.32763
+== End round 0 ==
+Cap 1 ... flow: 78159 (1.84712 s)
+Flow search took (seconds) 1.86445
+== End round 1 ==
+Cap 1 ... flow: 78159 (1.63451 s)
+Flow search took (seconds) 1.65179
+== End round 2 ==
+Cap 1 ... flow: 78159 (1.66241 s)
+Flow search took (seconds) 1.67928
+== End round 3 ==
+Cap 1 ... flow: 78159 (2.04528 s)
+Flow search took (seconds) 2.06218
+== End round 4 ==
+Cap 1 ... flow: 78159 (2.10429 s)
+Flow search took (seconds) 2.12129
+== End round 5 ==
+Cap 1 ... flow: 78159 (3.44142 s)
+Flow search took (seconds) 3.45831
+== End round 6 ==
+Cap 1 ... flow: 78159 (1.61299 s)
+Flow search took (seconds) 1.62982
+== End round 7 ==
+Cap 1 ... flow: 78023 (4.13651 s)
+Cap 2 ... flow: 78159 (2.4135 s)
+Flow search took (seconds) 6.58503
+== End round 8 ==
+Cap 1 ... flow: 76840 (9.25817 s)
+Cap 2 ... flow: 78159 (2.50287 s)
+Flow search took (seconds) 11.8081
+== End round 9 ==
+Cap 1 ... flow: 77526 (8.24004 s)
+Cap 2 ... flow: 78159 (3.5095 s)
+Flow search took (seconds) 11.8054
+== End round 10 ==
+Cap 1 ... flow: 76000 (3.6095 s)
+Cap 2 ... flow: 78159 (2.04648 s)
+Flow search took (seconds) 5.69343
+== End round 11 ==
+Cap 1 ... flow: 76828 (4.09362 s)
+Cap 2 ... flow: 78159 (1.95927 s)
+Flow search took (seconds) 6.08835
+== End round 12 ==
+Cap 1 ... flow: 77416 (14.2856 s)
+Cap 2 ... flow: 78159 (2.01837 s)
+Flow search took (seconds) 16.3591
+== End round 13 ==
+Cap 1 ... flow: 68526 (13.2118 s)
+Cap 2 ... flow: 78071 (4.3781 s)
+Cap 4 ... flow: 78159 (1.83219 s)
+Flow search took (seconds) 19.4756
+== End round 14 ==
+Cap 1 ... flow: 66945 (6.9761 s)
+Cap 2 ... flow: 74699 (3.45353 s)
+Cap 4 ... flow: 78159 (2.19242 s)
+Flow search took (seconds) 12.6755
+== End round 15 ==
+Cap 1 ... flow: 59632 (11.7072 s)
+Cap 2 ... flow: 65739 (7.33202 s)
+Cap 4 ... flow: 74784 (10.2207 s)
+Cap 8 ... flow: 78159 (3.29499 s)
+Flow search took (seconds) 32.6409
+== End round 16 ==
+Cap 1 ... flow: 53755 (11.7541 s)
+Cap 2 ... flow: 64665 (12.5012 s)
+Cap 4 ... flow: 78159 (6.42293 s)
+Flow search took (seconds) 30.7373
+== End round 17 ==
+Cap 1 ... flow: 63462 (18.7199 s)
+Cap 2 ... flow: 72043 (14.5958 s)
+Cap 4 ... flow: 78159 (4.5464 s)
+Flow search took (seconds) 37.9294
+== End round 18 ==
+Cap 1 ... flow: 62691 (12.2454 s)
+Cap 2 ... flow: 72075 (8.38461 s)
+Cap 4 ... flow: 78159 (2.73645 s)
+Flow search took (seconds) 23.4281
+== End round 19 ==
+Cap 1 ... flow: 76478 (16.66 s)
+Cap 2 ... flow: 78159 (3.24842 s)
+Flow search took (seconds) 19.9588
+== End round 20 ==
+Cap 1 ... flow: 65909 (9.95185 s)
+Cap 2 ... flow: 74676 (6.2045 s)
+Cap 4 ... flow: 78159 (2.52314 s)
+Flow search took (seconds) 18.7338
+== End round 21 ==
+Cap 1 ... flow: 56581 (9.61616 s)
+Cap 2 ... flow: 69119 (10.8994 s)
+Cap 4 ... flow: 78159 (3.53529 s)
+Flow search took (seconds) 24.1111
+== End round 22 ==
+Cap 1 ... flow: 66559 (13.3053 s)
+Cap 2 ... flow: 78159 (7.91561 s)
+Flow search took (seconds) 21.2653
+== End round 23 ==
+Cap 1 ... flow: 66643 (6.5507 s)
+Cap 2 ... flow: 72256 (4.52589 s)
+Cap 4 ... flow: 78159 (2.64297 s)
+Flow search took (seconds) 13.78
+== End round 24 ==
+The cut with highest capacity required was found on round16
+Best cut sparsity: 
+Edge crossings (E) : 4517
+cut size: (37079 | 119239)
+diff: 82160 (0.525595 of total n vertices)
+Min side: 37079
+E/min(|S|, |comp(S)|) = 0.121821
+Writing partition with 156318 nodes to file out/wave.ptn
+
+The given partition achieved the following:
+Edge crossings (E) : 8524
+cut size: (74253 | 82065)
+diff: 7812 (0.0499751 of total n vertices)
+Min side: 74253
+E/min(|S|, |comp(S)|) = 0.114797

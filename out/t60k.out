@@ -1,0 +1,238 @@
+Reading graph from graphs/t60k.graph
+Reading a graph with V 60005E 89440
+Odd number of vertices, adding extra one.
+Cap 1 ... flow: 27693 (0.613398 s)
+Cap 2 ... flow: 29768 (0.713728 s)
+Cap 4 ... flow: 29958 (0.655618 s)
+Cap 8 ... flow: 30003 (0.724276 s)
+Flow search took (seconds) 2.71522
+== End round 0 ==
+Cap 1 ... flow: 26013 (0.652126 s)
+Cap 2 ... flow: 29140 (0.578901 s)
+Cap 4 ... flow: 29843 (0.466644 s)
+Cap 8 ... flow: 29999 (0.798114 s)
+Cap 16 ... flow: 30003 (0.59041 s)
+Flow search took (seconds) 3.09718
+== End round 1 ==
+Cap 1 ... flow: 25040 (0.587726 s)
+Cap 2 ... flow: 28495 (0.671081 s)
+Cap 4 ... flow: 29578 (0.896612 s)
+Cap 8 ... flow: 29870 (0.786624 s)
+Cap 16 ... flow: 30003 (0.830113 s)
+Flow search took (seconds) 3.78616
+== End round 2 ==
+Cap 1 ... flow: 24191 (0.854418 s)
+Cap 2 ... flow: 27756 (0.765652 s)
+Cap 4 ... flow: 29516 (0.649539 s)
+Cap 8 ... flow: 30003 (0.678323 s)
+Flow search took (seconds) 2.95824
+== End round 3 ==
+Cap 1 ... flow: 23068 (0.647154 s)
+Cap 2 ... flow: 26745 (0.818721 s)
+Cap 4 ... flow: 29034 (0.815013 s)
+Cap 8 ... flow: 29871 (1.45486 s)
+Cap 16 ... flow: 30003 (0.798197 s)
+Flow search took (seconds) 4.55243
+== End round 4 ==
+Cap 1 ... flow: 22198 (0.590908 s)
+Cap 2 ... flow: 25774 (0.723713 s)
+Cap 4 ... flow: 28590 (0.758543 s)
+Cap 8 ... flow: 29856 (1.05004 s)
+Cap 16 ... flow: 30003 (0.824266 s)
+Flow search took (seconds) 3.96375
+== End round 5 ==
+Cap 1 ... flow: 21083 (0.786994 s)
+Cap 2 ... flow: 24323 (0.928302 s)
+Cap 4 ... flow: 27538 (0.703136 s)
+Cap 8 ... flow: 29372 (0.448862 s)
+Cap 16 ... flow: 29972 (0.773869 s)
+Cap 32 ... flow: 30003 (0.777247 s)
+Flow search took (seconds) 4.43128
+== End round 6 ==
+Cap 1 ... flow: 20578 (0.619158 s)
+Cap 2 ... flow: 23645 (0.840297 s)
+Cap 4 ... flow: 26698 (0.88492 s)
+Cap 8 ... flow: 28770 (0.750823 s)
+Cap 16 ... flow: 29731 (1.93117 s)
+Cap 32 ... flow: 30003 (1.32948 s)
+Flow search took (seconds) 6.3735
+== End round 7 ==
+Cap 1 ... flow: 20324 (0.574283 s)
+Cap 2 ... flow: 23198 (0.799279 s)
+Cap 4 ... flow: 25712 (0.766829 s)
+Cap 8 ... flow: 27132 (0.846906 s)
+Cap 16 ... flow: 28199 (1.41915 s)
+Cap 32 ... flow: 29650 (1.36165 s)
+Cap 64 ... flow: 30003 (1.11963 s)
+Flow search took (seconds) 6.90493
+== End round 8 ==
+Cap 1 ... flow: 19678 (0.9881 s)
+Cap 2 ... flow: 22161 (1.00402 s)
+Cap 4 ... flow: 24386 (1.07892 s)
+Cap 8 ... flow: 26747 (0.74712 s)
+Cap 16 ... flow: 27872 (0.796028 s)
+Cap 32 ... flow: 29486 (0.779418 s)
+Cap 64 ... flow: 30003 (0.307358 s)
+Flow search took (seconds) 5.71813
+== End round 9 ==
+Cap 1 ... flow: 20043 (1.02772 s)
+Cap 2 ... flow: 22336 (0.857168 s)
+Cap 4 ... flow: 24410 (0.956159 s)
+Cap 8 ... flow: 26536 (0.952782 s)
+Cap 16 ... flow: 28661 (0.426883 s)
+Cap 32 ... flow: 29806 (0.997388 s)
+Cap 64 ... flow: 30003 (0.791102 s)
+Flow search took (seconds) 6.02518
+== End round 10 ==
+Cap 1 ... flow: 20330 (0.780039 s)
+Cap 2 ... flow: 22308 (0.694101 s)
+Cap 4 ... flow: 23954 (0.737181 s)
+Cap 8 ... flow: 25751 (0.908297 s)
+Cap 16 ... flow: 27977 (1.37231 s)
+Cap 32 ... flow: 29679 (0.802382 s)
+Cap 64 ... flow: 30003 (0.483697 s)
+Flow search took (seconds) 5.79673
+== End round 11 ==
+Cap 1 ... flow: 19583 (0.624259 s)
+Cap 2 ... flow: 21257 (0.826642 s)
+Cap 4 ... flow: 22718 (0.74403 s)
+Cap 8 ... flow: 24407 (0.961027 s)
+Cap 16 ... flow: 25738 (1.21944 s)
+Cap 32 ... flow: 26963 (0.733175 s)
+Cap 64 ... flow: 28755 (0.783713 s)
+Cap 128 ... flow: 30003 (0.553743 s)
+Flow search took (seconds) 6.46601
+== End round 12 ==
+Cap 1 ... flow: 17831 (0.739181 s)
+Cap 2 ... flow: 19338 (0.920703 s)
+Cap 4 ... flow: 20797 (0.871368 s)
+Cap 8 ... flow: 22595 (1.1672 s)
+Cap 16 ... flow: 24747 (1.46798 s)
+Cap 32 ... flow: 26903 (1.59346 s)
+Cap 64 ... flow: 29696 (1.76115 s)
+Cap 128 ... flow: 30003 (1.0226 s)
+Flow search took (seconds) 9.56252
+== End round 13 ==
+Cap 1 ... flow: 11937 (1.48477 s)
+Cap 2 ... flow: 12948 (1.43477 s)
+Cap 4 ... flow: 14073 (0.963072 s)
+Cap 8 ... flow: 15334 (1.01732 s)
+Cap 16 ... flow: 17229 (1.04674 s)
+Cap 32 ... flow: 19838 (0.911291 s)
+Cap 64 ... flow: 22750 (0.884061 s)
+Cap 128 ... flow: 27398 (1.83817 s)
+Cap 256 ... flow: 30003 (1.79524 s)
+Flow search took (seconds) 11.395
+== End round 14 ==
+Cap 1 ... flow: 15938 (0.81116 s)
+Cap 2 ... flow: 17282 (0.860385 s)
+Cap 4 ... flow: 18609 (0.852351 s)
+Cap 8 ... flow: 20288 (0.915469 s)
+Cap 16 ... flow: 21995 (1.00952 s)
+Cap 32 ... flow: 24272 (1.71332 s)
+Cap 64 ... flow: 27581 (1.42642 s)
+Cap 128 ... flow: 30003 (0.650065 s)
+Flow search took (seconds) 8.25874
+== End round 15 ==
+Cap 1 ... flow: 19424 (0.957423 s)
+Cap 2 ... flow: 20711 (0.94526 s)
+Cap 4 ... flow: 21726 (0.787135 s)
+Cap 8 ... flow: 22811 (0.930389 s)
+Cap 16 ... flow: 24218 (1.12376 s)
+Cap 32 ... flow: 26539 (1.31702 s)
+Cap 64 ... flow: 29439 (1.76761 s)
+Cap 128 ... flow: 30003 (1.18383 s)
+Flow search took (seconds) 9.02969
+== End round 16 ==
+Cap 1 ... flow: 21970 (0.701901 s)
+Cap 2 ... flow: 23273 (0.827231 s)
+Cap 4 ... flow: 23974 (0.889022 s)
+Cap 8 ... flow: 24846 (0.832198 s)
+Cap 16 ... flow: 25762 (0.558593 s)
+Cap 32 ... flow: 27267 (0.758907 s)
+Cap 64 ... flow: 29369 (1.18904 s)
+Cap 128 ... flow: 30003 (0.321522 s)
+Flow search took (seconds) 6.09852
+== End round 17 ==
+Cap 1 ... flow: 23382 (0.653478 s)
+Cap 2 ... flow: 24818 (0.944834 s)
+Cap 4 ... flow: 25554 (1.13039 s)
+Cap 8 ... flow: 26186 (1.49034 s)
+Cap 16 ... flow: 27207 (1.40591 s)
+Cap 32 ... flow: 28494 (1.74371 s)
+Cap 64 ... flow: 30003 (1.30618 s)
+Flow search took (seconds) 8.69353
+== End round 18 ==
+Cap 1 ... flow: 19882 (0.748235 s)
+Cap 2 ... flow: 21448 (0.942073 s)
+Cap 4 ... flow: 22827 (0.922878 s)
+Cap 8 ... flow: 24513 (0.749497 s)
+Cap 16 ... flow: 27326 (1.07867 s)
+Cap 32 ... flow: 29183 (0.852303 s)
+Cap 64 ... flow: 30003 (0.810871 s)
+Flow search took (seconds) 6.12066
+== End round 19 ==
+Cap 1 ... flow: 23832 (0.641548 s)
+Cap 2 ... flow: 26211 (0.643876 s)
+Cap 4 ... flow: 27428 (0.849094 s)
+Cap 8 ... flow: 28446 (0.840942 s)
+Cap 16 ... flow: 29148 (1.09387 s)
+Cap 32 ... flow: 30003 (1.06376 s)
+Flow search took (seconds) 5.15074
+== End round 20 ==
+Cap 1 ... flow: 19675 (0.954845 s)
+Cap 2 ... flow: 20782 (1.01711 s)
+Cap 4 ... flow: 21481 (0.947383 s)
+Cap 8 ... flow: 22561 (1.03014 s)
+Cap 16 ... flow: 24064 (0.998288 s)
+Cap 32 ... flow: 25610 (0.821766 s)
+Cap 64 ... flow: 28426 (0.998524 s)
+Cap 128 ... flow: 30003 (0.826051 s)
+Flow search took (seconds) 7.61351
+== End round 21 ==
+Cap 1 ... flow: 20325 (0.595024 s)
+Cap 2 ... flow: 22088 (0.671014 s)
+Cap 4 ... flow: 23320 (0.597757 s)
+Cap 8 ... flow: 24846 (0.702003 s)
+Cap 16 ... flow: 26210 (0.720515 s)
+Cap 32 ... flow: 28215 (1.31388 s)
+Cap 64 ... flow: 30003 (1.19115 s)
+Flow search took (seconds) 5.80647
+== End round 22 ==
+Cap 1 ... flow: 19246 (0.702404 s)
+Cap 2 ... flow: 20767 (0.694877 s)
+Cap 4 ... flow: 21671 (0.792959 s)
+Cap 8 ... flow: 22718 (1.13238 s)
+Cap 16 ... flow: 24174 (1.19348 s)
+Cap 32 ... flow: 26180 (1.56678 s)
+Cap 64 ... flow: 29092 (1.65098 s)
+Cap 128 ... flow: 30003 (1.27418 s)
+Flow search took (seconds) 9.02944
+== End round 23 ==
+Cap 1 ... flow: 7975 (0.870457 s)
+Cap 2 ... flow: 8519 (0.826738 s)
+Cap 4 ... flow: 8941 (0.901012 s)
+Cap 8 ... flow: 9413 (0.805342 s)
+Cap 16 ... flow: 10056 (0.678972 s)
+Cap 32 ... flow: 11061 (0.920752 s)
+Cap 64 ... flow: 12860 (0.88743 s)
+Cap 128 ... flow: 16444 (0.905721 s)
+Cap 256 ... flow: 23612 (0.932161 s)
+Cap 512 ... flow: 30003 (0.998167 s)
+Flow search took (seconds) 8.74963
+== End round 24 ==
+The cut with highest capacity required was found on round24
+Best cut sparsity: 
+Edge crossings (E) : 56
+cut size: (27021 | 32985)
+diff: 5964 (0.0993901 of total n vertices)
+Min side: 27021
+E/min(|S|, |comp(S)|) = 0.00207246
+Writing partition with 60006 nodes to file out/t60k.ptn
+
+The given partition achieved the following:
+Edge crossings (E) : 66
+cut size: (28569 | 31437)
+diff: 2868 (0.0477952 of total n vertices)
+Min side: 28569
+E/min(|S|, |comp(S)|) = 0.0023102

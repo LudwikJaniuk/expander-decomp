@@ -1,0 +1,127 @@
+Reading graph from graphs/fe_tooth.graph
+Reading a graph with V 78136E 452591
+Cap 1 ... flow: 39068 (0.561661 s)
+Flow search took (seconds) 0.572623
+== End round 0 ==
+Cap 1 ... flow: 39068 (0.540088 s)
+Flow search took (seconds) 0.550905
+== End round 1 ==
+Cap 1 ... flow: 39068 (0.515071 s)
+Flow search took (seconds) 0.526037
+== End round 2 ==
+Cap 1 ... flow: 39068 (0.487442 s)
+Flow search took (seconds) 0.498236
+== End round 3 ==
+Cap 1 ... flow: 39068 (0.742082 s)
+Flow search took (seconds) 0.753067
+== End round 4 ==
+Cap 1 ... flow: 39068 (0.754229 s)
+Flow search took (seconds) 0.765074
+== End round 5 ==
+Cap 1 ... flow: 39068 (1.8354 s)
+Flow search took (seconds) 1.84687
+== End round 6 ==
+Cap 1 ... flow: 39068 (0.992582 s)
+Flow search took (seconds) 1.00354
+== End round 7 ==
+Cap 1 ... flow: 38791 (1.03782 s)
+Cap 2 ... flow: 39068 (0.747942 s)
+Flow search took (seconds) 1.80705
+== End round 8 ==
+Cap 1 ... flow: 38977 (1.38052 s)
+Cap 2 ... flow: 39068 (0.830375 s)
+Flow search took (seconds) 2.23275
+== End round 9 ==
+Cap 1 ... flow: 35988 (3.077 s)
+Cap 2 ... flow: 38690 (3.38064 s)
+Cap 4 ... flow: 39068 (0.890828 s)
+Flow search took (seconds) 7.38784
+== End round 10 ==
+Cap 1 ... flow: 34375 (2.61537 s)
+Cap 2 ... flow: 38728 (2.34943 s)
+Cap 4 ... flow: 39068 (0.798222 s)
+Flow search took (seconds) 5.7959
+== End round 11 ==
+Cap 1 ... flow: 32328 (2.88147 s)
+Cap 2 ... flow: 36742 (2.93315 s)
+Cap 4 ... flow: 39068 (0.923698 s)
+Flow search took (seconds) 6.7778
+== End round 12 ==
+Cap 1 ... flow: 33555 (2.72418 s)
+Cap 2 ... flow: 38552 (3.57141 s)
+Cap 4 ... flow: 39068 (0.894519 s)
+Flow search took (seconds) 7.22961
+== End round 13 ==
+Cap 1 ... flow: 27263 (2.50575 s)
+Cap 2 ... flow: 31432 (3.89618 s)
+Cap 4 ... flow: 38361 (2.36803 s)
+Cap 8 ... flow: 39068 (0.855801 s)
+Flow search took (seconds) 9.66989
+== End round 14 ==
+Cap 1 ... flow: 28209 (3.53423 s)
+Cap 2 ... flow: 32681 (4.24378 s)
+Cap 4 ... flow: 39068 (1.73123 s)
+Flow search took (seconds) 9.54726
+== End round 15 ==
+Cap 1 ... flow: 32182 (2.6447 s)
+Cap 2 ... flow: 37075 (2.80287 s)
+Cap 4 ... flow: 39068 (1.06589 s)
+Flow search took (seconds) 6.54597
+== End round 16 ==
+Cap 1 ... flow: 25272 (2.94471 s)
+Cap 2 ... flow: 29186 (3.90847 s)
+Cap 4 ... flow: 35433 (3.30561 s)
+Cap 8 ... flow: 39068 (1.04369 s)
+Flow search took (seconds) 11.2523
+== End round 17 ==
+Cap 1 ... flow: 31913 (4.31036 s)
+Cap 2 ... flow: 36778 (5.8548 s)
+Cap 4 ... flow: 39068 (0.990383 s)
+Flow search took (seconds) 11.1917
+== End round 18 ==
+Cap 1 ... flow: 28783 (3.4896 s)
+Cap 2 ... flow: 33091 (4.56599 s)
+Cap 4 ... flow: 39068 (2.21959 s)
+Flow search took (seconds) 10.3127
+== End round 19 ==
+Cap 1 ... flow: 33086 (2.74744 s)
+Cap 2 ... flow: 37032 (2.19007 s)
+Cap 4 ... flow: 39068 (0.982913 s)
+Flow search took (seconds) 5.95422
+== End round 20 ==
+Cap 1 ... flow: 23730 (2.33042 s)
+Cap 2 ... flow: 28259 (3.03342 s)
+Cap 4 ... flow: 36767 (4.10069 s)
+Cap 8 ... flow: 39068 (0.95894 s)
+Flow search took (seconds) 10.4693
+== End round 21 ==
+Cap 1 ... flow: 29505 (2.36861 s)
+Cap 2 ... flow: 33435 (1.97197 s)
+Cap 4 ... flow: 39068 (1.51562 s)
+Flow search took (seconds) 5.88932
+== End round 22 ==
+Cap 1 ... flow: 30719 (2.66097 s)
+Cap 2 ... flow: 35319 (4.02733 s)
+Cap 4 ... flow: 39068 (1.5888 s)
+Flow search took (seconds) 8.31207
+== End round 23 ==
+Cap 1 ... flow: 30402 (4.08979 s)
+Cap 2 ... flow: 35124 (5.62156 s)
+Cap 4 ... flow: 39068 (1.40433 s)
+Flow search took (seconds) 11.1523
+== End round 24 ==
+The cut with highest capacity required was found on round14
+Best cut sparsity: 
+Edge crossings (E) : 2571
+cut size: (15167 | 62969)
+diff: 47802 (0.611779 of total n vertices)
+Min side: 15167
+E/min(|S|, |comp(S)|) = 0.169513
+Writing partition with 78136 nodes to file out/fe_tooth.ptn
+
+The given partition achieved the following:
+Edge crossings (E) : 3773
+cut size: (37569 | 40567)
+diff: 2998 (0.038369 of total n vertices)
+Min side: 37569
+E/min(|S|, |comp(S)|) = 0.100429

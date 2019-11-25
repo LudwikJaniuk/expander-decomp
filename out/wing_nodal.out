@@ -1,0 +1,108 @@
+Reading graph from graphs/wing_nodal.graph
+Reading a graph with V 10937E 75488
+Odd number of vertices, adding extra one.
+Cap 1 ... flow: 5469 (0.015449 s)
+Flow search took (seconds) 0.017232
+== End round 0 ==
+Cap 1 ... flow: 5469 (0.015836 s)
+Flow search took (seconds) 0.017559
+== End round 1 ==
+Cap 1 ... flow: 5469 (0.031432 s)
+Flow search took (seconds) 0.033438
+== End round 2 ==
+Cap 1 ... flow: 5469 (0.02445 s)
+Flow search took (seconds) 0.026317
+== End round 3 ==
+Cap 1 ... flow: 5469 (0.017816 s)
+Flow search took (seconds) 0.019694
+== End round 4 ==
+Cap 1 ... flow: 5469 (0.048294 s)
+Flow search took (seconds) 0.050131
+== End round 5 ==
+Cap 1 ... flow: 5469 (0.025939 s)
+Flow search took (seconds) 0.027856
+== End round 6 ==
+Cap 1 ... flow: 5469 (0.067779 s)
+Flow search took (seconds) 0.069612
+== End round 7 ==
+Cap 1 ... flow: 5420 (0.033384 s)
+Cap 2 ... flow: 5469 (0.022351 s)
+Flow search took (seconds) 0.059244
+== End round 8 ==
+Cap 1 ... flow: 5469 (0.103455 s)
+Flow search took (seconds) 0.105325
+== End round 9 ==
+Cap 1 ... flow: 5175 (0.049999 s)
+Cap 2 ... flow: 5469 (0.033647 s)
+Flow search took (seconds) 0.087952
+== End round 10 ==
+Cap 1 ... flow: 5469 (0.037275 s)
+Flow search took (seconds) 0.039229
+== End round 11 ==
+Cap 1 ... flow: 3760 (0.138244 s)
+Cap 2 ... flow: 5106 (0.059984 s)
+Cap 4 ... flow: 5469 (0.035202 s)
+Flow search took (seconds) 0.238871
+== End round 12 ==
+Cap 1 ... flow: 5390 (0.068317 s)
+Cap 2 ... flow: 5469 (0.032621 s)
+Flow search took (seconds) 0.104583
+== End round 13 ==
+Cap 1 ... flow: 5139 (0.165869 s)
+Cap 2 ... flow: 5469 (0.076899 s)
+Flow search took (seconds) 0.247033
+== End round 14 ==
+Cap 1 ... flow: 5427 (0.140708 s)
+Cap 2 ... flow: 5469 (0.045722 s)
+Flow search took (seconds) 0.190582
+== End round 15 ==
+Cap 1 ... flow: 5469 (0.035641 s)
+Flow search took (seconds) 0.03764
+== End round 16 ==
+Cap 1 ... flow: 5426 (0.134401 s)
+Cap 2 ... flow: 5469 (0.030191 s)
+Flow search took (seconds) 0.168769
+== End round 17 ==
+Cap 1 ... flow: 5333 (0.167088 s)
+Cap 2 ... flow: 5469 (0.037766 s)
+Flow search took (seconds) 0.20906
+== End round 18 ==
+Cap 1 ... flow: 5422 (0.133793 s)
+Cap 2 ... flow: 5469 (0.040983 s)
+Flow search took (seconds) 0.178937
+== End round 19 ==
+Cap 1 ... flow: 4668 (0.164701 s)
+Cap 2 ... flow: 5265 (0.045666 s)
+Cap 4 ... flow: 5469 (0.030084 s)
+Flow search took (seconds) 0.245945
+== End round 20 ==
+Cap 1 ... flow: 5469 (0.061542 s)
+Flow search took (seconds) 0.064588
+== End round 21 ==
+Cap 1 ... flow: 4948 (0.111182 s)
+Cap 2 ... flow: 5469 (0.048121 s)
+Flow search took (seconds) 0.16351
+== End round 22 ==
+Cap 1 ... flow: 3992 (0.135095 s)
+Cap 2 ... flow: 5365 (0.160636 s)
+Cap 4 ... flow: 5469 (0.054312 s)
+Flow search took (seconds) 0.356121
+== End round 23 ==
+Cap 1 ... flow: 5469 (0.032173 s)
+Flow search took (seconds) 0.034155
+== End round 24 ==
+The cut with highest capacity required was found on round12
+Best cut sparsity: 
+Edge crossings (E) : 405
+cut size: (1205 | 9733)
+diff: 8528 (0.779667 of total n vertices)
+Min side: 1205
+E/min(|S|, |comp(S)|) = 0.3361
+Writing partition with 10938 nodes to file out/wing_nodal.ptn
+
+The given partition achieved the following:
+Edge crossings (E) : 1669
+cut size: (5195 | 5743)
+diff: 548 (0.0501006 of total n vertices)
+Min side: 5195
+E/min(|S|, |comp(S)|) = 0.32127

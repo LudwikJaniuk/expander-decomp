@@ -1,0 +1,151 @@
+Reading graph from graphs/fe_sphere.graph
+Reading a graph with V 16386E 49152
+Cap 1 ... flow: 8193 (0.05112 s)
+Flow search took (seconds) 0.051818
+== End round 0 ==
+Cap 1 ... flow: 8040 (0.136052 s)
+Cap 2 ... flow: 8193 (0.04712 s)
+Flow search took (seconds) 0.185089
+== End round 1 ==
+Cap 1 ... flow: 8002 (0.116988 s)
+Cap 2 ... flow: 8193 (0.077431 s)
+Flow search took (seconds) 0.196311
+== End round 2 ==
+Cap 1 ... flow: 8044 (0.226766 s)
+Cap 2 ... flow: 8193 (0.080378 s)
+Flow search took (seconds) 0.309522
+== End round 3 ==
+Cap 1 ... flow: 7719 (0.163316 s)
+Cap 2 ... flow: 8193 (0.077252 s)
+Flow search took (seconds) 0.2426
+== End round 4 ==
+Cap 1 ... flow: 7409 (0.168063 s)
+Cap 2 ... flow: 8116 (0.208903 s)
+Cap 4 ... flow: 8193 (0.086009 s)
+Flow search took (seconds) 0.468782
+== End round 5 ==
+Cap 1 ... flow: 7233 (0.151406 s)
+Cap 2 ... flow: 7949 (0.196919 s)
+Cap 4 ... flow: 8193 (0.080134 s)
+Flow search took (seconds) 0.431062
+== End round 6 ==
+Cap 1 ... flow: 6934 (0.164995 s)
+Cap 2 ... flow: 7789 (0.245191 s)
+Cap 4 ... flow: 8193 (0.069667 s)
+Flow search took (seconds) 0.482654
+== End round 7 ==
+Cap 1 ... flow: 6599 (0.114769 s)
+Cap 2 ... flow: 7764 (0.114082 s)
+Cap 4 ... flow: 8193 (0.109807 s)
+Flow search took (seconds) 0.34093
+== End round 8 ==
+Cap 1 ... flow: 5676 (0.163654 s)
+Cap 2 ... flow: 6708 (0.163662 s)
+Cap 4 ... flow: 7768 (0.249188 s)
+Cap 8 ... flow: 8193 (0.088432 s)
+Flow search took (seconds) 0.668273
+== End round 9 ==
+Cap 1 ... flow: 6111 (0.174008 s)
+Cap 2 ... flow: 7226 (0.181181 s)
+Cap 4 ... flow: 8193 (0.128289 s)
+Flow search took (seconds) 0.486145
+== End round 10 ==
+Cap 1 ... flow: 5741 (0.216316 s)
+Cap 2 ... flow: 6702 (0.304192 s)
+Cap 4 ... flow: 8065 (0.219057 s)
+Cap 8 ... flow: 8193 (0.072127 s)
+Flow search took (seconds) 0.81536
+== End round 11 ==
+Cap 1 ... flow: 4842 (0.175824 s)
+Cap 2 ... flow: 6070 (0.219534 s)
+Cap 4 ... flow: 7473 (0.240592 s)
+Cap 8 ... flow: 8193 (0.065559 s)
+Flow search took (seconds) 0.705282
+== End round 12 ==
+Cap 1 ... flow: 3331 (0.156794 s)
+Cap 2 ... flow: 3966 (0.185834 s)
+Cap 4 ... flow: 5037 (0.243416 s)
+Cap 8 ... flow: 7016 (0.36617 s)
+Cap 16 ... flow: 8193 (0.071441 s)
+Flow search took (seconds) 1.0299
+== End round 13 ==
+Cap 1 ... flow: 3622 (0.169515 s)
+Cap 2 ... flow: 4227 (0.139864 s)
+Cap 4 ... flow: 5248 (0.264267 s)
+Cap 8 ... flow: 7065 (0.306335 s)
+Cap 16 ... flow: 8193 (0.070114 s)
+Flow search took (seconds) 0.953927
+== End round 14 ==
+Cap 1 ... flow: 6758 (0.156045 s)
+Cap 2 ... flow: 7316 (0.207538 s)
+Cap 4 ... flow: 8193 (0.169145 s)
+Flow search took (seconds) 0.535393
+== End round 15 ==
+Cap 1 ... flow: 7515 (0.128387 s)
+Cap 2 ... flow: 8020 (0.154901 s)
+Cap 4 ... flow: 8193 (0.080598 s)
+Flow search took (seconds) 0.36632
+== End round 16 ==
+Cap 1 ... flow: 6359 (0.194597 s)
+Cap 2 ... flow: 6929 (0.209578 s)
+Cap 4 ... flow: 7958 (0.293933 s)
+Cap 8 ... flow: 8193 (0.085816 s)
+Flow search took (seconds) 0.78725
+== End round 17 ==
+Cap 1 ... flow: 6109 (0.162229 s)
+Cap 2 ... flow: 6679 (0.210152 s)
+Cap 4 ... flow: 7559 (0.268045 s)
+Cap 8 ... flow: 8193 (0.087285 s)
+Flow search took (seconds) 0.730826
+== End round 18 ==
+Cap 1 ... flow: 5629 (0.176914 s)
+Cap 2 ... flow: 6129 (0.21002 s)
+Cap 4 ... flow: 7034 (0.266791 s)
+Cap 8 ... flow: 8193 (0.092092 s)
+Flow search took (seconds) 0.749057
+== End round 19 ==
+Cap 1 ... flow: 5950 (0.212137 s)
+Cap 2 ... flow: 6473 (0.151801 s)
+Cap 4 ... flow: 7337 (0.23883 s)
+Cap 8 ... flow: 8193 (0.051249 s)
+Flow search took (seconds) 0.657494
+== End round 20 ==
+Cap 1 ... flow: 5731 (0.169049 s)
+Cap 2 ... flow: 6318 (0.216418 s)
+Cap 4 ... flow: 7271 (0.356935 s)
+Cap 8 ... flow: 8193 (0.087709 s)
+Flow search took (seconds) 0.833672
+== End round 21 ==
+Cap 1 ... flow: 6543 (0.158288 s)
+Cap 2 ... flow: 7058 (0.165586 s)
+Cap 4 ... flow: 7930 (0.194166 s)
+Cap 8 ... flow: 8193 (0.058556 s)
+Flow search took (seconds) 0.579735
+== End round 22 ==
+Cap 1 ... flow: 5468 (0.133257 s)
+Cap 2 ... flow: 6095 (0.212988 s)
+Cap 4 ... flow: 7067 (0.247685 s)
+Cap 8 ... flow: 8193 (0.114725 s)
+Flow search took (seconds) 0.712019
+== End round 23 ==
+Cap 1 ... flow: 6238 (0.124434 s)
+Cap 2 ... flow: 6900 (0.18544 s)
+Cap 4 ... flow: 7846 (0.202512 s)
+Cap 8 ... flow: 8193 (0.077335 s)
+Flow search took (seconds) 0.59282
+== End round 24 ==
+The cut with highest capacity required was found on round13
+Best cut sparsity: 
+Edge crossings (E) : 482
+cut size: (6963 | 9423)
+diff: 2460 (0.150128 of total n vertices)
+Min side: 6963
+E/min(|S|, |comp(S)|) = 0.069223
+Writing partition with 16386 nodes to file out/fe_sphere.ptn
+
+The given partition achieved the following:
+Edge crossings (E) : 384
+cut size: (8097 | 8289)
+diff: 192 (0.0117173 of total n vertices)
+Min side: 8097
+E/min(|S|, |comp(S)|) = 0.047425

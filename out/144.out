@@ -1,10 +1,117 @@
-The cut with highest capacity required was found on round0
+Reading graph from graphs/144.graph
+Reading a graph with V 144649E 1074393
+Odd number of vertices, adding extra one.
+Cap 1 ... flow: 72325 (1.16486 s)
+Flow search took (seconds) 1.21243
+== End round 0 ==
+Cap 1 ... flow: 72325 (1.19767 s)
+Flow search took (seconds) 1.24477
+== End round 1 ==
+Cap 1 ... flow: 72325 (1.06584 s)
+Flow search took (seconds) 1.11478
+== End round 2 ==
+Cap 1 ... flow: 72325 (1.63092 s)
+Flow search took (seconds) 1.686
+== End round 3 ==
+Cap 1 ... flow: 72325 (1.41892 s)
+Flow search took (seconds) 1.46561
+== End round 4 ==
+Cap 1 ... flow: 72325 (1.92821 s)
+Flow search took (seconds) 1.97455
+== End round 5 ==
+Cap 1 ... flow: 72325 (2.16769 s)
+Flow search took (seconds) 2.21436
+== End round 6 ==
+Cap 1 ... flow: 72325 (2.14719 s)
+Flow search took (seconds) 2.19283
+== End round 7 ==
+Cap 1 ... flow: 72325 (3.11668 s)
+Flow search took (seconds) 3.16493
+== End round 8 ==
+Cap 1 ... flow: 72325 (5.8246 s)
+Flow search took (seconds) 5.87164
+== End round 9 ==
+Cap 1 ... flow: 71875 (6.80913 s)
+Cap 2 ... flow: 72325 (2.67013 s)
+Flow search took (seconds) 9.57974
+== End round 10 ==
+Cap 1 ... flow: 67872 (13.7235 s)
+Cap 2 ... flow: 72325 (3.52359 s)
+Flow search took (seconds) 17.3575
+== End round 11 ==
+Cap 1 ... flow: 59020 (9.97518 s)
+Cap 2 ... flow: 67783 (4.87772 s)
+Cap 4 ... flow: 72325 (3.57051 s)
+Flow search took (seconds) 18.576
+== End round 12 ==
+Cap 1 ... flow: 60671 (9.32113 s)
+Cap 2 ... flow: 69915 (14.0718 s)
+Cap 4 ... flow: 72325 (4.22837 s)
+Flow search took (seconds) 27.7984
+== End round 13 ==
+Cap 1 ... flow: 52463 (14.1524 s)
+Cap 2 ... flow: 63266 (17.2577 s)
+Cap 4 ... flow: 72325 (6.30513 s)
+Flow search took (seconds) 37.8708
+== End round 14 ==
+Cap 1 ... flow: 58197 (11.5405 s)
+Cap 2 ... flow: 67567 (9.9328 s)
+Cap 4 ... flow: 72325 (3.24301 s)
+Flow search took (seconds) 24.8691
+== End round 15 ==
+Cap 1 ... flow: 56411 (12.3451 s)
+Cap 2 ... flow: 67874 (12.5374 s)
+Cap 4 ... flow: 72325 (4.23985 s)
+Flow search took (seconds) 29.2788
+== End round 16 ==
+Cap 1 ... flow: 59845 (11.5916 s)
+Cap 2 ... flow: 69370 (13.0988 s)
+Cap 4 ... flow: 72325 (4.04336 s)
+Flow search took (seconds) 28.897
+== End round 17 ==
+Cap 1 ... flow: 53811 (12.6538 s)
+Cap 2 ... flow: 65003 (14.048 s)
+Cap 4 ... flow: 72325 (6.27899 s)
+Flow search took (seconds) 33.1428
+== End round 18 ==
+Cap 1 ... flow: 54780 (14.6646 s)
+Cap 2 ... flow: 62994 (14.7212 s)
+Cap 4 ... flow: 72325 (9.22237 s)
+Flow search took (seconds) 38.7652
+== End round 19 ==
+Cap 1 ... flow: 48823 (13.6027 s)
+Cap 2 ... flow: 56191 (11.2889 s)
+Cap 4 ... flow: 70133 (15.6678 s)
+Cap 8 ... flow: 72325 (4.37515 s)
+Flow search took (seconds) 45.1478
+== End round 20 ==
+Cap 1 ... flow: 51605 (20.3101 s)
+Cap 2 ... flow: 60530 (13.9301 s)
+Cap 4 ... flow: 72325 (10.5069 s)
+Flow search took (seconds) 44.905
+== End round 21 ==
+Cap 1 ... flow: 61726 (9.74878 s)
+Cap 2 ... flow: 72325 (3.60753 s)
+Flow search took (seconds) 13.4831
+== End round 22 ==
+Cap 1 ... flow: 57769 (12.1656 s)
+Cap 2 ... flow: 67323 (15.0521 s)
+Cap 4 ... flow: 72325 (5.96029 s)
+Flow search took (seconds) 33.3407
+== End round 23 ==
+Cap 1 ... flow: 43986 (9.64019 s)
+Cap 2 ... flow: 51778 (11.1065 s)
+Cap 4 ... flow: 66228 (13.4747 s)
+Cap 8 ... flow: 72325 (4.42681 s)
+Flow search took (seconds) 38.8495
+== End round 24 ==
+The cut with highest capacity required was found on round20
 Best cut sparsity: 
-Edge crossings (E) : 0
-cut size: (0 | 144650)
-diff: 144650 (1 of total n vertices)
-Min side: 0
-E/min(|S|, |comp(S)|) = -nan
+Edge crossings (E) : 6823
+cut size: (61714 | 82936)
+diff: 21222 (0.146713 of total n vertices)
+Min side: 61714
+E/min(|S|, |comp(S)|) = 0.110558
 Writing partition with 144650 nodes to file out/144.ptn
 
 The given partition achieved the following:

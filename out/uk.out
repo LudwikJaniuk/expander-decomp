@@ -1,0 +1,247 @@
+Reading graph from graphs/uk.graph
+Reading a graph with V 4824E 6837
+Cap 1 ... flow: 2134 (0.01125 s)
+Cap 2 ... flow: 2346 (0.010386 s)
+Cap 4 ... flow: 2385 (0.011176 s)
+Cap 8 ... flow: 2402 (0.010334 s)
+Cap 16 ... flow: 2412 (0.010115 s)
+Flow search took (seconds) 0.05442
+== End round 0 ==
+Cap 1 ... flow: 1993 (0.010867 s)
+Cap 2 ... flow: 2209 (0.014085 s)
+Cap 4 ... flow: 2305 (0.014752 s)
+Cap 8 ... flow: 2386 (0.014251 s)
+Cap 16 ... flow: 2411 (0.010148 s)
+Cap 32 ... flow: 2412 (0.008051 s)
+Flow search took (seconds) 0.073438
+== End round 1 ==
+Cap 1 ... flow: 1891 (0.014069 s)
+Cap 2 ... flow: 2120 (0.012757 s)
+Cap 4 ... flow: 2287 (0.011379 s)
+Cap 8 ... flow: 2370 (0.008579 s)
+Cap 16 ... flow: 2412 (0.014317 s)
+Flow search took (seconds) 0.062158
+== End round 2 ==
+Cap 1 ... flow: 1835 (0.008868 s)
+Cap 2 ... flow: 2084 (0.013274 s)
+Cap 4 ... flow: 2260 (0.016542 s)
+Cap 8 ... flow: 2355 (0.017762 s)
+Cap 16 ... flow: 2401 (0.01791 s)
+Cap 32 ... flow: 2412 (0.014086 s)
+Flow search took (seconds) 0.089703
+== End round 3 ==
+Cap 1 ... flow: 1869 (0.009147 s)
+Cap 2 ... flow: 2105 (0.020942 s)
+Cap 4 ... flow: 2200 (0.017663 s)
+Cap 8 ... flow: 2283 (0.018275 s)
+Cap 16 ... flow: 2345 (0.025231 s)
+Cap 32 ... flow: 2409 (0.023641 s)
+Cap 64 ... flow: 2412 (0.014554 s)
+Flow search took (seconds) 0.131146
+== End round 4 ==
+Cap 1 ... flow: 1696 (0.008613 s)
+Cap 2 ... flow: 1910 (0.006411 s)
+Cap 4 ... flow: 2027 (0.00781 s)
+Cap 8 ... flow: 2147 (0.01178 s)
+Cap 16 ... flow: 2211 (0.009668 s)
+Cap 32 ... flow: 2285 (0.007568 s)
+Cap 64 ... flow: 2412 (0.018491 s)
+Flow search took (seconds) 0.071831
+== End round 5 ==
+Cap 1 ... flow: 1757 (0.013008 s)
+Cap 2 ... flow: 1968 (0.013205 s)
+Cap 4 ... flow: 2132 (0.01506 s)
+Cap 8 ... flow: 2285 (0.021599 s)
+Cap 16 ... flow: 2375 (0.01751 s)
+Cap 32 ... flow: 2412 (0.014685 s)
+Flow search took (seconds) 0.096502
+== End round 6 ==
+Cap 1 ... flow: 1656 (0.008379 s)
+Cap 2 ... flow: 1851 (0.011451 s)
+Cap 4 ... flow: 1949 (0.017658 s)
+Cap 8 ... flow: 2062 (0.019636 s)
+Cap 16 ... flow: 2257 (0.026129 s)
+Cap 32 ... flow: 2374 (0.02762 s)
+Cap 64 ... flow: 2412 (0.018516 s)
+Flow search took (seconds) 0.131017
+== End round 7 ==
+Cap 1 ... flow: 1585 (0.012249 s)
+Cap 2 ... flow: 1703 (0.008776 s)
+Cap 4 ... flow: 1771 (0.011448 s)
+Cap 8 ... flow: 1847 (0.012022 s)
+Cap 16 ... flow: 1991 (0.014246 s)
+Cap 32 ... flow: 2156 (0.025401 s)
+Cap 64 ... flow: 2284 (0.01907 s)
+Cap 128 ... flow: 2412 (0.019154 s)
+Flow search took (seconds) 0.124164
+== End round 8 ==
+Cap 1 ... flow: 1625 (0.01211 s)
+Cap 2 ... flow: 1808 (0.012083 s)
+Cap 4 ... flow: 1938 (0.014598 s)
+Cap 8 ... flow: 2082 (0.022105 s)
+Cap 16 ... flow: 2201 (0.026578 s)
+Cap 32 ... flow: 2301 (0.022321 s)
+Cap 64 ... flow: 2412 (0.02101 s)
+Flow search took (seconds) 0.132457
+== End round 9 ==
+Cap 1 ... flow: 1746 (0.010952 s)
+Cap 2 ... flow: 1946 (0.007022 s)
+Cap 4 ... flow: 2052 (0.005112 s)
+Cap 8 ... flow: 2120 (0.004322 s)
+Cap 16 ... flow: 2205 (0.005184 s)
+Cap 32 ... flow: 2304 (0.007846 s)
+Cap 64 ... flow: 2412 (0.011121 s)
+Flow search took (seconds) 0.052973
+== End round 10 ==
+Cap 1 ... flow: 1509 (0.01084 s)
+Cap 2 ... flow: 1712 (0.014369 s)
+Cap 4 ... flow: 1852 (0.020436 s)
+Cap 8 ... flow: 2003 (0.028664 s)
+Cap 16 ... flow: 2147 (0.038231 s)
+Cap 32 ... flow: 2286 (0.039186 s)
+Cap 64 ... flow: 2412 (0.035762 s)
+Flow search took (seconds) 0.189147
+== End round 11 ==
+Cap 1 ... flow: 1534 (0.015288 s)
+Cap 2 ... flow: 1651 (0.015086 s)
+Cap 4 ... flow: 1709 (0.021961 s)
+Cap 8 ... flow: 1749 (0.015603 s)
+Cap 16 ... flow: 1815 (0.01903 s)
+Cap 32 ... flow: 1902 (0.022222 s)
+Cap 64 ... flow: 2062 (0.02204 s)
+Cap 128 ... flow: 2382 (0.031238 s)
+Cap 256 ... flow: 2412 (0.014125 s)
+Flow search took (seconds) 0.178645
+== End round 12 ==
+Cap 1 ... flow: 1790 (0.010246 s)
+Cap 2 ... flow: 1962 (0.009221 s)
+Cap 4 ... flow: 2047 (0.012384 s)
+Cap 8 ... flow: 2126 (0.010742 s)
+Cap 16 ... flow: 2215 (0.013753 s)
+Cap 32 ... flow: 2375 (0.018683 s)
+Cap 64 ... flow: 2412 (0.01006 s)
+Flow search took (seconds) 0.086752
+== End round 13 ==
+Cap 1 ... flow: 1685 (0.014539 s)
+Cap 2 ... flow: 1814 (0.018018 s)
+Cap 4 ... flow: 1875 (0.021485 s)
+Cap 8 ... flow: 1917 (0.024742 s)
+Cap 16 ... flow: 1975 (0.025968 s)
+Cap 32 ... flow: 2039 (0.021532 s)
+Cap 64 ... flow: 2167 (0.02095 s)
+Cap 128 ... flow: 2412 (0.024764 s)
+Flow search took (seconds) 0.173866
+== End round 14 ==
+Cap 1 ... flow: 1260 (0.008424 s)
+Cap 2 ... flow: 1374 (0.01262 s)
+Cap 4 ... flow: 1489 (0.009439 s)
+Cap 8 ... flow: 1609 (0.011305 s)
+Cap 16 ... flow: 1761 (0.01088 s)
+Cap 32 ... flow: 2044 (0.018102 s)
+Cap 64 ... flow: 2228 (0.025143 s)
+Cap 128 ... flow: 2412 (0.025121 s)
+Flow search took (seconds) 0.12284
+== End round 15 ==
+Cap 1 ... flow: 1770 (0.007809 s)
+Cap 2 ... flow: 1969 (0.012031 s)
+Cap 4 ... flow: 2059 (0.016806 s)
+Cap 8 ... flow: 2149 (0.027478 s)
+Cap 16 ... flow: 2226 (0.023398 s)
+Cap 32 ... flow: 2360 (0.028338 s)
+Cap 64 ... flow: 2412 (0.018568 s)
+Flow search took (seconds) 0.136108
+== End round 16 ==
+Cap 1 ... flow: 1660 (0.01032 s)
+Cap 2 ... flow: 1864 (0.015809 s)
+Cap 4 ... flow: 2041 (0.014915 s)
+Cap 8 ... flow: 2196 (0.015771 s)
+Cap 16 ... flow: 2283 (0.0108 s)
+Cap 32 ... flow: 2379 (0.014451 s)
+Cap 64 ... flow: 2412 (0.014339 s)
+Flow search took (seconds) 0.097856
+== End round 17 ==
+Cap 1 ... flow: 1429 (0.00885 s)
+Cap 2 ... flow: 1565 (0.009534 s)
+Cap 4 ... flow: 1685 (0.008888 s)
+Cap 8 ... flow: 1836 (0.012801 s)
+Cap 16 ... flow: 2040 (0.012005 s)
+Cap 32 ... flow: 2188 (0.014254 s)
+Cap 64 ... flow: 2316 (0.016496 s)
+Cap 128 ... flow: 2412 (0.015704 s)
+Flow search took (seconds) 0.10017
+== End round 18 ==
+Cap 1 ... flow: 1536 (0.00855 s)
+Cap 2 ... flow: 1665 (0.009819 s)
+Cap 4 ... flow: 1751 (0.007972 s)
+Cap 8 ... flow: 1854 (0.009705 s)
+Cap 16 ... flow: 1920 (0.007535 s)
+Cap 32 ... flow: 2000 (0.008234 s)
+Cap 64 ... flow: 2155 (0.00988 s)
+Cap 128 ... flow: 2411 (0.014125 s)
+Cap 256 ... flow: 2412 (0.006973 s)
+Flow search took (seconds) 0.084625
+== End round 19 ==
+Cap 1 ... flow: 953 (0.00793 s)
+Cap 2 ... flow: 1031 (0.013334 s)
+Cap 4 ... flow: 1128 (0.015466 s)
+Cap 8 ... flow: 1251 (0.01387 s)
+Cap 16 ... flow: 1400 (0.016095 s)
+Cap 32 ... flow: 1658 (0.018558 s)
+Cap 64 ... flow: 1848 (0.014244 s)
+Cap 128 ... flow: 2104 (0.013925 s)
+Cap 256 ... flow: 2412 (0.013427 s)
+Flow search took (seconds) 0.128621
+== End round 20 ==
+Cap 1 ... flow: 1620 (0.008464 s)
+Cap 2 ... flow: 1740 (0.010746 s)
+Cap 4 ... flow: 1857 (0.010462 s)
+Cap 8 ... flow: 1959 (0.012136 s)
+Cap 16 ... flow: 2149 (0.017245 s)
+Cap 32 ... flow: 2250 (0.023506 s)
+Cap 64 ... flow: 2410 (0.029332 s)
+Cap 128 ... flow: 2412 (0.017524 s)
+Flow search took (seconds) 0.131019
+== End round 21 ==
+Cap 1 ... flow: 1622 (0.008944 s)
+Cap 2 ... flow: 1721 (0.010523 s)
+Cap 4 ... flow: 1793 (0.012677 s)
+Cap 8 ... flow: 1879 (0.014595 s)
+Cap 16 ... flow: 2007 (0.014684 s)
+Cap 32 ... flow: 2100 (0.01218 s)
+Cap 64 ... flow: 2228 (0.012902 s)
+Cap 128 ... flow: 2412 (0.018451 s)
+Flow search took (seconds) 0.106632
+== End round 22 ==
+Cap 1 ... flow: 1727 (0.014401 s)
+Cap 2 ... flow: 1868 (0.016718 s)
+Cap 4 ... flow: 1991 (0.024819 s)
+Cap 8 ... flow: 2110 (0.025468 s)
+Cap 16 ... flow: 2272 (0.019744 s)
+Cap 32 ... flow: 2396 (0.019213 s)
+Cap 64 ... flow: 2412 (0.010584 s)
+Flow search took (seconds) 0.132381
+== End round 23 ==
+Cap 1 ... flow: 1598 (0.009092 s)
+Cap 2 ... flow: 1772 (0.009684 s)
+Cap 4 ... flow: 1894 (0.00791 s)
+Cap 8 ... flow: 1993 (0.008024 s)
+Cap 16 ... flow: 2134 (0.008828 s)
+Cap 32 ... flow: 2370 (0.014312 s)
+Cap 64 ... flow: 2412 (0.013722 s)
+Flow search took (seconds) 0.073012
+== End round 24 ==
+The cut with highest capacity required was found on round12
+Best cut sparsity: 
+Edge crossings (E) : 5
+cut size: (854 | 3970)
+diff: 3116 (0.645937 of total n vertices)
+Min side: 854
+E/min(|S|, |comp(S)|) = 0.0058548
+Writing partition with 4824 nodes to file out/uk.ptn
+
+The given partition achieved the following:
+Edge crossings (E) : 19
+cut size: (2369 | 2455)
+diff: 86 (0.0178275 of total n vertices)
+Min side: 2369
+E/min(|S|, |comp(S)|) = 0.00802026

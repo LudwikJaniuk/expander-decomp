@@ -1,0 +1,92 @@
+Reading graph from graphs/vibrobox.graph
+Reading a graph with V 12328E 165250
+Cap 1 ... flow: 6164 (0.021471 s)
+Flow search took (seconds) 0.024078
+== End round 0 ==
+Cap 1 ... flow: 6164 (0.02157 s)
+Flow search took (seconds) 0.024078
+== End round 1 ==
+Cap 1 ... flow: 6164 (0.021079 s)
+Flow search took (seconds) 0.0236
+== End round 2 ==
+Cap 1 ... flow: 6164 (0.02101 s)
+Flow search took (seconds) 0.023565
+== End round 3 ==
+Cap 1 ... flow: 6164 (0.021333 s)
+Flow search took (seconds) 0.024054
+== End round 4 ==
+Cap 1 ... flow: 6164 (0.022336 s)
+Flow search took (seconds) 0.024995
+== End round 5 ==
+Cap 1 ... flow: 6164 (0.022576 s)
+Flow search took (seconds) 0.025285
+== End round 6 ==
+Cap 1 ... flow: 6164 (0.022425 s)
+Flow search took (seconds) 0.025077
+== End round 7 ==
+Cap 1 ... flow: 6164 (0.021681 s)
+Flow search took (seconds) 0.024378
+== End round 8 ==
+Cap 1 ... flow: 6164 (0.022636 s)
+Flow search took (seconds) 0.025265
+== End round 9 ==
+Cap 1 ... flow: 6164 (0.020273 s)
+Flow search took (seconds) 0.023018
+== End round 10 ==
+Cap 1 ... flow: 6164 (0.021564 s)
+Flow search took (seconds) 0.024396
+== End round 11 ==
+Cap 1 ... flow: 6164 (0.021819 s)
+Flow search took (seconds) 0.024589
+== End round 12 ==
+Cap 1 ... flow: 6164 (0.019779 s)
+Flow search took (seconds) 0.022583
+== End round 13 ==
+Cap 1 ... flow: 6164 (0.022542 s)
+Flow search took (seconds) 0.025291
+== End round 14 ==
+Cap 1 ... flow: 6164 (0.021397 s)
+Flow search took (seconds) 0.024268
+== End round 15 ==
+Cap 1 ... flow: 6164 (0.022764 s)
+Flow search took (seconds) 0.025592
+== End round 16 ==
+Cap 1 ... flow: 6164 (0.022219 s)
+Flow search took (seconds) 0.025614
+== End round 17 ==
+Cap 1 ... flow: 6164 (0.025669 s)
+Flow search took (seconds) 0.02877
+== End round 18 ==
+Cap 1 ... flow: 6164 (0.029266 s)
+Flow search took (seconds) 0.032293
+== End round 19 ==
+Cap 1 ... flow: 6164 (0.026945 s)
+Flow search took (seconds) 0.030068
+== End round 20 ==
+Cap 1 ... flow: 6164 (0.022687 s)
+Flow search took (seconds) 0.025694
+== End round 21 ==
+Cap 1 ... flow: 6164 (0.024376 s)
+Flow search took (seconds) 0.027252
+== End round 22 ==
+Cap 1 ... flow: 6164 (0.024273 s)
+Flow search took (seconds) 0.027084
+== End round 23 ==
+Cap 1 ... flow: 6164 (0.023011 s)
+Flow search took (seconds) 0.025854
+== End round 24 ==
+The cut with highest capacity required was found on round0
+Best cut sparsity: 
+Edge crossings (E) : 0
+cut size: (0 | 12328)
+diff: 12328 (1 of total n vertices)
+Min side: 0
+E/min(|S|, |comp(S)|) = -nan
+Writing partition with 12328 nodes to file out/vibrobox.ptn
+
+The given partition achieved the following:
+Edge crossings (E) : 10310
+cut size: (6144 | 6184)
+diff: 40 (0.00324465 of total n vertices)
+Min side: 6144
+E/min(|S|, |comp(S)|) = 1.67806
