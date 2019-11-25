@@ -1,0 +1,15 @@
+The cut with highest capacity required was found on round1
+Best cut sparsity: 
+Edge crossings (E) : 6
+cut size: (1674 | 3286)
+diff: 1612 (0.325 of total n vertices)
+Min side: 1674
+E/min(|S|, |comp(S)|) = 0.00358423
+Writing partition with 4960 nodes to file out/add32.ptn
+
+The given partition achieved the following:
+Edge crossings (E) : 10
+cut size: (2479 | 2481)
+diff: 2 (0.000403226 of total n vertices)
+Min side: 2479
+E/min(|S|, |comp(S)|) = 0.00403388

@@ -1,0 +1,15 @@
+The cut with highest capacity required was found on round0
+Best cut sparsity: 
+Edge crossings (E) : 223
+cut size: (6647 | 8959)
+diff: 2312 (0.148148 of total n vertices)
+Min side: 6647
+E/min(|S|, |comp(S)|) = 0.033549
+Writing partition with 15606 nodes to file out/4elt.ptn
+
+The given partition achieved the following:
+Edge crossings (E) : 0
+cut size: (0 | 15606)
+diff: 15606 (1 of total n vertices)
+Min side: 0
+E/min(|S|, |comp(S)|) = -nan

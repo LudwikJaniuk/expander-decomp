@@ -31,6 +31,7 @@ int N_NODES = 1000;
 int N_ROUNDS = 5;
 bool PRINT_PATHS = false;
 bool VERBOSE = false;
+bool SILENT = false;
 bool READ_GRAPH_FROM_FILE = false;
 string IN_GRAPH_FILE;
 bool COMPARE_PARTITION = false;
@@ -292,14 +293,14 @@ struct CutMatching {
 
             p.reset(new Preflow<G, EdgeMapi>(mg.g, mg.capacity, mg.s, mg.t));
 
-            cout << "Cap " << cap << " ... " << flush;
+            if(!SILENT) cout << "Cap " << cap << " ... " << flush;
 
             auto start2 = high_resolution_clock::now();
             p->runMinCut(); // Note that "startSecondPhase" must be run to get flows for individual verts
             auto stop2 = high_resolution_clock::now();
             auto duration2 = duration_cast<microseconds>(stop2 - start2);
 
-            cout << "flow: " << p->flowValue() << " (" << (duration2.count() / MICROSECS) << " s)" << endl;
+            if(!SILENT) cout << "flow: " << p->flowValue() << " (" << (duration2.count() / MICROSECS) << " s)" << endl;
             if (p->flowValue() == mg.num_vertices / 2) {
                 if (VERBOSE) cout << "We have achieved full flow, but half this capacity didn't manage that!" << endl;
                 // Already an expander I guess?
@@ -322,7 +323,7 @@ struct CutMatching {
 
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
-        cout << "Flow search took (seconds) " << (duration.count() / 1000000.0) << endl;
+        if(!SILENT) cout << "Flow search took (seconds) " << (duration.count() / 1000000.0) << endl;
 
         return result;
     }
@@ -414,7 +415,7 @@ struct CutMatching {
     // Of course original_ids must be initialized onto the graph g already earlier.
     static void parse_chaco_format(const string &filename, ListGraph &g, vector<Node> &nodes, NodeMapi &original_ids) {
         assert(nodes.empty());
-        cout << "Reading graph from " << filename << endl;
+        if(!SILENT) cout << "Reading graph from " << filename << endl;
         ifstream file;
         file.open(filename);
         if (!file) {
@@ -429,7 +430,7 @@ struct CutMatching {
 
         int n_verts, n_edges;
         ss >> n_verts >> n_edges;
-        cout << "Reading a graph with V " << n_verts << "E " << n_edges << endl;
+        if(!SILENT) cout << "Reading a graph with V " << n_verts << "E " << n_edges << endl;
         g.reserveNode(n_verts);
         g.reserveNode(n_edges);
 
@@ -454,7 +455,7 @@ struct CutMatching {
         }
 
         if (n_verts % 2 != 0) {
-            cout << "Odd number of vertices, adding extra one." << endl;
+            if(!SILENT) cout << "Odd number of vertices, adding extra one." << endl;
             Node n = g.addNode();
             g.addEdge(nodes[0], n);
             nodes.push_back(n);
@@ -503,7 +504,7 @@ struct CutMatching {
 
     void print_end_round(int i) const {
         if (VERBOSE) cout << "======================" << endl;
-        cout << "== End round " << i << " ==" << endl;
+        if(!SILENT) cout << "== End round " << i << " ==" << endl;
         if (VERBOSE) cout << "======================" << endl;
     }
 
@@ -614,6 +615,7 @@ cxxopts::Options create_options() {
             ("v,verbose", "Whether to print nodes and cuts (does not include paths)")
             ("s,seed", "Use a seed for RNG (optionally set seed manually)",
              cxxopts::value<int>()->implicit_value("1337"))
+            ("S,Silent", "Only output one line of summary at the end")
             ("o,output", "Output computed cut into file", cxxopts::value<std::string>())
             ("p,partition", "Partition file to compare with", cxxopts::value<std::string>());
     return options;
@@ -632,6 +634,8 @@ void parse_options(int argc, char **argv, CutMatching<ListGraph> &cm) {
         N_ROUNDS = result["rounds"].as<long>();
     if (result.count("verbose"))
         VERBOSE = result["verbose"].as<bool>();
+    if (result.count("Silent"))
+        SILENT = result["Silent"].as<bool>();
     if (result.count("paths"))
         PRINT_PATHS = result["paths"].as<bool>();
     if (result.count("seed"))
@@ -640,7 +644,6 @@ void parse_options(int argc, char **argv, CutMatching<ListGraph> &cm) {
         cm.engine = default_random_engine(random_device()());
     if (result.count("output")) {
         OUTPUT_CUT = true;
-        cout << "Got flag for output: " << result["output"].as<string>() << endl;
         OUTPUT_FILE = result["output"].as<string>();
     }
     if (result.count("partition")) {
