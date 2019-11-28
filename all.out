@@ -1,0 +1,527 @@
+144.out
+The cut with highest capacity required was found on round20
+Best cut sparsity: 
+Edge crossings (E) : 6823
+cut size: (61714 | 82936)
+diff: 21222 (0.146713 of total n vertices)
+Min side: 61714
+E/min(|S|, |comp(S)|) = 0.110558
+
+The given partition achieved the following:
+Edge crossings (E) : 6346
+cut size: (68708 | 75942)
+diff: 7234 (0.0500104 of total n vertices)
+Min side: 68708
+E/min(|S|, |comp(S)|) = 0.0923619
+
+
+3elt.out
+The cut with highest capacity required was found on round9
+Best cut sparsity: 
+Edge crossings (E) : 87
+cut size: (2305 | 2415)
+diff: 110 (0.0233051 of total n vertices)
+Min side: 2305
+E/min(|S|, |comp(S)|) = 0.037744
+
+The given partition achieved the following:
+Edge crossings (E) : 87
+cut size: (2322 | 2398)
+diff: 76 (0.0161017 of total n vertices)
+Min side: 2322
+E/min(|S|, |comp(S)|) = 0.0374677
+
+
+4elt.out
+The cut with highest capacity required was found on round11
+Best cut sparsity: 
+Edge crossings (E) : 129
+cut size: (5560 | 10046)
+diff: 4486 (0.287454 of total n vertices)
+Min side: 5560
+E/min(|S|, |comp(S)|) = 0.0232014
+
+The given partition achieved the following:
+Edge crossings (E) : 0
+cut size: (0 | 15606)
+diff: 15606 (1 of total n vertices)
+Min side: 0
+E/min(|S|, |comp(S)|) = -nan
+
+
+598a.out
+The cut with highest capacity required was found on round24
+Best cut sparsity: 
+Edge crossings (E) : 2342
+cut size: (53033 | 57939)
+diff: 4906 (0.0442094 of total n vertices)
+Min side: 53033
+E/min(|S|, |comp(S)|) = 0.0441612
+
+The given partition achieved the following:
+Edge crossings (E) : 2337
+cut size: (53117 | 57855)
+diff: 4738 (0.0426955 of total n vertices)
+Min side: 53117
+E/min(|S|, |comp(S)|) = 0.0439972
+
+
+add20.out
+The cut with highest capacity required was found on round0
+Best cut sparsity: 
+Edge crossings (E) : 2
+cut size: (10 | 2386)
+diff: 2376 (0.991653 of total n vertices)
+Min side: 10
+E/min(|S|, |comp(S)|) = 0.2
+
+The given partition achieved the following:
+Edge crossings (E) : 537
+cut size: (1139 | 1257)
+diff: 118 (0.0492487 of total n vertices)
+Min side: 1139
+E/min(|S|, |comp(S)|) = 0.471466
+
+add32.out
+The cut with highest capacity required was found on round10
+Best cut sparsity: 
+Edge crossings (E) : 7
+cut size: (2169 | 2791)
+diff: 622 (0.125403 of total n vertices)
+Min side: 2169
+E/min(|S|, |comp(S)|) = 0.00322729
+
+The given partition achieved the following:
+Edge crossings (E) : 10
+cut size: (2479 | 2481)
+diff: 2 (0.000403226 of total n vertices)
+Min side: 2479
+E/min(|S|, |comp(S)|) = 0.00403388
+
+
+auto.out
+The cut with highest capacity required was found on round17
+Best cut sparsity: 
+Edge crossings (E) : 6431
+cut size: (123922 | 324774)
+diff: 200852 (0.447635 of total n vertices)
+Min side: 123922
+E/min(|S|, |comp(S)|) = 0.0518955
+
+The given partition achieved the following:
+Edge crossings (E) : 9451
+cut size: (213164 | 235532)
+diff: 22368 (0.0498511 of total n vertices)
+Min side: 213164
+E/min(|S|, |comp(S)|) = 0.0443368
+
+
+bcsstk29.out
+Reading graph from graphs/bcsstk29.graph
+Reading a graph with V 13992E 302748
+
+
+bcsstk30.out
+The cut with highest capacity required was found on round12
+Best cut sparsity: 
+Edge crossings (E) : 2773
+cut size: (7581 | 21343)
+diff: 13762 (0.475799 of total n vertices)
+Min side: 7581
+E/min(|S|, |comp(S)|) = 0.365783
+
+The given partition achieved the following:
+Edge crossings (E) : 6251
+cut size: (14245 | 14679)
+diff: 434 (0.0150048 of total n vertices)
+Min side: 14245
+E/min(|S|, |comp(S)|) = 0.438821
+
+
+bcsstk31.out
+Reading graph from graphs/bcsstk31.graph
+Reading a graph with V 35588E 572914
+
+
+bcsstk32.out
+The cut with highest capacity required was found on round13
+Best cut sparsity: 
+Edge crossings (E) : 554
+cut size: (6002 | 38608)
+diff: 32606 (0.730912 of total n vertices)
+Min side: 6002
+E/min(|S|, |comp(S)|) = 0.0923026
+
+The given partition achieved the following:
+Edge crossings (E) : 4622
+cut size: (21290 | 23320)
+diff: 2030 (0.0455055 of total n vertices)
+Min side: 21290
+E/min(|S|, |comp(S)|) = 0.217097
+
+
+bcsstk33.out
+The cut with highest capacity required was found on round0
+Best cut sparsity: 
+Edge crossings (E) : 0
+cut size: (0 | 8738)
+diff: 8738 (1 of total n vertices)
+Min side: 0
+E/min(|S|, |comp(S)|) = -nan
+
+The given partition achieved the following:
+Edge crossings (E) : 9914
+cut size: (4184 | 4554)
+diff: 370 (0.0423438 of total n vertices)
+Min side: 4184
+E/min(|S|, |comp(S)|) = 2.3695
+
+
+brack2.out
+The cut with highest capacity required was found on round15
+Best cut sparsity: 
+Edge crossings (E) : 647
+cut size: (29571 | 33061)
+diff: 3490 (0.0557223 of total n vertices)
+Min side: 29571
+E/min(|S|, |comp(S)|) = 0.0218795
+
+The given partition achieved the following:
+Edge crossings (E) : 661
+cut size: (30032 | 32600)
+diff: 2568 (0.0410014 of total n vertices)
+Min side: 30032
+E/min(|S|, |comp(S)|) = 0.0220099
+
+
+crack.out
+The cut with highest capacity required was found on round11
+Best cut sparsity: 
+Edge crossings (E) : 203
+cut size: (4278 | 5962)
+diff: 1684 (0.164453 of total n vertices)
+Min side: 4278
+E/min(|S|, |comp(S)|) = 0.0474521
+
+The given partition achieved the following:
+Edge crossings (E) : 0
+cut size: (0 | 10240)
+diff: 10240 (1 of total n vertices)
+Min side: 0
+E/min(|S|, |comp(S)|) = -nan
+
+
+cs4.out
+The cut with highest capacity required was found on round22
+Best cut sparsity: 
+Edge crossings (E) : 315
+cut size: (8202 | 14298)
+diff: 6096 (0.270933 of total n vertices)
+Min side: 8202
+E/min(|S|, |comp(S)|) = 0.0384053
+
+The given partition achieved the following:
+Edge crossings (E) : 353
+cut size: (10689 | 11811)
+diff: 1122 (0.0498667 of total n vertices)
+Min side: 10689
+E/min(|S|, |comp(S)|) = 0.0330246
+
+
+cti.out
+The cut with highest capacity required was found on round14
+Best cut sparsity: 
+Edge crossings (E) : 266
+cut size: (7560 | 9280)
+diff: 1720 (0.102138 of total n vertices)
+Min side: 7560
+E/min(|S|, |comp(S)|) = 0.0351852
+
+The given partition achieved the following:
+Edge crossings (E) : 318
+cut size: (8360 | 8480)
+diff: 120 (0.00712589 of total n vertices)
+Min side: 8360
+E/min(|S|, |comp(S)|) = 0.0380383
+
+
+data.out
+The cut with highest capacity required was found on round9
+Best cut sparsity: 
+Edge crossings (E) : 4
+cut size: (140 | 2712)
+diff: 2572 (0.901823 of total n vertices)
+Min side: 140
+E/min(|S|, |comp(S)|) = 0.0285714
+
+The given partition achieved the following:
+Edge crossings (E) : 181
+cut size: (1354 | 1498)
+diff: 144 (0.0504909 of total n vertices)
+Min side: 1354
+E/min(|S|, |comp(S)|) = 0.133678
+fe_4elt2.out
+The cut with highest capacity required was found on round16
+Best cut sparsity: 
+Edge crossings (E) : 130
+cut size: (5005 | 6139)
+diff: 1134 (0.101759 of total n vertices)
+Min side: 5005
+E/min(|S|, |comp(S)|) = 0.025974
+
+The given partition achieved the following:
+Edge crossings (E) : 130
+cut size: (5572 | 5572)
+diff: 0 (0 of total n vertices)
+Min side: 5572
+E/min(|S|, |comp(S)|) = 0.0233309
+
+
+fe_body.out
+Reading graph from graphs/fe_body.graph
+Reading a graph with V 45087E 163734
+Odd number of vertices, adding extra one.
+
+
+fe_ocean.out
+The cut with highest capacity required was found on round15
+Best cut sparsity: 
+Edge crossings (E) : 312
+cut size: (69936 | 73502)
+diff: 3566 (0.0248609 of total n vertices)
+Min side: 69936
+E/min(|S|, |comp(S)|) = 0.00446122
+
+The given partition achieved the following:
+Edge crossings (E) : 311
+cut size: (70115 | 73323)
+diff: 3208 (0.0223651 of total n vertices)
+Min side: 70115
+E/min(|S|, |comp(S)|) = 0.00443557
+
+
+fe_pwt.out
+Reading graph from graphs/fe_pwt.graph
+Reading a graph with V 36519E 144794
+Odd number of vertices, adding extra one.
+
+
+fe_rotor.out
+The cut with highest capacity required was found on round15
+Best cut sparsity: 
+Edge crossings (E) : 1881
+cut size: (46959 | 52659)
+diff: 5700 (0.0572186 of total n vertices)
+Min side: 46959
+E/min(|S|, |comp(S)|) = 0.0400562
+
+The given partition achieved the following:
+Edge crossings (E) : 1940
+cut size: (47334 | 52284)
+diff: 4950 (0.0496898 of total n vertices)
+Min side: 47334
+E/min(|S|, |comp(S)|) = 0.0409853
+
+
+fe_sphere.out
+The cut with highest capacity required was found on round13
+Best cut sparsity: 
+Edge crossings (E) : 482
+cut size: (6963 | 9423)
+diff: 2460 (0.150128 of total n vertices)
+Min side: 6963
+E/min(|S|, |comp(S)|) = 0.069223
+
+The given partition achieved the following:
+Edge crossings (E) : 384
+cut size: (8097 | 8289)
+diff: 192 (0.0117173 of total n vertices)
+Min side: 8097
+E/min(|S|, |comp(S)|) = 0.047425
+
+
+fe_tooth.out
+The cut with highest capacity required was found on round14
+Best cut sparsity: 
+Edge crossings (E) : 2571
+cut size: (15167 | 62969)
+diff: 47802 (0.611779 of total n vertices)
+Min side: 15167
+E/min(|S|, |comp(S)|) = 0.169513
+
+The given partition achieved the following:
+Edge crossings (E) : 3773
+cut size: (37569 | 40567)
+diff: 2998 (0.038369 of total n vertices)
+Min side: 37569
+E/min(|S|, |comp(S)|) = 0.100429
+
+
+finan512.out
+The cut with highest capacity required was found on round24
+Best cut sparsity: 
+Edge crossings (E) : 162
+cut size: (35040 | 39712)
+diff: 4672 (0.0625 of total n vertices)
+Min side: 35040
+E/min(|S|, |comp(S)|) = 0.00462329
+
+The given partition achieved the following:
+Edge crossings (E) : 162
+cut size: (37376 | 37376)
+diff: 0 (0 of total n vertices)
+Min side: 37376
+E/min(|S|, |comp(S)|) = 0.00433433
+
+
+m14b.out
+The cut with highest capacity required was found on round18
+Best cut sparsity: 
+Edge crossings (E) : 3807
+cut size: (71296 | 143470)
+diff: 72174 (0.336059 of total n vertices)
+Min side: 71296
+E/min(|S|, |comp(S)|) = 0.0533971
+
+The given partition achieved the following:
+Edge crossings (E) : 3803
+cut size: (102233 | 112533)
+diff: 10300 (0.0479592 of total n vertices)
+Min side: 102233
+E/min(|S|, |comp(S)|) = 0.0371993
+
+
+memplus.out
+The cut with highest capacity required was found on round1
+Best cut sparsity: 
+Edge crossings (E) : 1
+cut size: (5 | 17753)
+diff: 17748 (0.999437 of total n vertices)
+Min side: 5
+E/min(|S|, |comp(S)|) = 0.2
+
+The given partition achieved the following:
+Edge crossings (E) : 5253
+cut size: (8436 | 9322)
+diff: 886 (0.049893 of total n vertices)
+Min side: 8436
+E/min(|S|, |comp(S)|) = 0.622688
+
+
+t60k.out
+The cut with highest capacity required was found on round24
+Best cut sparsity: 
+Edge crossings (E) : 56
+cut size: (27021 | 32985)
+diff: 5964 (0.0993901 of total n vertices)
+Min side: 27021
+E/min(|S|, |comp(S)|) = 0.00207246
+
+The given partition achieved the following:
+Edge crossings (E) : 66
+cut size: (28569 | 31437)
+diff: 2868 (0.0477952 of total n vertices)
+Min side: 28569
+E/min(|S|, |comp(S)|) = 0.0023102
+
+
+uk.out
+The cut with highest capacity required was found on round12
+Best cut sparsity: 
+Edge crossings (E) : 5
+cut size: (854 | 3970)
+diff: 3116 (0.645937 of total n vertices)
+Min side: 854
+E/min(|S|, |comp(S)|) = 0.0058548
+
+The given partition achieved the following:
+Edge crossings (E) : 19
+cut size: (2369 | 2455)
+diff: 86 (0.0178275 of total n vertices)
+Min side: 2369
+E/min(|S|, |comp(S)|) = 0.00802026
+
+
+vibrobox.out
+The cut with highest capacity required was found on round0
+Best cut sparsity: 
+Edge crossings (E) : 0
+cut size: (0 | 12328)
+diff: 12328 (1 of total n vertices)
+Min side: 0
+E/min(|S|, |comp(S)|) = -nan
+
+The given partition achieved the following:
+Edge crossings (E) : 10310
+cut size: (6144 | 6184)
+diff: 40 (0.00324465 of total n vertices)
+Min side: 6144
+E/min(|S|, |comp(S)|) = 1.67806
+
+
+wave.out
+The cut with highest capacity required was found on round16
+Best cut sparsity: 
+Edge crossings (E) : 4517
+cut size: (37079 | 119239)
+diff: 82160 (0.525595 of total n vertices)
+Min side: 37079
+E/min(|S|, |comp(S)|) = 0.121821
+
+The given partition achieved the following:
+Edge crossings (E) : 8524
+cut size: (74253 | 82065)
+diff: 7812 (0.0499751 of total n vertices)
+Min side: 74253
+E/min(|S|, |comp(S)|) = 0.114797
+
+
+whitaker3.out
+The cut with highest capacity required was found on round11
+Best cut sparsity: 
+Edge crossings (E) : 127
+cut size: (4645 | 5155)
+diff: 510 (0.0520408 of total n vertices)
+Min side: 4645
+E/min(|S|, |comp(S)|) = 0.0273412
+
+The given partition achieved the following:
+Edge crossings (E) : 126
+cut size: (4892 | 4908)
+diff: 16 (0.00163265 of total n vertices)
+Min side: 4892
+E/min(|S|, |comp(S)|) = 0.0257563
+
+
+wing_nodal.out
+The cut with highest capacity required was found on round12
+Best cut sparsity: 
+Edge crossings (E) : 405
+cut size: (1205 | 9733)
+diff: 8528 (0.779667 of total n vertices)
+Min side: 1205
+E/min(|S|, |comp(S)|) = 0.3361
+
+The given partition achieved the following:
+Edge crossings (E) : 1669
+cut size: (5195 | 5743)
+diff: 548 (0.0501006 of total n vertices)
+Min side: 5195
+E/min(|S|, |comp(S)|) = 0.32127
+
+
+wing.out
+The cut with highest capacity required was found on round14
+Best cut sparsity: 
+Edge crossings (E) : 771
+cut size: (28380 | 33652)
+diff: 5272 (0.0849884 of total n vertices)
+Min side: 28380
+E/min(|S|, |comp(S)|) = 0.027167
+
+The given partition achieved the following:
+Edge crossings (E) : 770
+cut size: (29521 | 32511)
+diff: 2990 (0.0482009 of total n vertices)
+Min side: 29521
+E/min(|S|, |comp(S)|) = 0.0260831
