@@ -38,6 +38,8 @@ bool COMPARE_PARTITION = false;
 string PARTITION_FILE;
 bool OUTPUT_CUT = false;
 string OUTPUT_FILE;
+bool USE_PHI_TARGET = true;
+double PHI_TARGET = 99999;
 // END PARAMETERS
 
 const double MICROSECS = 1000000.0;
@@ -514,6 +516,7 @@ struct CutMatching {
         size_t max_side = 0;
 
         CutStats(const Context &c, const Cut &cut) {
+		assert(cut.size() != 0);
             for (EdgeIt e(c.g); e != INVALID; ++e) {
                 if (is_crossing(c.g, cut, e)) crossing_edges += 1;
             }
@@ -547,6 +550,29 @@ struct CutMatching {
             cout << "E/min(|S|, |comp(S)|) = " << expansion() << endl;
         }
     };
+
+    size_t run_until(Context &c, double phi) {
+	    for (int i = 0; ; i++) {
+		    size_t cap = one_round(c);
+		    Cutp& cut = c.cuts[c.cuts.size()-1];
+
+		    double phi_curr = 999999;
+		    if(cut->size() > 0) {
+			    CutStats cs(c, *cut);
+			    phi_curr = cs.expansion();
+		    }
+		    cout << "Currently phi = " << phi_curr << endl;
+		    if(phi_curr > phi) {
+			    cout << "Aiming for = " << phi << endl;
+			    print_end_round(i);
+		    } 
+		    else 
+		    {
+			    print_end_round(i);
+			    return i;
+		    }
+	    }
+    }
 
     size_t run_rounds(Context &c) {
         size_t best_cap = 0;
@@ -586,7 +612,8 @@ struct CutMatching {
     void run() {
         Context c;
         if (N_ROUNDS >= 1) {
-            auto best_round = run_rounds(c);
+            //auto best_round = run_rounds(c);
+            auto best_round = run_until(c, PHI_TARGET);
             cout << "The cut with highest capacity required was found on round" << best_round << endl;
             cout << "Best cut sparsity: " << endl;
             auto &best_cut = *c.cuts[best_round];
@@ -608,6 +635,7 @@ cxxopts::Options create_options() {
                              "Individual project implementation of thatchapon's paper to find graph partitions. Currently only cut-matching game.");
     options.add_options()
             ("f,file", "File to read graph from", cxxopts::value<std::string>())
+	    ("phi", "Phi value to aim for. In the magnitude of 0.1, usually.", cxxopts::value<double>())
             ("n,nodes", "Number of nodes in graph to generate. Should be even. Ignored if -f is set.",
              cxxopts::value<long>()->default_value("100"))
             ("r,rounds", "Number of rounds to run cut-matching game", cxxopts::value<long>()->default_value("5"))
@@ -617,7 +645,7 @@ cxxopts::Options create_options() {
              cxxopts::value<int>()->implicit_value("1337"))
             ("S,Silent", "Only output one line of summary at the end")
             ("o,output", "Output computed cut into file", cxxopts::value<std::string>())
-            ("p,partition", "Partition file to compare with", cxxopts::value<std::string>());
+           ("p,partition", "Partition file to compare with", cxxopts::value<std::string>());
     return options;
 }
 
@@ -627,6 +655,10 @@ void parse_options(int argc, char **argv, CutMatching<ListGraph> &cm) {
     if (result.count("file")) {
         READ_GRAPH_FROM_FILE = true;
         IN_GRAPH_FILE = result["file"].as<string>();
+    }
+    if (result.count("phi")) {
+	USE_PHI_TARGET = true;
+	PHI_TARGET = result["phi"].as<double>();
     }
     if (result.count("nodes"))
         N_NODES = result["nodes"].as<long>();

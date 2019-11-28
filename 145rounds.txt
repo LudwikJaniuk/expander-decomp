@@ -1,0 +1,1140 @@
+Reading graph from graphs/144.graph
+Reading a graph with V 144649E 1074393
+Odd number of vertices, adding extra one.
+Cap 1 ... flow: 72325 (1.1684 s)
+Flow search took (seconds) 1.2158
+Currently phi = 999999
+Aiming for = 0.1
+== End round 0 ==
+Cap 1 ... flow: 72325 (1.20716 s)
+Flow search took (seconds) 1.25381
+Currently phi = 999999
+Aiming for = 0.1
+== End round 1 ==
+Cap 1 ... flow: 72325 (1.05709 s)
+Flow search took (seconds) 1.10358
+Currently phi = 999999
+Aiming for = 0.1
+== End round 2 ==
+Cap 1 ... flow: 72325 (1.62983 s)
+Flow search took (seconds) 1.67637
+Currently phi = 999999
+Aiming for = 0.1
+== End round 3 ==
+Cap 1 ... flow: 72325 (1.43707 s)
+Flow search took (seconds) 1.48429
+Currently phi = 999999
+Aiming for = 0.1
+== End round 4 ==
+Cap 1 ... flow: 72325 (1.94493 s)
+Flow search took (seconds) 1.99255
+Currently phi = 999999
+Aiming for = 0.1
+== End round 5 ==
+Cap 1 ... flow: 72325 (2.17545 s)
+Flow search took (seconds) 2.22273
+Currently phi = 999999
+Aiming for = 0.1
+== End round 6 ==
+Cap 1 ... flow: 72325 (2.15717 s)
+Flow search took (seconds) 2.20408
+Currently phi = 999999
+Aiming for = 0.1
+== End round 7 ==
+Cap 1 ... flow: 72325 (3.13756 s)
+Flow search took (seconds) 3.18438
+Currently phi = 999999
+Aiming for = 0.1
+== End round 8 ==
+Cap 1 ... flow: 72325 (5.85897 s)
+Flow search took (seconds) 5.90577
+Currently phi = 999999
+Aiming for = 0.1
+== End round 9 ==
+Cap 1 ... flow: 71875 (6.61721 s)
+Cap 2 ... flow: 72325 (2.65891 s)
+Flow search took (seconds) 9.37811
+Currently phi = 0.188264
+Aiming for = 0.1
+== End round 10 ==
+Cap 1 ... flow: 67872 (13.8963 s)
+Cap 2 ... flow: 72325 (3.53973 s)
+Flow search took (seconds) 17.5459
+Currently phi = 0.230015
+Aiming for = 0.1
+== End round 11 ==
+Cap 1 ... flow: 59020 (9.9321 s)
+Cap 2 ... flow: 67783 (4.86039 s)
+Cap 4 ... flow: 72325 (3.54934 s)
+Flow search took (seconds) 18.4919
+Currently phi = 0.207627
+Aiming for = 0.1
+== End round 12 ==
+Cap 1 ... flow: 60671 (9.15139 s)
+Cap 2 ... flow: 69915 (14.4709 s)
+Cap 4 ... flow: 72325 (3.90146 s)
+Flow search took (seconds) 27.6909
+Currently phi = 0.145769
+Aiming for = 0.1
+== End round 13 ==
+Cap 1 ... flow: 52463 (14.0504 s)
+Cap 2 ... flow: 63266 (16.8854 s)
+Cap 4 ... flow: 72325 (6.27891 s)
+Flow search took (seconds) 37.3668
+Currently phi = 0.215593
+Aiming for = 0.1
+== End round 14 ==
+Cap 1 ... flow: 58197 (10.8456 s)
+Cap 2 ... flow: 67567 (10.0861 s)
+Cap 4 ... flow: 72325 (3.28555 s)
+Flow search took (seconds) 24.3708
+Currently phi = 0.170946
+Aiming for = 0.1
+== End round 15 ==
+Cap 1 ... flow: 56411 (12.4023 s)
+Cap 2 ... flow: 67874 (11.8242 s)
+Cap 4 ... flow: 72325 (4.01156 s)
+Flow search took (seconds) 28.3899
+Currently phi = 0.13519
+Aiming for = 0.1
+== End round 16 ==
+Cap 1 ... flow: 59845 (11.1017 s)
+Cap 2 ... flow: 69370 (11.9225 s)
+Cap 4 ... flow: 72325 (3.65255 s)
+Flow search took (seconds) 26.8309
+Currently phi = 0.09621
+== End round 17 ==
+The cut with highest capacity required was found on round17
+Best cut sparsity: 
+Edge crossings (E) : 6425
+cut size: (66781 | 77869)
+diff: 11088 (0.076654 of total n vertices)
+Min side: 66781
+E/min(|S|, |comp(S)|) = 0.09621
+janiuk@janiuk-comp ~/Code/individuellt$ nvim all.out                                                                                                                                                    ✹ ✭master 
+janiuk@janiuk-comp ~/Code/individuellt$ ./a.out -f graphs/144.graph -r 5 -s --phi 0.05                                                                                                                  ✹ ✭master 
+Reading graph from graphs/144.graph
+Reading a graph with V 144649E 1074393
+Odd number of vertices, adding extra one.
+Cap 1 ... flow: 72325 (1.20876 s)
+Flow search took (seconds) 1.25913
+Currently phi = 999999
+Aiming for = 0.05
+== End round 0 ==
+Cap 1 ... flow: 72325 (1.2533 s)
+Flow search took (seconds) 1.30146
+Currently phi = 999999
+Aiming for = 0.05
+== End round 1 ==
+Cap 1 ... flow: 72325 (1.06806 s)
+Flow search took (seconds) 1.11776
+Currently phi = 999999
+Aiming for = 0.05
+== End round 2 ==
+Cap 1 ... flow: 72325 (1.68439 s)
+Flow search took (seconds) 1.73439
+Currently phi = 999999
+Aiming for = 0.05
+== End round 3 ==
+Cap 1 ... flow: 72325 (1.45086 s)
+Flow search took (seconds) 1.49823
+Currently phi = 999999
+Aiming for = 0.05
+== End round 4 ==
+Cap 1 ... flow: 72325 (1.96958 s)
+Flow search took (seconds) 2.01737
+Currently phi = 999999
+Aiming for = 0.05
+== End round 5 ==
+Cap 1 ... flow: 72325 (2.16765 s)
+Flow search took (seconds) 2.21555
+Currently phi = 999999
+Aiming for = 0.05
+== End round 6 ==
+Cap 1 ... flow: 72325 (2.16422 s)
+Flow search took (seconds) 2.21319
+Currently phi = 999999
+Aiming for = 0.05
+== End round 7 ==
+Cap 1 ... flow: 72325 (3.16032 s)
+Flow search took (seconds) 3.21065
+Currently phi = 999999
+Aiming for = 0.05
+== End round 8 ==
+Cap 1 ... flow: 72325 (5.798 s)
+Flow search took (seconds) 5.84558
+Currently phi = 999999
+Aiming for = 0.05
+== End round 9 ==
+Cap 1 ... flow: 71875 (6.68192 s)
+Cap 2 ... flow: 72325 (2.68045 s)
+Flow search took (seconds) 9.47584
+Currently phi = 0.188264
+Aiming for = 0.05
+== End round 10 ==
+Cap 1 ... flow: 67872 (13.9765 s)
+Cap 2 ... flow: 72325 (3.55333 s)
+Flow search took (seconds) 17.64
+Currently phi = 0.230015
+Aiming for = 0.05
+== End round 11 ==
+Cap 1 ... flow: 59020 (10.0066 s)
+Cap 2 ... flow: 67783 (4.92866 s)
+Cap 4 ... flow: 72325 (3.59297 s)
+Flow search took (seconds) 18.6789
+Currently phi = 0.207627
+Aiming for = 0.05
+== End round 12 ==
+Cap 1 ... flow: 60671 (9.08274 s)
+Cap 2 ... flow: 69915 (14.5458 s)
+Cap 4 ... flow: 72325 (3.86788 s)
+Flow search took (seconds) 27.6621
+Currently phi = 0.145769
+Aiming for = 0.05
+== End round 13 ==
+Cap 1 ... flow: 52463 (13.7704 s)
+Cap 2 ... flow: 63266 (16.845 s)
+Cap 4 ... flow: 72325 (6.14347 s)
+Flow search took (seconds) 36.9086
+Currently phi = 0.215593
+Aiming for = 0.05
+== End round 14 ==
+Cap 1 ... flow: 58197 (10.4774 s)
+Cap 2 ... flow: 67567 (9.75668 s)
+Cap 4 ... flow: 72325 (3.17978 s)
+Flow search took (seconds) 23.564
+Currently phi = 0.170946
+Aiming for = 0.05
+== End round 15 ==
+Cap 1 ... flow: 56411 (11.9644 s)
+Cap 2 ... flow: 67874 (12.2535 s)
+Cap 4 ... flow: 72325 (3.8392 s)
+Flow search took (seconds) 28.2096
+Currently phi = 0.13519
+Aiming for = 0.05
+== End round 16 ==
+Cap 1 ... flow: 59845 (11.3688 s)
+Cap 2 ... flow: 69370 (13.0506 s)
+Cap 4 ... flow: 72325 (3.98484 s)
+Flow search took (seconds) 28.5628
+Currently phi = 0.09621
+Aiming for = 0.05
+== End round 17 ==
+Cap 1 ... flow: 53811 (12.3044 s)
+Cap 2 ... flow: 65003 (13.9916 s)
+Cap 4 ... flow: 72325 (6.18354 s)
+Flow search took (seconds) 32.6391
+Currently phi = 0.112025
+Aiming for = 0.05
+== End round 18 ==
+Cap 1 ... flow: 54780 (14.223 s)
+Cap 2 ... flow: 62994 (14.6601 s)
+Cap 4 ... flow: 72325 (9.12995 s)
+Flow search took (seconds) 38.1711
+Currently phi = 0.119013
+Aiming for = 0.05
+== End round 19 ==
+Cap 1 ... flow: 48823 (12.9445 s)
+Cap 2 ... flow: 56191 (11.1055 s)
+Cap 4 ... flow: 70133 (15.7106 s)
+Cap 8 ... flow: 72325 (4.40974 s)
+Flow search took (seconds) 44.3848
+Currently phi = 0.110558
+Aiming for = 0.05
+== End round 20 ==
+Cap 1 ... flow: 51605 (19.8804 s)
+Cap 2 ... flow: 60530 (14.2897 s)
+Cap 4 ... flow: 72325 (10.2777 s)
+Flow search took (seconds) 44.6156
+Currently phi = 0.128222
+Aiming for = 0.05
+== End round 21 ==
+Cap 1 ... flow: 61726 (8.29688 s)
+Cap 2 ... flow: 72325 (3.62868 s)
+Flow search took (seconds) 12.0395
+Currently phi = 0.265782
+Aiming for = 0.05
+== End round 22 ==
+Cap 1 ... flow: 57769 (11.6959 s)
+Cap 2 ... flow: 67323 (15.3305 s)
+Cap 4 ... flow: 72325 (6.04153 s)
+Flow search took (seconds) 33.2423
+Currently phi = 0.193263
+Aiming for = 0.05
+== End round 23 ==
+Cap 1 ... flow: 43986 (9.56174 s)
+Cap 2 ... flow: 51778 (11.022 s)
+Cap 4 ... flow: 66228 (13.4653 s)
+Cap 8 ... flow: 72325 (4.40378 s)
+Flow search took (seconds) 38.6581
+Currently phi = 0.112667
+Aiming for = 0.05
+== End round 24 ==
+Cap 1 ... flow: 46989 (12.9895 s)
+Cap 2 ... flow: 57616 (13.1609 s)
+Cap 4 ... flow: 72325 (7.29841 s)
+Flow search took (seconds) 33.599
+Currently phi = 0.130382
+Aiming for = 0.05
+== End round 25 ==
+Cap 1 ... flow: 51147 (16.4325 s)
+Cap 2 ... flow: 63444 (17 s)
+Cap 4 ... flow: 72325 (4.12233 s)
+Flow search took (seconds) 37.718
+Currently phi = 0.17359
+Aiming for = 0.05
+== End round 26 ==
+Cap 1 ... flow: 53065 (11.0677 s)
+Cap 2 ... flow: 59669 (14.0911 s)
+Cap 4 ... flow: 72294 (14.5745 s)
+Cap 8 ... flow: 72325 (3.70422 s)
+Flow search took (seconds) 43.636
+Currently phi = 0.0935133
+Aiming for = 0.05
+== End round 27 ==
+Cap 1 ... flow: 51224 (11.7846 s)
+Cap 2 ... flow: 67588 (11.2287 s)
+Cap 4 ... flow: 72325 (3.71637 s)
+Flow search took (seconds) 26.8802
+Currently phi = 0.241538
+Aiming for = 0.05
+== End round 28 ==
+Cap 1 ... flow: 60539 (12.9005 s)
+Cap 2 ... flow: 71094 (14.1336 s)
+Cap 4 ... flow: 72325 (3.97302 s)
+Flow search took (seconds) 31.1583
+Currently phi = 0.194741
+Aiming for = 0.05
+== End round 29 ==
+Cap 1 ... flow: 49379 (11.3752 s)
+Cap 2 ... flow: 57776 (15.7241 s)
+Cap 4 ... flow: 70503 (13.4518 s)
+Cap 8 ... flow: 72325 (3.6612 s)
+Flow search took (seconds) 44.4223
+Currently phi = 0.102077
+Aiming for = 0.05
+== End round 30 ==
+Cap 1 ... flow: 51740 (15.1987 s)
+Cap 2 ... flow: 66569 (16.145 s)
+Cap 4 ... flow: 72325 (4.71902 s)
+Flow search took (seconds) 36.2243
+Currently phi = 0.146045
+Aiming for = 0.05
+== End round 31 ==
+Cap 1 ... flow: 43892 (13.2392 s)
+Cap 2 ... flow: 54675 (12.7968 s)
+Cap 4 ... flow: 71461 (17.4705 s)
+Cap 8 ... flow: 72325 (4.62139 s)
+Flow search took (seconds) 48.3431
+Currently phi = 0.167613
+Aiming for = 0.05
+== End round 32 ==
+Cap 1 ... flow: 64695 (15.7688 s)
+Cap 2 ... flow: 72146 (16.2386 s)
+Cap 4 ... flow: 72325 (3.56294 s)
+Flow search took (seconds) 35.7206
+Currently phi = 0.104133
+Aiming for = 0.05
+== End round 33 ==
+Cap 1 ... flow: 46663 (19.3384 s)
+Cap 2 ... flow: 55566 (18.0493 s)
+Cap 4 ... flow: 71656 (15.0263 s)
+Cap 8 ... flow: 72325 (3.74767 s)
+Flow search took (seconds) 56.3714
+Currently phi = 0.167172
+Aiming for = 0.05
+== End round 34 ==
+Cap 1 ... flow: 59428 (15.0876 s)
+Cap 2 ... flow: 66857 (14.6767 s)
+Cap 4 ... flow: 72325 (5.04451 s)
+Flow search took (seconds) 34.9601
+Currently phi = 0.111657
+Aiming for = 0.05
+== End round 35 ==
+Cap 1 ... flow: 40622 (11.8687 s)
+Cap 2 ... flow: 51763 (11.8032 s)
+Cap 4 ... flow: 70376 (10.1079 s)
+Cap 8 ... flow: 72325 (2.99833 s)
+Flow search took (seconds) 36.9761
+Currently phi = 0.177481
+Aiming for = 0.05
+== End round 36 ==
+Cap 1 ... flow: 45511 (11.4934 s)
+Cap 2 ... flow: 54506 (15.6523 s)
+Cap 4 ... flow: 69598 (16.0522 s)
+Cap 8 ... flow: 72325 (3.77056 s)
+Flow search took (seconds) 47.1593
+Currently phi = 0.149639
+Aiming for = 0.05
+== End round 37 ==
+Cap 1 ... flow: 52668 (13.9499 s)
+Cap 2 ... flow: 59686 (20.1794 s)
+Cap 4 ... flow: 72325 (14.2883 s)
+Flow search took (seconds) 48.5727
+Currently phi = 0.122283
+Aiming for = 0.05
+== End round 38 ==
+Cap 1 ... flow: 59920 (9.40379 s)
+Cap 2 ... flow: 72325 (4.50131 s)
+Flow search took (seconds) 14.0007
+Currently phi = 0.268447
+Aiming for = 0.05
+== End round 39 ==
+Cap 1 ... flow: 59570 (12.6127 s)
+Cap 2 ... flow: 67847 (18.612 s)
+Cap 4 ... flow: 72325 (4.76832 s)
+Flow search took (seconds) 36.1519
+Currently phi = 0.13516
+Aiming for = 0.05
+== End round 40 ==
+Cap 1 ... flow: 45112 (9.53088 s)
+Cap 2 ... flow: 55924 (6.50118 s)
+Cap 4 ... flow: 72325 (7.16867 s)
+Flow search took (seconds) 23.343
+Currently phi = 0.211996
+Aiming for = 0.05
+== End round 41 ==
+Cap 1 ... flow: 62327 (8.14809 s)
+Cap 2 ... flow: 72300 (8.17505 s)
+Cap 4 ... flow: 72325 (2.45059 s)
+Flow search took (seconds) 18.9185
+Currently phi = 0.202684
+Aiming for = 0.05
+== End round 42 ==
+Cap 1 ... flow: 39039 (8.20295 s)
+Cap 2 ... flow: 45726 (10.801 s)
+Cap 4 ... flow: 58774 (8.34779 s)
+Cap 8 ... flow: 72325 (4.63734 s)
+Flow search took (seconds) 32.1847
+Currently phi = 0.0934059
+Aiming for = 0.05
+== End round 43 ==
+Cap 1 ... flow: 59305 (16.2237 s)
+Cap 2 ... flow: 66504 (13.2856 s)
+Cap 4 ... flow: 72325 (5.21806 s)
+Flow search took (seconds) 34.8843
+Currently phi = 0.121894
+Aiming for = 0.05
+== End round 44 ==
+Cap 1 ... flow: 55454 (16.5566 s)
+Cap 2 ... flow: 64050 (14.7574 s)
+Cap 4 ... flow: 72325 (5.0916 s)
+Flow search took (seconds) 36.5674
+Currently phi = 0.121677
+Aiming for = 0.05
+== End round 45 ==
+Cap 1 ... flow: 42759 (15.8799 s)
+Cap 2 ... flow: 60170 (12.6007 s)
+Cap 4 ... flow: 72325 (5.20266 s)
+Flow search took (seconds) 33.8446
+Currently phi = 0.238017
+Aiming for = 0.05
+== End round 46 ==
+Cap 1 ... flow: 44149 (17.2745 s)
+Cap 2 ... flow: 55939 (16.1957 s)
+Cap 4 ... flow: 72325 (6.74662 s)
+Flow search took (seconds) 40.3791
+Currently phi = 0.169481
+Aiming for = 0.05
+== End round 47 ==
+Cap 1 ... flow: 68029 (12.9745 s)
+Cap 2 ... flow: 72325 (4.50095 s)
+Flow search took (seconds) 17.5841
+Currently phi = 0.240202
+Aiming for = 0.05
+== End round 48 ==
+Cap 1 ... flow: 64209 (6.72377 s)
+Cap 2 ... flow: 70571 (6.8201 s)
+Cap 4 ... flow: 72325 (2.36171 s)
+Flow search took (seconds) 16.0637
+Currently phi = 0.170808
+Aiming for = 0.05
+== End round 49 ==
+Cap 1 ... flow: 50633 (14.5966 s)
+Cap 2 ... flow: 57033 (15.4578 s)
+Cap 4 ... flow: 69225 (15.9997 s)
+Cap 8 ... flow: 72325 (4.44465 s)
+Flow search took (seconds) 50.7259
+Currently phi = 0.116409
+Aiming for = 0.05
+== End round 50 ==
+Cap 1 ... flow: 51943 (16.3029 s)
+Cap 2 ... flow: 64972 (9.90719 s)
+Cap 4 ... flow: 72325 (3.40863 s)
+Flow search took (seconds) 29.7849
+Currently phi = 0.181018
+Aiming for = 0.05
+== End round 51 ==
+Cap 1 ... flow: 47402 (16.0779 s)
+Cap 2 ... flow: 56584 (22.4674 s)
+Cap 4 ... flow: 71158 (21.3814 s)
+Cap 8 ... flow: 72325 (4.16292 s)
+Flow search took (seconds) 64.3123
+Currently phi = 0.167686
+Aiming for = 0.05
+== End round 52 ==
+Cap 1 ... flow: 40283 (14.309 s)
+Cap 2 ... flow: 51528 (11.1941 s)
+Cap 4 ... flow: 72325 (9.73583 s)
+Flow search took (seconds) 35.3991
+Currently phi = 0.162034
+Aiming for = 0.05
+== End round 53 ==
+Cap 1 ... flow: 50615 (8.45923 s)
+Cap 2 ... flow: 57116 (5.94349 s)
+Cap 4 ... flow: 68501 (7.11819 s)
+Cap 8 ... flow: 72325 (2.92813 s)
+Flow search took (seconds) 24.6564
+Currently phi = 0.154247
+Aiming for = 0.05
+== End round 54 ==
+Cap 1 ... flow: 63885 (16.382 s)
+Cap 2 ... flow: 72325 (3.54499 s)
+Flow search took (seconds) 20.0376
+Currently phi = 0.240683
+Aiming for = 0.05
+== End round 55 ==
+Cap 1 ... flow: 61771 (13.8404 s)
+Cap 2 ... flow: 67979 (15.9754 s)
+Cap 4 ... flow: 72325 (4.87515 s)
+Flow search took (seconds) 34.8605
+Currently phi = 0.152616
+Aiming for = 0.05
+== End round 56 ==
+Cap 1 ... flow: 48974 (8.95847 s)
+Cap 2 ... flow: 55971 (6.14004 s)
+Cap 4 ... flow: 69018 (10.4848 s)
+Cap 8 ... flow: 72325 (3.17733 s)
+Flow search took (seconds) 28.9705
+Currently phi = 0.17345
+Aiming for = 0.05
+== End round 57 ==
+Cap 1 ... flow: 53245 (14.9432 s)
+Cap 2 ... flow: 60341 (19.198 s)
+Cap 4 ... flow: 72325 (11.2987 s)
+Flow search took (seconds) 45.6119
+Currently phi = 0.130793
+Aiming for = 0.05
+== End round 58 ==
+Cap 1 ... flow: 43236 (17.1286 s)
+Cap 2 ... flow: 55552 (12.969 s)
+Cap 4 ... flow: 72325 (5.62783 s)
+Flow search took (seconds) 35.8861
+Currently phi = 0.167576
+Aiming for = 0.05
+== End round 59 ==
+Cap 1 ... flow: 56704 (16.4706 s)
+Cap 2 ... flow: 64376 (11.3985 s)
+Cap 4 ... flow: 72325 (6.62172 s)
+Flow search took (seconds) 34.6513
+Currently phi = 0.0979682
+Aiming for = 0.05
+== End round 60 ==
+Cap 1 ... flow: 48408 (10.9609 s)
+Cap 2 ... flow: 55441 (12.0686 s)
+Cap 4 ... flow: 68851 (13.3767 s)
+Cap 8 ... flow: 72325 (4.28444 s)
+Flow search took (seconds) 40.9034
+Currently phi = 0.0907428
+Aiming for = 0.05
+== End round 61 ==
+Cap 1 ... flow: 60001 (17.5406 s)
+Cap 2 ... flow: 71432 (11.8991 s)
+Cap 4 ... flow: 72325 (3.10757 s)
+Flow search took (seconds) 32.711
+Currently phi = 0.145463
+Aiming for = 0.05
+== End round 62 ==
+Cap 1 ... flow: 43423 (12.8533 s)
+Cap 2 ... flow: 57232 (8.34387 s)
+Cap 4 ... flow: 72325 (5.59388 s)
+Flow search took (seconds) 26.9492
+Currently phi = 0.222969
+Aiming for = 0.05
+== End round 63 ==
+Cap 1 ... flow: 52949 (15.717 s)
+Cap 2 ... flow: 64370 (20.0012 s)
+Cap 4 ... flow: 72325 (6.75089 s)
+Flow search took (seconds) 42.6356
+Currently phi = 0.209922
+Aiming for = 0.05
+== End round 64 ==
+Cap 1 ... flow: 61531 (8.82819 s)
+Cap 2 ... flow: 67680 (6.79752 s)
+Cap 4 ... flow: 72325 (3.04968 s)
+Flow search took (seconds) 18.833
+Currently phi = 0.182997
+Aiming for = 0.05
+== End round 65 ==
+Cap 1 ... flow: 62384 (16.8194 s)
+Cap 2 ... flow: 71932 (15.0529 s)
+Cap 4 ... flow: 72325 (3.31058 s)
+Flow search took (seconds) 35.347
+Currently phi = 0.223392
+Aiming for = 0.05
+== End round 66 ==
+Cap 1 ... flow: 58447 (9.00344 s)
+Cap 2 ... flow: 69463 (12.7884 s)
+Cap 4 ... flow: 72325 (4.83639 s)
+Flow search took (seconds) 26.7793
+Currently phi = 0.22672
+Aiming for = 0.05
+== End round 67 ==
+Cap 1 ... flow: 42226 (10.4499 s)
+Cap 2 ... flow: 49279 (8.97351 s)
+Cap 4 ... flow: 61912 (9.07654 s)
+Cap 8 ... flow: 72325 (4.92015 s)
+Flow search took (seconds) 33.6346
+Currently phi = 0.116668
+Aiming for = 0.05
+== End round 68 ==
+Cap 1 ... flow: 41954 (16.4122 s)
+Cap 2 ... flow: 52761 (11.6658 s)
+Cap 4 ... flow: 71088 (13.9281 s)
+Cap 8 ... flow: 72325 (4.03698 s)
+Flow search took (seconds) 46.2567
+Currently phi = 0.153837
+Aiming for = 0.05
+== End round 69 ==
+Cap 1 ... flow: 47598 (14.8173 s)
+Cap 2 ... flow: 65919 (16.7315 s)
+Cap 4 ... flow: 72325 (3.20381 s)
+Flow search took (seconds) 34.904
+Currently phi = 0.244618
+Aiming for = 0.05
+== End round 70 ==
+Cap 1 ... flow: 53245 (15.9631 s)
+Cap 2 ... flow: 65613 (8.58657 s)
+Cap 4 ... flow: 72325 (4.4071 s)
+Flow search took (seconds) 29.1071
+Currently phi = 0.239527
+Aiming for = 0.05
+== End round 71 ==
+Cap 1 ... flow: 42901 (10.8529 s)
+Cap 2 ... flow: 49315 (11.4013 s)
+Cap 4 ... flow: 61651 (9.06831 s)
+Cap 8 ... flow: 72325 (4.45604 s)
+Flow search took (seconds) 35.9783
+Currently phi = 0.103213
+Aiming for = 0.05
+== End round 72 ==
+Cap 1 ... flow: 53136 (14.8286 s)
+Cap 2 ... flow: 68943 (16.7149 s)
+Cap 4 ... flow: 72325 (3.33018 s)
+Flow search took (seconds) 35.0295
+Currently phi = 0.26509
+Aiming for = 0.05
+== End round 73 ==
+Cap 1 ... flow: 65311 (14.3417 s)
+Cap 2 ... flow: 72325 (5.4229 s)
+Flow search took (seconds) 19.8692
+Currently phi = 0.269833
+Aiming for = 0.05
+== End round 74 ==
+Cap 1 ... flow: 52111 (14.834 s)
+Cap 2 ... flow: 61005 (11.5735 s)
+Cap 4 ... flow: 72325 (5.64111 s)
+Flow search took (seconds) 32.2015
+Currently phi = 0.149488
+Aiming for = 0.05
+== End round 75 ==
+Cap 1 ... flow: 41851 (16.652 s)
+Cap 2 ... flow: 48750 (19.1708 s)
+Cap 4 ... flow: 60093 (15.3912 s)
+Cap 8 ... flow: 72325 (6.1513 s)
+Flow search took (seconds) 57.5705
+Currently phi = 0.132665
+Aiming for = 0.05
+== End round 76 ==
+Cap 1 ... flow: 59687 (12.182 s)
+Cap 2 ... flow: 66461 (9.50592 s)
+Cap 4 ... flow: 72325 (4.45742 s)
+Flow search took (seconds) 26.3052
+Currently phi = 0.104273
+Aiming for = 0.05
+== End round 77 ==
+Cap 1 ... flow: 54691 (17.5249 s)
+Cap 2 ... flow: 66591 (19.1959 s)
+Cap 4 ... flow: 72325 (3.84187 s)
+Flow search took (seconds) 40.7188
+Currently phi = 0.176375
+Aiming for = 0.05
+== End round 78 ==
+Cap 1 ... flow: 52082 (13.4395 s)
+Cap 2 ... flow: 59328 (11.656 s)
+Cap 4 ... flow: 72325 (9.66388 s)
+Flow search took (seconds) 34.9135
+Currently phi = 0.0996562
+Aiming for = 0.05
+== End round 79 ==
+Cap 1 ... flow: 46458 (19.5066 s)
+Cap 2 ... flow: 61228 (18.0807 s)
+Cap 4 ... flow: 72325 (6.36233 s)
+Flow search took (seconds) 44.1064
+Currently phi = 0.225936
+Aiming for = 0.05
+== End round 80 ==
+Cap 1 ... flow: 52208 (13.5274 s)
+Cap 2 ... flow: 63127 (12.6475 s)
+Cap 4 ... flow: 72325 (5.68897 s)
+Flow search took (seconds) 32.0167
+Currently phi = 0.165621
+Aiming for = 0.05
+== End round 81 ==
+Cap 1 ... flow: 53836 (14.568 s)
+Cap 2 ... flow: 65028 (16.2133 s)
+Cap 4 ... flow: 72325 (3.46631 s)
+Flow search took (seconds) 34.4004
+Currently phi = 0.15721
+Aiming for = 0.05
+== End round 82 ==
+Cap 1 ... flow: 49305 (11.7382 s)
+Cap 2 ... flow: 64309 (14.6047 s)
+Cap 4 ... flow: 72325 (3.95734 s)
+Flow search took (seconds) 30.4484
+Currently phi = 0.226656
+Aiming for = 0.05
+== End round 83 ==
+Cap 1 ... flow: 47429 (14.9039 s)
+Cap 2 ... flow: 56502 (13.8455 s)
+Cap 4 ... flow: 70934 (19.1175 s)
+Cap 8 ... flow: 72325 (4.4464 s)
+Flow search took (seconds) 52.5175
+Currently phi = 0.119656
+Aiming for = 0.05
+== End round 84 ==
+Cap 1 ... flow: 58405 (15.1028 s)
+Cap 2 ... flow: 65324 (17.3844 s)
+Cap 4 ... flow: 72325 (6.76435 s)
+Flow search took (seconds) 39.4138
+Currently phi = 0.159752
+Aiming for = 0.05
+== End round 85 ==
+Cap 1 ... flow: 67001 (21.4291 s)
+Cap 2 ... flow: 72325 (7.20617 s)
+Flow search took (seconds) 28.7431
+Currently phi = 0.273817
+Aiming for = 0.05
+== End round 86 ==
+Cap 1 ... flow: 48356 (12.9714 s)
+Cap 2 ... flow: 55074 (12.0393 s)
+Cap 4 ... flow: 67882 (11.8999 s)
+Cap 8 ... flow: 72325 (4.0106 s)
+Flow search took (seconds) 41.1399
+Currently phi = 0.0939618
+Aiming for = 0.05
+== End round 87 ==
+Cap 1 ... flow: 50149 (12.1132 s)
+Cap 2 ... flow: 61031 (9.96811 s)
+Cap 4 ... flow: 72325 (5.63223 s)
+Flow search took (seconds) 27.8681
+Currently phi = 0.167123
+Aiming for = 0.05
+== End round 88 ==
+Cap 1 ... flow: 53204 (11.9139 s)
+Cap 2 ... flow: 64397 (11.8714 s)
+Cap 4 ... flow: 72325 (7.00239 s)
+Flow search took (seconds) 30.9403
+Currently phi = 0.173767
+Aiming for = 0.05
+== End round 89 ==
+Cap 1 ... flow: 54026 (18.2397 s)
+Cap 2 ... flow: 61602 (17.1657 s)
+Cap 4 ... flow: 72325 (8.40894 s)
+Flow search took (seconds) 43.9717
+Currently phi = 0.18095
+Aiming for = 0.05
+== End round 90 ==
+Cap 1 ... flow: 48874 (17.3011 s)
+Cap 2 ... flow: 63090 (14.0792 s)
+Cap 4 ... flow: 72325 (3.31569 s)
+Flow search took (seconds) 34.8502
+Currently phi = 0.208342
+Aiming for = 0.05
+== End round 91 ==
+Cap 1 ... flow: 52096 (18.9813 s)
+Cap 2 ... flow: 59166 (16.2101 s)
+Cap 4 ... flow: 71880 (17.2953 s)
+Cap 8 ... flow: 72325 (4.38086 s)
+Flow search took (seconds) 57.0852
+Currently phi = 0.187297
+Aiming for = 0.05
+== End round 92 ==
+Cap 1 ... flow: 53738 (18.0067 s)
+Cap 2 ... flow: 61122 (59.4425 s)
+Cap 4 ... flow: 72325 (12.011 s)
+Flow search took (seconds) 89.6362
+Currently phi = 0.184427
+Aiming for = 0.05
+== End round 93 ==
+Cap 1 ... flow: 54580 (11.5691 s)
+Cap 2 ... flow: 64944 (10.1651 s)
+Cap 4 ... flow: 72325 (4.55804 s)
+Flow search took (seconds) 26.442
+Currently phi = 0.195084
+Aiming for = 0.05
+== End round 94 ==
+Cap 1 ... flow: 62765 (8.35529 s)
+Cap 2 ... flow: 70584 (8.91021 s)
+Cap 4 ... flow: 72325 (2.50532 s)
+Flow search took (seconds) 19.9366
+Currently phi = 0.210101
+Aiming for = 0.05
+== End round 95 ==
+Cap 1 ... flow: 54664 (13.6152 s)
+Cap 2 ... flow: 68015 (20.5764 s)
+Cap 4 ... flow: 72325 (4.35081 s)
+Flow search took (seconds) 38.6985
+Currently phi = 0.230313
+Aiming for = 0.05
+== End round 96 ==
+Cap 1 ... flow: 43937 (13.9227 s)
+Cap 2 ... flow: 50845 (14.4642 s)
+Cap 4 ... flow: 63919 (15.1413 s)
+Cap 8 ... flow: 72325 (4.79799 s)
+Flow search took (seconds) 48.525
+Currently phi = 0.0947782
+Aiming for = 0.05
+== End round 97 ==
+Cap 1 ... flow: 57967 (15.804 s)
+Cap 2 ... flow: 64514 (19.4488 s)
+Cap 4 ... flow: 72325 (8.52375 s)
+Flow search took (seconds) 43.933
+Currently phi = 0.185653
+Aiming for = 0.05
+== End round 98 ==
+Cap 1 ... flow: 44294 (12.1603 s)
+Cap 2 ... flow: 58626 (12.3973 s)
+Cap 4 ... flow: 72325 (4.48058 s)
+Flow search took (seconds) 29.1882
+Currently phi = 0.223623
+Aiming for = 0.05
+== End round 99 ==
+Cap 1 ... flow: 60400 (21.6345 s)
+Cap 2 ... flow: 71810 (14.2557 s)
+Cap 4 ... flow: 72325 (2.82565 s)
+Flow search took (seconds) 38.8678
+Currently phi = 0.174547
+Aiming for = 0.05
+== End round 100 ==
+Cap 1 ... flow: 46759 (11.6726 s)
+Cap 2 ... flow: 57452 (15.0199 s)
+Cap 4 ... flow: 70914 (14.9579 s)
+Cap 8 ... flow: 72325 (4.12785 s)
+Flow search took (seconds) 45.9862
+Currently phi = 0.150216
+Aiming for = 0.05
+== End round 101 ==
+Cap 1 ... flow: 57829 (19.0135 s)
+Cap 2 ... flow: 65977 (15.5804 s)
+Cap 4 ... flow: 72325 (4.69001 s)
+Flow search took (seconds) 39.4448
+Currently phi = 0.238331
+Aiming for = 0.05
+== End round 102 ==
+Cap 1 ... flow: 60028 (12.2163 s)
+Cap 2 ... flow: 71105 (8.13043 s)
+Cap 4 ... flow: 72325 (2.76485 s)
+Flow search took (seconds) 23.264
+Currently phi = 0.224083
+Aiming for = 0.05
+== End round 103 ==
+Cap 1 ... flow: 57684 (13.7064 s)
+Cap 2 ... flow: 68137 (8.25379 s)
+Cap 4 ... flow: 72325 (3.81184 s)
+Flow search took (seconds) 25.9198
+Currently phi = 0.173888
+Aiming for = 0.05
+== End round 104 ==
+Cap 1 ... flow: 43425 (8.56086 s)
+Cap 2 ... flow: 50241 (12.8981 s)
+Cap 4 ... flow: 63408 (9.81901 s)
+Cap 8 ... flow: 72325 (4.18639 s)
+Flow search took (seconds) 35.6667
+Currently phi = 0.0996569
+Aiming for = 0.05
+== End round 105 ==
+Cap 1 ... flow: 44394 (17.6006 s)
+Cap 2 ... flow: 58549 (19.5794 s)
+Cap 4 ... flow: 72325 (5.782 s)
+Flow search took (seconds) 43.1221
+Currently phi = 0.217596
+Aiming for = 0.05
+== End round 106 ==
+Cap 1 ... flow: 45456 (15.2447 s)
+Cap 2 ... flow: 54947 (12.0322 s)
+Cap 4 ... flow: 72325 (9.63274 s)
+Flow search took (seconds) 37.0751
+Currently phi = 0.166327
+Aiming for = 0.05
+== End round 107 ==
+Cap 1 ... flow: 43800 (13.9422 s)
+Cap 2 ... flow: 55761 (12.006 s)
+Cap 4 ... flow: 72325 (6.5069 s)
+Flow search took (seconds) 32.6169
+Currently phi = 0.164003
+Aiming for = 0.05
+== End round 108 ==
+Cap 1 ... flow: 56013 (9.35637 s)
+Cap 2 ... flow: 62557 (11.3786 s)
+Cap 4 ... flow: 72325 (5.99773 s)
+Flow search took (seconds) 26.8835
+Currently phi = 0.10597
+Aiming for = 0.05
+== End round 109 ==
+Cap 1 ... flow: 47178 (12.9619 s)
+Cap 2 ... flow: 53603 (10.9187 s)
+Cap 4 ... flow: 66086 (12.3646 s)
+Cap 8 ... flow: 72325 (4.28779 s)
+Flow search took (seconds) 40.7526
+Currently phi = 0.111388
+Aiming for = 0.05
+== End round 110 ==
+Cap 1 ... flow: 37556 (10.0516 s)
+Cap 2 ... flow: 50351 (10.4997 s)
+Cap 4 ... flow: 72325 (7.74402 s)
+Flow search took (seconds) 28.4459
+Currently phi = 0.199332
+Aiming for = 0.05
+== End round 111 ==
+Cap 1 ... flow: 63771 (13.9057 s)
+Cap 2 ... flow: 70651 (12.3105 s)
+Cap 4 ... flow: 72325 (3.5145 s)
+Flow search took (seconds) 29.8924
+Currently phi = 0.106269
+Aiming for = 0.05
+== End round 112 ==
+Cap 1 ... flow: 58599 (13.8198 s)
+Cap 2 ... flow: 68461 (11.8574 s)
+Cap 4 ... flow: 72325 (3.4902 s)
+Flow search took (seconds) 29.3232
+Currently phi = 0.14331
+Aiming for = 0.05
+== End round 113 ==
+Cap 1 ... flow: 59326 (12.6781 s)
+Cap 2 ... flow: 67086 (8.44925 s)
+Cap 4 ... flow: 72325 (3.51859 s)
+Flow search took (seconds) 24.7982
+Currently phi = 0.156123
+Aiming for = 0.05
+== End round 114 ==
+Cap 1 ... flow: 57922 (14.9287 s)
+Cap 2 ... flow: 68994 (12.6815 s)
+Cap 4 ... flow: 72325 (4.65887 s)
+Flow search took (seconds) 32.4195
+Currently phi = 0.126727
+Aiming for = 0.05
+== End round 115 ==
+Cap 1 ... flow: 47575 (9.4185 s)
+Cap 2 ... flow: 55346 (6.30444 s)
+Cap 4 ... flow: 69459 (9.75516 s)
+Cap 8 ... flow: 72325 (3.11719 s)
+Flow search took (seconds) 28.8024
+Currently phi = 0.121542
+Aiming for = 0.05
+== End round 116 ==
+Cap 1 ... flow: 60792 (12.2854 s)
+Cap 2 ... flow: 69312 (18.8816 s)
+Cap 4 ... flow: 72325 (4.18823 s)
+Flow search took (seconds) 35.5222
+Currently phi = 0.123152
+Aiming for = 0.05
+== End round 117 ==
+Cap 1 ... flow: 41619 (14.7282 s)
+Cap 2 ... flow: 50798 (19.0596 s)
+Cap 4 ... flow: 64404 (12.8924 s)
+Cap 8 ... flow: 72325 (6.07498 s)
+Flow search took (seconds) 52.989
+Currently phi = 0.129326
+Aiming for = 0.05
+== End round 118 ==
+Cap 1 ... flow: 57178 (14.2356 s)
+Cap 2 ... flow: 69963 (14.548 s)
+Cap 4 ... flow: 72325 (3.41418 s)
+Flow search took (seconds) 32.3762
+Currently phi = 0.199929
+Aiming for = 0.05
+== End round 119 ==
+Cap 1 ... flow: 56128 (17.0683 s)
+Cap 2 ... flow: 66009 (5.4482 s)
+Cap 4 ... flow: 72325 (3.63527 s)
+Flow search took (seconds) 26.3027
+Currently phi = 0.231305
+Aiming for = 0.05
+== End round 120 ==
+Cap 1 ... flow: 41871 (13.1419 s)
+Cap 2 ... flow: 53131 (13.7431 s)
+Cap 4 ... flow: 72325 (9.14583 s)
+Flow search took (seconds) 36.1867
+Currently phi = 0.162392
+Aiming for = 0.05
+== End round 121 ==
+Cap 1 ... flow: 56004 (20.6593 s)
+Cap 2 ... flow: 67936 (21.3854 s)
+Cap 4 ... flow: 72325 (3.63669 s)
+Flow search took (seconds) 45.8488
+Currently phi = 0.202575
+Aiming for = 0.05
+== End round 122 ==
+Cap 1 ... flow: 49381 (11.7343 s)
+Cap 2 ... flow: 56325 (11.1284 s)
+Cap 4 ... flow: 69520 (13.4542 s)
+Cap 8 ... flow: 72325 (4.05616 s)
+Flow search took (seconds) 40.5842
+Currently phi = 0.0911497
+Aiming for = 0.05
+== End round 123 ==
+Cap 1 ... flow: 66368 (8.89105 s)
+Cap 2 ... flow: 72325 (6.87331 s)
+Flow search took (seconds) 15.8651
+Currently phi = 0.192016
+Aiming for = 0.05
+== End round 124 ==
+Cap 1 ... flow: 57024 (13.1842 s)
+Cap 2 ... flow: 65824 (10.3944 s)
+Cap 4 ... flow: 72325 (3.98504 s)
+Flow search took (seconds) 27.7222
+Currently phi = 0.181089
+Aiming for = 0.05
+== End round 125 ==
+Cap 1 ... flow: 52985 (8.16806 s)
+Cap 2 ... flow: 61643 (10.9773 s)
+Cap 4 ... flow: 72325 (6.81445 s)
+Flow search took (seconds) 26.1138
+Currently phi = 0.122316
+Aiming for = 0.05
+== End round 126 ==
+Cap 1 ... flow: 52422 (10.6715 s)
+Cap 2 ... flow: 62281 (16.2754 s)
+Cap 4 ... flow: 72325 (7.82088 s)
+Flow search took (seconds) 34.9301
+Currently phi = 0.1409
+Aiming for = 0.05
+== End round 127 ==
+Cap 1 ... flow: 45386 (14.1202 s)
+Cap 2 ... flow: 56450 (10.3774 s)
+Cap 4 ... flow: 70702 (8.35212 s)
+Cap 8 ... flow: 72325 (3.10473 s)
+Flow search took (seconds) 36.1552
+Currently phi = 0.177821
+Aiming for = 0.05
+== End round 128 ==
+Cap 1 ... flow: 56137 (14.0719 s)
+Cap 2 ... flow: 67905 (14.4495 s)
+Cap 4 ... flow: 72325 (4.94248 s)
+Flow search took (seconds) 33.6292
+Currently phi = 0.168963
+Aiming for = 0.05
+== End round 129 ==
+Cap 1 ... flow: 52218 (18.5079 s)
+Cap 2 ... flow: 62628 (19.4939 s)
+Cap 4 ... flow: 72325 (7.32633 s)
+Flow search took (seconds) 45.4831
+Currently phi = 0.138989
+Aiming for = 0.05
+== End round 130 ==
+Cap 1 ... flow: 36670 (10.726 s)
+Cap 2 ... flow: 44770 (13.5432 s)
+Cap 4 ... flow: 58942 (15.2716 s)
+Cap 8 ... flow: 72325 (5.89417 s)
+Flow search took (seconds) 45.6348
+Currently phi = 0.114657
+Aiming for = 0.05
+== End round 131 ==
+Cap 1 ... flow: 59627 (26.7152 s)
+Cap 2 ... flow: 72119 (17.1791 s)
+Cap 4 ... flow: 72325 (3.21286 s)
+Flow search took (seconds) 47.2657
+Currently phi = 0.262423
+Aiming for = 0.05
+== End round 132 ==
+Cap 1 ... flow: 50300 (13.1434 s)
+Cap 2 ... flow: 61281 (10.6389 s)
+Cap 4 ... flow: 72325 (5.70188 s)
+Flow search took (seconds) 29.6313
+Currently phi = 0.16702
+Aiming for = 0.05
+== End round 133 ==
+Cap 1 ... flow: 65751 (13.7126 s)
+Cap 2 ... flow: 72325 (5.74373 s)
+Flow search took (seconds) 19.5585
+Currently phi = 0.183987
+Aiming for = 0.05
+== End round 134 ==
+Cap 1 ... flow: 65183 (19.0189 s)
+Cap 2 ... flow: 72325 (3.06025 s)
+Flow search took (seconds) 22.1809
+Currently phi = 0.271341
+Aiming for = 0.05
+== End round 135 ==
+Cap 1 ... flow: 55805 (12.1443 s)
+Cap 2 ... flow: 65644 (12.3441 s)
+Cap 4 ... flow: 72325 (4.38495 s)
+Flow search took (seconds) 29.0248
+Currently phi = 0.147335
+Aiming for = 0.05
+== End round 136 ==
+Cap 1 ... flow: 61453 (8.80439 s)
+Cap 2 ... flow: 71995 (4.6077 s)
+Cap 4 ... flow: 72325 (2.00859 s)
+Flow search took (seconds) 15.5648
+Currently phi = 0.320149
+Aiming for = 0.05
+== End round 137 ==
+Cap 1 ... flow: 46688 (16.6944 s)
+Cap 2 ... flow: 54582 (19.6978 s)
+Cap 4 ... flow: 67720 (17.788 s)
+Cap 8 ... flow: 72325 (4.44531 s)
+Flow search took (seconds) 58.8279
+Currently phi = 0.120801
+Aiming for = 0.05
+== End round 138 ==
+Cap 1 ... flow: 57907 (7.99516 s)
+Cap 2 ... flow: 67834 (6.0284 s)
+Cap 4 ... flow: 72325 (2.39406 s)
+Flow search took (seconds) 16.5667
+Currently phi = 0.161954
+Aiming for = 0.05
+== End round 139 ==
+Cap 1 ... flow: 43432 (11.9995 s)
+Cap 2 ... flow: 56088 (13.7161 s)
+Cap 4 ... flow: 72325 (5.42444 s)
+Flow search took (seconds) 31.2908
+Currently phi = 0.197984
+Aiming for = 0.05
+== End round 140 ==
+Cap 1 ... flow: 58465 (12.8657 s)
+Cap 2 ... flow: 66093 (11.4233 s)
+Cap 4 ... flow: 72325 (4.28039 s)
+Flow search took (seconds) 28.7212
+Currently phi = 0.10865
+Aiming for = 0.05
+== End round 141 ==
+Cap 1 ... flow: 50837 (14.4221 s)
+Cap 2 ... flow: 59095 (11.4793 s)
+Cap 4 ... flow: 72325 (8.77323 s)
+Flow search took (seconds) 34.827
+Currently phi = 0.125047
+Aiming for = 0.05
+== End round 142 ==
+Cap 1 ... flow: 69556 (14.2628 s)
+Cap 2 ... flow: 72325 (2.94713 s)
+Flow search took (seconds) 17.3215
+Currently phi = 0.51033
+Aiming for = 0.05
+== End round 143 ==
+Cap 1 ... flow: 39537 (12.4942 s)
+Cap 2 ... flow: 49778 (12.0263 s)
+Cap 4 ... flow: 63818 (13.4091 s)
+Cap 8 ... flow: 72325 (4.57376 s)
+Flow search took (seconds) 42.7068
+Currently phi = 0.109498
+Aiming for = 0.05
+== End round 144 ==
+Cap 1 ... flow: 60530 (13.8207 s)
+Cap 2 ... flow: 72325 (5.54955 s)
+Flow search took (seconds) 19.4724
+Currently phi = 0.226184
+Aiming for = 0.05
+== End round 145 ==
+
