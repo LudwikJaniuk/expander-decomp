@@ -22,9 +22,40 @@
 #include "cxxopts.hpp"
 #include "preliminaries.h"
 
+// OK so how to do waiting on phi...
+// Currently we check it on G.. in what setep?
+
 using namespace lemon;
 using namespace std;
 using namespace std::chrono;
+
+// LEMON uses ints internally. We might want to look into this
+#define LEMON_SIMPLE_NAMES(G) \
+using Node = typename G::Node;\
+using NodeMapd = typename G::template NodeMap<double>;\
+using NodeIt = typename G::NodeIt;\
+using Edge = typename G::Edge;\
+using EdgeIt = typename G::EdgeIt;\
+using IncEdgeIt = typename G::IncEdgeIt;\
+using OutArcIt = typename G::OutArcIt;\
+using Paths = vector<array<Node, 2>>;\
+using ArcLookup = ArcLookUp<G>;\
+template<class T>\
+using EdgeMap = typename G::template EdgeMap<T>;\
+using EdgeMapi = EdgeMap<int>;\
+template<class T>\
+using NodeMap = typename G::template NodeMap<T>;\
+using NodeMapi = NodeMap<int>;\
+using NodeNeighborMap = NodeMap<vector<tuple<Node, int>>>;\
+using FlowAlgo = Preflow<G, EdgeMapi>;\
+using Matching = ListEdgeSet<ListGraph>;\
+using Matchingp = unique_ptr<Matching>;\
+using Bisection = set<Node>;\
+using Bisectionp = unique_ptr<Bisection>;\
+using Cut = set<Node>;\
+using Cutp = unique_ptr<Cut>;\
+using CutMap = NodeMap<bool>;
+
 
 // PARAMETERS:
 int N_NODES = 1000;
@@ -44,65 +75,221 @@ double PHI_TARGET = 99999;
 
 const double MICROSECS = 1000000.0;
 
+enum Round_result {
+    NORMAL,
+    PHI_H_REACHED
+};
+
+
+template<class G>
+struct Statics {
+    LEMON_SIMPLE_NAMES(G)
+
+    // Reads the file filename,
+    // creates that graph in graph g which is assumed to be empty
+    // In the process fills nodes with each node created at the index of (its id in the file minus one)
+    // And sets each node's original_ids id to be (its id in the file minus one).
+    // Of course original_ids must be initialized onto the graph g already earlier.
+    static void parse_chaco_format(const string &filename, G &g, vector<Node> &nodes, NodeMapi &original_ids) {
+        assert(nodes.empty());
+        if(!SILENT) cout << "Reading graph from " << filename << endl;
+        ifstream file;
+        file.open(filename);
+        if (!file) {
+            cerr << "Unable to read file " << filename << endl;
+            exit(1);
+        }
+
+        string line;
+        stringstream ss;
+        getline(file, line);
+        ss.str(line);
+
+        int n_verts, n_edges;
+        ss >> n_verts >> n_edges;
+        if(!SILENT) cout << "Reading a graph with V " << n_verts << "E " << n_edges << endl;
+        g.reserveNode(n_verts);
+        g.reserveNode(n_edges);
+
+        for (size_t i = 0; i < n_verts; i++) {
+            Node n = g.addNode();
+            nodes.push_back(n);
+            original_ids[n] = i;
+        }
+
+        for (size_t i = 0; i < n_verts; i++) {
+            getline(file, line);
+            ss.clear();
+            ss << line;
+            Node u = nodes[i];
+            size_t v_name;
+            while (ss >> v_name) {
+                Node v = nodes[v_name - 1];
+                if (findEdge(g, u, v) == INVALID) {
+                    g.addEdge(u, v);
+                }
+            }
+        }
+
+        if (n_verts % 2 != 0) {
+            if(!SILENT) cout << "Odd number of vertices, adding extra one." << endl;
+            Node n = g.addNode();
+            g.addEdge(nodes[0], n);
+            nodes.push_back(n);
+        }
+    }
+
+};
+
+template<class G>
+struct GraphContext {
+    LEMON_SIMPLE_NAMES(G)
+public:
+    G &g;
+    size_t num_vertices;
+    explicit GraphContext(G &g_) : g(g_) {
+        num_vertices = countNodes(g);
+        assert(num_vertices % 2 == 0);
+        assert(connected(g));
+    }
+};
+
+template<class G>
+struct InputContext {
+    LEMON_SIMPLE_NAMES(G)
+public:
+    G g;
+    vector<Node> nodes; // Indexed by file id - 1.
+    Cut reference_cut;
+    NodeMapi original_ids;
+    vector<Matchingp> matchings;
+    vector<Cutp> cuts;
+    long long last_capacity = -1;
+
+    explicit InputContext(G &g_) : g(g_), original_ids(g_) {
+    //explicit Context() : original_ids(g) {
+        if (READ_GRAPH_FROM_FILE) {
+            parse_chaco_format(IN_GRAPH_FILE, g, nodes, original_ids);
+
+            if (COMPARE_PARTITION) {
+                read_partition_file(PARTITION_FILE, nodes, reference_cut);
+            }
+        } else {
+            if (VERBOSE) cout << "Generating graph with " << N_NODES << " nodes." << endl;
+            generate_large_graph(g, nodes);
+        }
+
+    }
+
+
+    static void generate_large_graph(G &g, vector<Node> &nodes) {
+        nodes.reserve(N_NODES);
+        for (int i = 0; i < N_NODES; i++) {
+            nodes.push_back(g.addNode());
+        }
+
+        g.addEdge(nodes[0], nodes[1]);
+        g.addEdge(nodes[1], nodes[2]);
+        g.addEdge(nodes[2], nodes[0]);
+
+        int lim1 = N_NODES / 3;
+        int lim2 = 2 * N_NODES / 3;
+
+        for (int i = 3; i < lim1; i++) {
+            ListGraph::Node u = nodes[i];
+            ListGraph::Node v = nodes[0];
+            g.addEdge(u, v);
+        }
+        for (int i = lim1; i < lim2; i++) {
+            ListGraph::Node u = nodes[i];
+            ListGraph::Node v = nodes[1];
+            g.addEdge(u, v);
+        }
+        for (int i = lim2; i < N_NODES; i++) {
+            ListGraph::Node u = nodes[i];
+            ListGraph::Node v = nodes[2];
+            g.addEdge(u, v);
+        }
+    }
+
+
+    static void read_partition_file(const string &filename, const vector<Node> &nodes, Cut &partition) {
+        ifstream file;
+        file.open(filename);
+        if (!file) {
+            cerr << "Unable to read file " << filename << endl;
+            exit(1);
+        }
+        bool b;
+        size_t i = 0;
+        while (file >> b) {
+            if (b) partition.insert(nodes[i]);
+            ++i;
+        }
+        if (VERBOSE) cout << "Reference patition size: " << partition.size() << endl;
+    }
+
+};
+
+template<class G>
+struct CutStats {
+    LEMON_SIMPLE_NAMES(G)
+
+    size_t crossing_edges = 0;
+    size_t min_side = 0;
+    size_t max_side = 0;
+
+    CutStats(const Context<G> &c, const Cut &cut) {
+        assert(cut.size() != 0);
+        for (EdgeIt e(c.g); e != INVALID; ++e) {
+            if (is_crossing(c.g, cut, e)) crossing_edges += 1;
+        }
+        assert(cut.size() <= c.num_vertices);
+        size_t other_size = c.num_vertices - cut.size();
+        min_side = min(cut.size(), other_size);
+        max_side = max(cut.size(), other_size);
+    }
+
+    static bool is_crossing(const G &g, const Bisection &c, const Edge &e) {
+        bool u_in = c.count(g.u(e));
+        bool v_in = c.count(g.v(e));
+        return u_in != v_in;
+    }
+
+
+    size_t diff() {
+        return max_side - min_side;
+    }
+
+    size_t num_vertices() {
+        return min_side + max_side;
+    }
+
+    double imbalance() {
+        return diff() * 1. / num_vertices();
+    }
+
+    double expansion() {
+        return crossing_edges * 1. / min_side;
+    }
+
+    void print() {
+        cout << "Edge crossings (E) : " << crossing_edges << endl;
+        cout << "cut size: (" << min_side << " | " << max_side << ")" << endl
+             << "diff: " << diff() << " (" << imbalance() << " of total n vertices)" << endl;
+        cout << "Min side: " << min_side << endl;
+        cout << "E/min(|S|, |comp(S)|) = " << expansion() << endl;
+    }
+};
+
+
 template<class G>
 struct CutMatching {
-    using NodeMapd = typename G::template NodeMap<double>;
-    using Node = typename G::Node;
-    using NodeIt = typename G::NodeIt;
+    LEMON_SIMPLE_NAMES(G)
     using Snapshot = typename G::Snapshot;
-    using Edge = typename G::Edge;
-    using EdgeIt = typename G::EdgeIt;
-    using IncEdgeIt = typename G::IncEdgeIt;
-    using OutArcIt = typename G::OutArcIt;
-    using Paths = vector<array<Node, 2>>;
-    using ArcLookup = ArcLookUp<G>;
-    // LEMON uses ints internally. We might want to look into this
-    template<class T>
-    using EdgeMap = typename G::template EdgeMap<T>;
-    using EdgeMapi = EdgeMap<int>;
-    template<class T>
-    using NodeMap = typename G::template NodeMap<T>;
-    using NodeMapi = NodeMap<int>;
-    using NodeNeighborMap = NodeMap<vector<tuple<Node, int>>>;
-    using FlowAlgo = Preflow<G, EdgeMapi>;
-    using Matching = ListEdgeSet<ListGraph>;
-    using Matchingp = unique_ptr<Matching>;
-    using Bisection = set<Node>;
-    using Bisectionp = unique_ptr<Bisection>;
-    using Cut = set<Node>;
-    using Cutp = unique_ptr<Cut>;
-    using CutMap = NodeMap<bool>;
 
     default_random_engine engine;
     uniform_int_distribution<int> uniform_dist;
-
-    struct Context {
-    public:
-        G g;
-        vector<Node> nodes; // Indexed by file id - 1.
-        Cut reference_cut;
-        NodeMapi original_ids;
-        size_t num_vertices;
-        vector<Matchingp> matchings;
-        vector<Cutp> cuts;
-
-        explicit Context() : original_ids(g) {
-            if (READ_GRAPH_FROM_FILE) {
-                parse_chaco_format(IN_GRAPH_FILE, g, nodes, original_ids);
-
-                if (COMPARE_PARTITION) {
-                    read_partition_file(PARTITION_FILE, nodes, reference_cut);
-                }
-            } else {
-                if (VERBOSE) cout << "Generating graph with " << N_NODES << " nodes." << endl;
-                generate_large_graph(g, nodes);
-            }
-
-            num_vertices = countNodes(g);
-            assert(num_vertices % 2 == 0);
-            assert(connected(g));
-        }
-    };
 
     struct MatchingContext {
         G &g;
@@ -113,7 +300,7 @@ struct CutMatching {
         const size_t num_vertices;
         Snapshot snap; //RAII
 
-        explicit MatchingContext(Context &c)
+        explicit MatchingContext(Context<G> &c)
                 : g(c.g),
                   capacity(g),
                   cut_map(g),
@@ -156,39 +343,32 @@ struct CutMatching {
 
     CutMatching() : uniform_dist(0, 1) {};
 
-    static void read_partition_file(const string &filename, const vector<Node> &nodes, Cut &partition) {
-        ifstream file;
-        file.open(filename);
-        if (!file) {
-            cerr << "Unable to read file " << filename << endl;
-            exit(1);
-        }
-        bool b;
-        size_t i = 0;
-        while (file >> b) {
-            if (b) partition.insert(nodes[i]);
-            ++i;
-        }
-        if (VERBOSE) cout << "Reference patition size: " << partition.size() << endl;
-    }
-
     // Soooooo, we want to develop the partition comparison stuff.
 
+    // TODO we need to calculate expansion of H here explicitly, it's the most efficient place
+    // Makes no sense to create H explicitly
+    // TODO also note, wikipedia includes multigraph directly in the concept of expander. So definition should probably add all multiedges.
+    // ALTHOUGH, the mathematical definition ignores multiedges. Well then. We should ignore them as well.
+    // Which might make creating H explicitly more viable.
+    // UPDATE from dan: should count all the edges
     // Actually, cut player gets H
 // Actually Actually, sure it gets H but it just needs the matchings...
     template<typename M>
-    Bisectionp cut_player(const G &g, const vector<unique_ptr<M>> &matchings) {
+    Bisectionp cut_player(const G &g, const vector<unique_ptr<M>> &matchings, double &out_phi) {
         if (VERBOSE) cout << "Running Cut player" << endl;
         using MEdgeIt = typename M::EdgeIt;
 
         NodeMapd probs(g);
         vector<Node> all_nodes;
 
+        // TODO possible optimization not to create this copy, but this is not a bottleneck anyway
         for (NodeIt n(g); n != INVALID; ++n) {
             all_nodes.push_back(n);
             probs[n] = uniform_dist(engine) ? 1.0 / all_nodes.size() : -1.0 / all_nodes.size(); // TODO
         }
 
+        // TODO well, could actually be maintained on... but eh.
+        ListEdgeSet H(g);
         for (const unique_ptr<M> &m : matchings) {
             for (MEdgeIt e(*m); e != INVALID; ++e) {
                 Node u = m->u(e);
@@ -196,6 +376,8 @@ struct CutMatching {
                 double avg = probs[u] / 2 + probs[v] / 2;
                 probs[u] = avg;
                 probs[v] = avg;
+
+                H.addEdge(u, v);
             }
         }
 
@@ -208,6 +390,15 @@ struct CutMatching {
         all_nodes.resize(size / 2);
         auto b = Bisectionp(new Bisection(all_nodes.begin(), all_nodes.end()));
         if (VERBOSE) { print_cut(*b); }
+        // PHI
+        Context<ListEdgeSet<G>> cH(H);
+        CutStats<ListEdgeSet<G>> cs(cH, b);
+        cout << "edges phi = " << cs.min_side << endl;
+        cout << "edges phi = " << cs.max_side << endl;
+        cout << "edges phi = " << cs.crossing_edges << endl;
+        cout << "H phi = " << cs.expansion() << endl;
+        out_phi = cs.expansion();
+        // END PHI
         return b;
     }
 
@@ -336,7 +527,7 @@ struct CutMatching {
 
 // returns capacity that was required
 // Maybe: make the binsearch an actual binsearch
-    MatchResult matching_player(Context &c, const set<Node> &bisection, ListEdgeSet<G> &m_out) {
+    MatchResult matching_player(Context<G> &c, const set<Node> &bisection, ListEdgeSet<G> &m_out) {
         MatchingContext mg(c);
         make_sink_source(mg, bisection);
 
@@ -380,92 +571,16 @@ struct CutMatching {
         assert(s_added == t_added);
     }
 
-    static void generate_large_graph(G &g, vector<Node> &nodes) {
-        nodes.reserve(N_NODES);
-        for (int i = 0; i < N_NODES; i++) {
-            nodes.push_back(g.addNode());
+    // TODO I think 1 is the correct default (unreachable?) target for phi H
+    Round_result one_round(Context<G> &c, double phi_H_target = 1) {
+        double phi_H = -1;
+        Bisectionp bisection = cut_player(c.g, c.matchings, phi_H);
+        // Here we havebisection... makea cutstats?
+        CutStats cs(c, *bisection);
+        if(phi_H_target >= phi_H_target) {
+            return PHI_H_REACHED;
         }
 
-        g.addEdge(nodes[0], nodes[1]);
-        g.addEdge(nodes[1], nodes[2]);
-        g.addEdge(nodes[2], nodes[0]);
-
-        int lim1 = N_NODES / 3;
-        int lim2 = 2 * N_NODES / 3;
-
-        for (int i = 3; i < lim1; i++) {
-            ListGraph::Node u = nodes[i];
-            ListGraph::Node v = nodes[0];
-            g.addEdge(u, v);
-        }
-        for (int i = lim1; i < lim2; i++) {
-            ListGraph::Node u = nodes[i];
-            ListGraph::Node v = nodes[1];
-            g.addEdge(u, v);
-        }
-        for (int i = lim2; i < N_NODES; i++) {
-            ListGraph::Node u = nodes[i];
-            ListGraph::Node v = nodes[2];
-            g.addEdge(u, v);
-        }
-    }
-
-    // Reads the file filename,
-    // creates that graph in graph g which is assumed to be empty
-    // In the process fills nodes with each node created at the index of (its id in the file minus one)
-    // And sets each node's original_ids id to be (its id in the file minus one).
-    // Of course original_ids must be initialized onto the graph g already earlier.
-    static void parse_chaco_format(const string &filename, ListGraph &g, vector<Node> &nodes, NodeMapi &original_ids) {
-        assert(nodes.empty());
-        if(!SILENT) cout << "Reading graph from " << filename << endl;
-        ifstream file;
-        file.open(filename);
-        if (!file) {
-            cerr << "Unable to read file " << filename << endl;
-            exit(1);
-        }
-
-        string line;
-        stringstream ss;
-        getline(file, line);
-        ss.str(line);
-
-        int n_verts, n_edges;
-        ss >> n_verts >> n_edges;
-        if(!SILENT) cout << "Reading a graph with V " << n_verts << "E " << n_edges << endl;
-        g.reserveNode(n_verts);
-        g.reserveNode(n_edges);
-
-        for (size_t i = 0; i < n_verts; i++) {
-            Node n = g.addNode();
-            nodes.push_back(n);
-            original_ids[n] = i;
-        }
-
-        for (size_t i = 0; i < n_verts; i++) {
-            getline(file, line);
-            ss.clear();
-            ss << line;
-            Node u = nodes[i];
-            size_t v_name;
-            while (ss >> v_name) {
-                Node v = nodes[v_name - 1];
-                if (findEdge(g, u, v) == INVALID) {
-                    g.addEdge(u, v);
-                }
-            }
-        }
-
-        if (n_verts % 2 != 0) {
-            if(!SILENT) cout << "Odd number of vertices, adding extra one." << endl;
-            Node n = g.addNode();
-            g.addEdge(nodes[0], n);
-            nodes.push_back(n);
-        }
-    }
-
-    size_t one_round(Context &c) {
-        Bisectionp bisection = cut_player(c.g, c.matchings);
 
         Matchingp matchingp(new Matching(c.g));
 
@@ -476,7 +591,10 @@ struct CutMatching {
 
         c.matchings.push_back(move(matchingp));
         c.cuts.push_back(move(mr.cut_from_flow));
-        return cap;
+        // SET CAP
+        //return cap;
+        c.last_capacity = cap;
+        return NORMAL;
 
         // We want to implement that it parses partitions
         // That has nothing to do with the rounds lol
@@ -498,83 +616,48 @@ struct CutMatching {
         cout << endl;
     }
 
-    static bool is_crossing(const G &g, const Bisection &c, const Edge &e) {
-        bool u_in = c.count(g.u(e));
-        bool v_in = c.count(g.v(e));
-        return u_in != v_in;
-    }
-
     void print_end_round(int i) const {
         if (VERBOSE) cout << "======================" << endl;
         if(!SILENT) cout << "== End round " << i << " ==" << endl;
         if (VERBOSE) cout << "======================" << endl;
     }
 
-    struct CutStats {
-        size_t crossing_edges = 0;
-        size_t min_side = 0;
-        size_t max_side = 0;
-
-        CutStats(const Context &c, const Cut &cut) {
-		assert(cut.size() != 0);
-            for (EdgeIt e(c.g); e != INVALID; ++e) {
-                if (is_crossing(c.g, cut, e)) crossing_edges += 1;
-            }
-            assert(cut.size() <= c.num_vertices);
-            size_t other_size = c.num_vertices - cut.size();
-            min_side = min(cut.size(), other_size);
-            max_side = max(cut.size(), other_size);
-        }
-
-        size_t diff() {
-            return max_side - min_side;
-        }
-
-        size_t num_vertices() {
-            return min_side + max_side;
-        }
-
-        double imbalance() {
-            return diff() * 1. / num_vertices();
-        }
-
-        double expansion() {
-            return crossing_edges * 1. / min_side;
-        }
-
-        void print() {
-            cout << "Edge crossings (E) : " << crossing_edges << endl;
-            cout << "cut size: (" << min_side << " | " << max_side << ")" << endl
-                 << "diff: " << diff() << " (" << imbalance() << " of total n vertices)" << endl;
-            cout << "Min side: " << min_side << endl;
-            cout << "E/min(|S|, |comp(S)|) = " << expansion() << endl;
-        }
-    };
-
-    size_t run_until(Context &c, double phi) {
+    size_t run_until(Context<G> &c, double phi) {
 	    for (int i = 0; ; i++) {
-		    size_t cap = one_round(c);
-		    Cutp& cut = c.cuts[c.cuts.size()-1];
+	        // Can we create bisection inside there too? Or actally just save bisection
+            Round_result status = one_round(c);
+            switch (status) {
+                case NORMAL: {
+                    Cutp &cut = c.cuts[c.cuts.size() - 1];
 
-		    double phi_curr = 999999;
-		    if(cut->size() > 0) {
-			    CutStats cs(c, *cut);
-			    phi_curr = cs.expansion();
-		    }
-		    cout << "Currently phi = " << phi_curr << endl;
-		    if(phi_curr > phi) {
-			    cout << "Aiming for = " << phi << endl;
-			    print_end_round(i);
-		    } 
-		    else 
-		    {
-			    print_end_round(i);
-			    return i;
-		    }
+                    double phi_curr = 999999;
+                    if (cut->size() > 0) {
+                        // Ok so here we just compute the cut stats expansion
+                        CutStats cs(c, *cut);
+                        phi_curr = cs.expansion();
+                    }
+                    cout << "Currently phi = " << phi_curr << endl;
+                    if (phi_curr > phi) {
+                        cout << "Aiming for = " << phi << endl;
+                        print_end_round(i);
+                    } else {
+                        print_end_round(i);
+                        return i;
+                    }
+                } break;
+                case PHI_H_REACHED:
+                    cout << "Reached target H!"<< endl;
+                    print_end_round(i);
+                    return i;
+                    break;
+                default:
+                    exit(1);
+                    break;
+            }
 	    }
     }
 
-    size_t run_rounds(Context &c) {
+    size_t run_rounds(Context<G> &c) {
         size_t best_cap = 0;
         size_t best_cap_index = 999999;
         for (int i = 0; i < N_ROUNDS; i++) {
@@ -590,7 +673,7 @@ struct CutMatching {
         return best_cap_index;
     }
 
-    void write_cut(const Context &c, const Cut &cut) {
+    void write_cut(const Context<G> &c, const Cut &cut) {
         ofstream file;
         file.open(OUTPUT_FILE);
         if (!file) {
@@ -610,14 +693,15 @@ struct CutMatching {
     }
 
     void run() {
-        Context c;
+        G g;
+        Context<G> c(g);
         if (N_ROUNDS >= 1) {
             //auto best_round = run_rounds(c);
             auto best_round = run_until(c, PHI_TARGET);
             cout << "The cut with highest capacity required was found on round" << best_round << endl;
             cout << "Best cut sparsity: " << endl;
             auto &best_cut = *c.cuts[best_round];
-            CutStats(c, best_cut).print();
+            CutStats<G>(c, best_cut).print();
             if (OUTPUT_CUT) { write_cut(c, best_cut); }
         }
 
@@ -625,7 +709,7 @@ struct CutMatching {
             cout << endl
                  << "The given partition achieved the following:"
                  << endl;
-            CutStats(c, c.reference_cut).print();
+            CutStats<G>(c, c.reference_cut).print();
         }
     }
 };
