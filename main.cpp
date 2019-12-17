@@ -44,34 +44,87 @@ double PHI_TARGET = 99999;
 
 const double MICROSECS = 1000000.0;
 
+// LEMON uses ints internally. We might want to look into this
+#define LEMON_SIMPLE_NAMES(G) \
+using Node = typename G::Node;\
+using NodeMapd = typename G::template NodeMap<double>;\
+using NodeIt = typename G::NodeIt;\
+using Edge = typename G::Edge;\
+using EdgeIt = typename G::EdgeIt;\
+using IncEdgeIt = typename G::IncEdgeIt;\
+using OutArcIt = typename G::OutArcIt;\
+using Paths = vector<array<Node, 2>>;\
+using ArcLookup = ArcLookUp<G>;\
+template<class T>\
+using EdgeMap = typename G::template EdgeMap<T>;\
+using EdgeMapi = EdgeMap<int>;\
+template<class T>\
+using NodeMap = typename G::template NodeMap<T>;\
+using NodeMapi = NodeMap<int>;\
+using NodeNeighborMap = NodeMap<vector<tuple<Node, int>>>;\
+using FlowAlgo = Preflow<G, EdgeMapi>;\
+using Matching = ListEdgeSet<ListGraph>;\
+using Matchingp = unique_ptr<Matching>;\
+using Bisection = set<Node>;\
+using Bisectionp = unique_ptr<Bisection>;\
+using Cut = set<Node>;\
+using Cutp = unique_ptr<Cut>;\
+using CutMap = NodeMap<bool>;
+
+template <class G>
+struct CutStats {
+    LEMON_SIMPLE_NAMES(G)
+
+    size_t crossing_edges = 0;
+    size_t min_side = 0;
+    size_t max_side = 0;
+
+    CutStats(const G &g, int num_vertices, const Cut &cut) {
+        assert(cut.size() != 0);
+        for (EdgeIt e(g); e != INVALID; ++e) {
+            if (is_crossing(g, cut, e)) crossing_edges += 1;
+        }
+        assert(cut.size() <= num_vertices);
+        size_t other_size = num_vertices - cut.size();
+        min_side = min(cut.size(), other_size);
+        max_side = max(cut.size(), other_size);
+    }
+
+    static bool is_crossing(const G &g, const Bisection &c, const Edge &e) {
+        bool u_in = c.count(g.u(e));
+        bool v_in = c.count(g.v(e));
+        return u_in != v_in;
+    }
+
+    size_t diff() {
+        return max_side - min_side;
+    }
+
+    size_t num_vertices() {
+        return min_side + max_side;
+    }
+
+    double imbalance() {
+        return diff() * 1. / num_vertices();
+    }
+
+    double expansion() {
+        return crossing_edges * 1. / min_side;
+    }
+
+    void print() {
+        cout << "Edge crossings (E) : " << crossing_edges << endl;
+        cout << "cut size: (" << min_side << " | " << max_side << ")" << endl
+             << "diff: " << diff() << " (" << imbalance() << " of total n vertices)" << endl;
+        cout << "Min side: " << min_side << endl;
+        cout << "E/min(|S|, |comp(S)|) = " << expansion() << endl;
+    }
+};
+
 template<class G>
 struct CutMatching {
-    using NodeMapd = typename G::template NodeMap<double>;
-    using Node = typename G::Node;
-    using NodeIt = typename G::NodeIt;
+    LEMON_SIMPLE_NAMES(G)
     using Snapshot = typename G::Snapshot;
-    using Edge = typename G::Edge;
-    using EdgeIt = typename G::EdgeIt;
-    using IncEdgeIt = typename G::IncEdgeIt;
-    using OutArcIt = typename G::OutArcIt;
-    using Paths = vector<array<Node, 2>>;
-    using ArcLookup = ArcLookUp<G>;
-    // LEMON uses ints internally. We might want to look into this
-    template<class T>
-    using EdgeMap = typename G::template EdgeMap<T>;
-    using EdgeMapi = EdgeMap<int>;
-    template<class T>
-    using NodeMap = typename G::template NodeMap<T>;
-    using NodeMapi = NodeMap<int>;
-    using NodeNeighborMap = NodeMap<vector<tuple<Node, int>>>;
-    using FlowAlgo = Preflow<G, EdgeMapi>;
-    using Matching = ListEdgeSet<ListGraph>;
-    using Matchingp = unique_ptr<Matching>;
-    using Bisection = set<Node>;
-    using Bisectionp = unique_ptr<Bisection>;
-    using Cut = set<Node>;
-    using Cutp = unique_ptr<Cut>;
-    using CutMap = NodeMap<bool>;
 
     default_random_engine engine;
     uniform_int_distribution<int> uniform_dist;
@@ -189,6 +242,7 @@ struct CutMatching {
             probs[n] = uniform_dist(engine) ? 1.0 / all_nodes.size() : -1.0 / all_nodes.size(); // TODO
         }
 
+        ListEdgeSet H(g);
         for (const unique_ptr<M> &m : matchings) {
             for (MEdgeIt e(*m); e != INVALID; ++e) {
                 Node u = m->u(e);
@@ -196,6 +250,8 @@ struct CutMatching {
                 double avg = probs[u] / 2 + probs[v] / 2;
                 probs[u] = avg;
                 probs[v] = avg;
+
+                H.addEdge(u, v);
             }
         }
 
@@ -208,6 +264,8 @@ struct CutMatching {
         all_nodes.resize(size / 2);
         auto b = Bisectionp(new Bisection(all_nodes.begin(), all_nodes.end()));
         if (VERBOSE) { print_cut(*b); }
+        CutStats cH(H, all_nodes.size()*2, *b);
+        cout << "H Phi : " << cH.expansion() << endl;
         return b;
     }
 
@@ -498,58 +556,12 @@ struct CutMatching {
         cout << endl;
     }
 
-    static bool is_crossing(const G &g, const Bisection &c, const Edge &e) {
-        bool u_in = c.count(g.u(e));
-        bool v_in = c.count(g.v(e));
-        return u_in != v_in;
-    }
-
     void print_end_round(int i) const {
         if (VERBOSE) cout << "======================" << endl;
         if(!SILENT) cout << "== End round " << i << " ==" << endl;
         if (VERBOSE) cout << "======================" << endl;
     }
 
-    struct CutStats {
-        size_t crossing_edges = 0;
-        size_t min_side = 0;
-        size_t max_side = 0;
-
-        CutStats(const Context &c, const Cut &cut) {
-		assert(cut.size() != 0);
-            for (EdgeIt e(c.g); e != INVALID; ++e) {
-                if (is_crossing(c.g, cut, e)) crossing_edges += 1;
-            }
-            assert(cut.size() <= c.num_vertices);
-            size_t other_size = c.num_vertices - cut.size();
-            min_side = min(cut.size(), other_size);
-            max_side = max(cut.size(), other_size);
-        }
-
-        size_t diff() {
-            return max_side - min_side;
-        }
-
-        size_t num_vertices() {
-            return min_side + max_side;
-        }
-
-        double imbalance() {
-            return diff() * 1. / num_vertices();
-        }
-
-        double expansion() {
-            return crossing_edges * 1. / min_side;
-        }
-
-        void print() {
-            cout << "Edge crossings (E) : " << crossing_edges << endl;
-            cout << "cut size: (" << min_side << " | " << max_side << ")" << endl
-                 << "diff: " << diff() << " (" << imbalance() << " of total n vertices)" << endl;
-            cout << "Min side: " << min_side << endl;
-            cout << "E/min(|S|, |comp(S)|) = " << expansion() << endl;
-        }
-    };
 
     size_t run_until(Context &c, double phi) {
 	    for (int i = 0; ; i++) {
@@ -558,7 +570,7 @@ struct CutMatching {
 
 		    double phi_curr = 999999;
 		    if(cut->size() > 0) {
-			    CutStats cs(c, *cut);
+			    CutStats cs(c.g, c.num_vertices, *cut);
 			    phi_curr = cs.expansion();
 		    }
 		    cout << "Currently phi = " << phi_curr << endl;
@@ -612,12 +624,12 @@ struct CutMatching {
     void run() {
         Context c;
         if (N_ROUNDS >= 1) {
-            //auto best_round = run_rounds(c);
-            auto best_round = run_until(c, PHI_TARGET);
+            auto best_round = run_rounds(c);
+            //auto best_round = run_until(c, PHI_TARGET);
             cout << "The cut with highest capacity required was found on round" << best_round << endl;
             cout << "Best cut sparsity: " << endl;
             auto &best_cut = *c.cuts[best_round];
-            CutStats(c, best_cut).print();
+            CutStats<G>(c.g, c.num_vertices, best_cut).print();
             if (OUTPUT_CUT) { write_cut(c, best_cut); }
         }
 
@@ -625,7 +637,7 @@ struct CutMatching {
             cout << endl
                  << "The given partition achieved the following:"
                  << endl;
-            CutStats(c, c.reference_cut).print();
+            CutStats<G>(c.g, c.num_vertices, c.reference_cut).print();
         }
     }
 };
