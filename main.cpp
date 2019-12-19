@@ -522,11 +522,16 @@ struct CutMatching {
         size_t max_side = 0;
 
         CutStats(const Context &c, const Cut &cut) {
-            for (EdgeIt e(c.g); e != INVALID; ++e) {
-                if (is_crossing(c.g, cut, e)) crossing_edges += 1;
+            CutStats(c.g, c.num_vertices, cut);
+        }
+
+        template <class GG>
+        CutStats(const GG &g, long num_vertices, const Cut &cut) {
+            for (EdgeIt e(g); e != INVALID; ++e) {
+                if (is_crossing(g, cut, e)) crossing_edges += 1;
             }
-            assert(cut.size() <= c.num_vertices);
-            size_t other_size = c.num_vertices - cut.size();
+            assert(cut.size() <= num_vertices);
+            size_t other_size = num_vertices - cut.size();
             min_side = min(cut.size(), other_size);
             max_side = max(cut.size(), other_size);
         }
