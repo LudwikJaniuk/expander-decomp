@@ -521,21 +521,13 @@ struct CutMatching {
         size_t min_side = 0;
         size_t max_side = 0;
 
-        /*
-        CutStats(const Context &c, const Cut &cut) {
-            for (EdgeIt e(c.g); e != INVALID; ++e) {
-                if (is_crossing(c.g, cut, e)) crossing_edges += 1;
-            }
-            assert(cut.size() <= c.num_vertices);
-            size_t other_size = c.num_vertices - cut.size();
-            min_side = min(cut.size(), other_size);
-            max_side = max(cut.size(), other_size);
-        }
-         */
-
-
         CutStats(const Context &c, const Cut &cut) {
             initialize(c.g, c.num_vertices, cut);
+        }
+
+        template <class GG>
+        CutStats(const GG &g, size_t num_vertices, const Cut &cut) {
+            initialize(g, num_vertices, cut);
         }
 
         template <class GG>
@@ -617,7 +609,7 @@ struct CutMatching {
             cout << "The cut with highest capacity required was found on round" << best_round << endl;
             cout << "Best cut sparsity: " << endl;
             auto &best_cut = *c.cuts[best_round];
-            CutStats(c, best_cut).print();
+            CutStats(c.g, c.num_vertices, best_cut).print();
             if (OUTPUT_CUT) { write_cut(c, best_cut); }
         }
 
