@@ -50,6 +50,64 @@ const double MICROSECS = 1000000.0;
 // 1) print H-phi
 // 2) Adapt a stopping routine
 
+
+template <class G>
+struct CutStats {
+    using Node = typename G::Node;
+    using Edge = typename G::Edge;
+    using Cut = set<Node>;
+    using EdgeIt = typename G::EdgeIt;
+    using Bisection = set<Node>;
+    size_t crossing_edges = 0;
+    size_t min_side = 0;
+    size_t max_side = 0;
+
+    CutStats(const G &g, size_t num_vertices, const Cut &cut) {
+        initialize(g, num_vertices, cut);
+    }
+
+    void initialize(const G &g, size_t num_vertices, const Cut &cut) {
+        for (EdgeIt e(g); e != INVALID; ++e) {
+            if (is_crossing(g, cut, e)) crossing_edges += 1;
+        }
+        assert(cut.size() <= num_vertices);
+        size_t other_size = num_vertices - cut.size();
+        min_side = min(cut.size(), other_size);
+        max_side = max(cut.size(), other_size);
+    }
+
+    static bool is_crossing(const G &g, const Bisection &c, const Edge &e) {
+        bool u_in = c.count(g.u(e));
+        bool v_in = c.count(g.v(e));
+        return u_in != v_in;
+    }
+
+    size_t diff() {
+        return max_side - min_side;
+    }
+
+    size_t num_vertices() {
+        return min_side + max_side;
+    }
+
+    double imbalance() {
+        return diff() * 1. / num_vertices();
+    }
+
+    double expansion() {
+        return crossing_edges * 1. / min_side;
+    }
+
+    void print() {
+        cout << "Edge crossings (E) : " << crossing_edges << endl;
+        cout << "cut size: (" << min_side << " | " << max_side << ")" << endl
+             << "diff: " << diff() << " (" << imbalance() << " of total n vertices)" << endl;
+        cout << "Min side: " << min_side << endl;
+        cout << "E/min(|S|, |comp(S)|) = " << expansion() << endl;
+    }
+};
+
+
 template<class G>
 struct CutMatching {
     using NodeMapd = typename G::template NodeMap<double>;
@@ -195,6 +253,9 @@ struct CutMatching {
             probs[n] = uniform_dist(engine) ? 1.0 / all_nodes.size() : -1.0 / all_nodes.size(); // TODO
         }
 
+        size_t num_vertices = all_nodes.size();
+
+        ListEdgeSet H(g);
         for (const unique_ptr<M> &m : matchings) {
             for (MEdgeIt e(*m); e != INVALID; ++e) {
                 Node u = m->u(e);
@@ -202,6 +263,8 @@ struct CutMatching {
                 double avg = probs[u] / 2 + probs[v] / 2;
                 probs[u] = avg;
                 probs[v] = avg;
+
+                H.addEdge(u, v);
             }
         }
 
@@ -214,6 +277,10 @@ struct CutMatching {
         all_nodes.resize(size / 2);
         auto b = Bisectionp(new Bisection(all_nodes.begin(), all_nodes.end()));
         if (VERBOSE) { print_cut(*b); }
+
+        cout << "H expansion: " << endl;
+        CutStats<decltype(H)>(H, num_vertices, *b).print();
+
         return b;
     }
 
@@ -504,68 +571,11 @@ struct CutMatching {
         cout << endl;
     }
 
-    static bool is_crossing(const G &g, const Bisection &c, const Edge &e) {
-        bool u_in = c.count(g.u(e));
-        bool v_in = c.count(g.v(e));
-        return u_in != v_in;
-    }
-
     void print_end_round(int i) const {
         if (VERBOSE) cout << "======================" << endl;
         if(!SILENT) cout << "== End round " << i << " ==" << endl;
         if (VERBOSE) cout << "======================" << endl;
     }
-
-    struct CutStats {
-        size_t crossing_edges = 0;
-        size_t min_side = 0;
-        size_t max_side = 0;
-
-        CutStats(const Context &c, const Cut &cut) {
-            initialize(c.g, c.num_vertices, cut);
-        }
-
-        template <class GG>
-        CutStats(const GG &g, size_t num_vertices, const Cut &cut) {
-            initialize(g, num_vertices, cut);
-        }
-
-        template <class GG>
-        void initialize(const GG &g, size_t num_vertices, const Cut &cut) {
-            for (EdgeIt e(g); e != INVALID; ++e) {
-                if (is_crossing(g, cut, e)) crossing_edges += 1;
-            }
-            assert(cut.size() <= num_vertices);
-            size_t other_size = num_vertices - cut.size();
-            min_side = min(cut.size(), other_size);
-            max_side = max(cut.size(), other_size);
-        }
-
-
-        size_t diff() {
-            return max_side - min_side;
-        }
-
-        size_t num_vertices() {
-            return min_side + max_side;
-        }
-
-        double imbalance() {
-            return diff() * 1. / num_vertices();
-        }
-
-        double expansion() {
-            return crossing_edges * 1. / min_side;
-        }
-
-        void print() {
-            cout << "Edge crossings (E) : " << crossing_edges << endl;
-            cout << "cut size: (" << min_side << " | " << max_side << ")" << endl
-                 << "diff: " << diff() << " (" << imbalance() << " of total n vertices)" << endl;
-            cout << "Min side: " << min_side << endl;
-            cout << "E/min(|S|, |comp(S)|) = " << expansion() << endl;
-        }
-    };
 
     size_t run_rounds(Context &c) {
         size_t best_cap = 0;
@@ -609,74 +619,74 @@ struct CutMatching {
             cout << "The cut with highest capacity required was found on round" << best_round << endl;
             cout << "Best cut sparsity: " << endl;
             auto &best_cut = *c.cuts[best_round];
-            CutStats(c.g, c.num_vertices, best_cut).print();
-            if (OUTPUT_CUT) { write_cut(c, best_cut); }
-        }
-
-        if (COMPARE_PARTITION) { // Output reference cut
-            cout << endl
-                 << "The given partition achieved the following:"
-                 << endl;
-            CutStats(c, c.reference_cut).print();
-        }
+        CutStats<G>(c.g, c.num_vertices, best_cut).print();
+        if (OUTPUT_CUT) { write_cut(c, best_cut); }
     }
+
+    if (COMPARE_PARTITION) { // Output reference cut
+        cout << endl
+             << "The given partition achieved the following:"
+             << endl;
+        CutStats<G>(c.g, c.num_vertices, c.reference_cut).print();
+    }
+}
 };
 
 cxxopts::Options create_options() {
-    cxxopts::Options options("Janiuk graph partition",
-                             "Individual project implementation of thatchapon's paper to find graph partitions. Currently only cut-matching game.");
-    options.add_options()
-            ("f,file", "File to read graph from", cxxopts::value<std::string>())
-            ("n,nodes", "Number of nodes in graph to generate. Should be even. Ignored if -f is set.",
-             cxxopts::value<long>()->default_value("100"))
-            ("r,rounds", "Number of rounds to run cut-matching game", cxxopts::value<long>()->default_value("5"))
-            ("d,paths", "Whether to print paths")
-            ("v,verbose", "Whether to print nodes and cuts (does not include paths)")
-            ("s,seed", "Use a seed for RNG (optionally set seed manually)",
-             cxxopts::value<int>()->implicit_value("1337"))
-            ("S,Silent", "Only output one line of summary at the end")
-            ("o,output", "Output computed cut into file", cxxopts::value<std::string>())
-            ("p,partition", "Partition file to compare with", cxxopts::value<std::string>());
-    return options;
+cxxopts::Options options("Janiuk graph partition",
+                         "Individual project implementation of thatchapon's paper to find graph partitions. Currently only cut-matching game.");
+options.add_options()
+        ("f,file", "File to read graph from", cxxopts::value<std::string>())
+        ("n,nodes", "Number of nodes in graph to generate. Should be even. Ignored if -f is set.",
+         cxxopts::value<long>()->default_value("100"))
+        ("r,rounds", "Number of rounds to run cut-matching game", cxxopts::value<long>()->default_value("5"))
+        ("d,paths", "Whether to print paths")
+        ("v,verbose", "Whether to print nodes and cuts (does not include paths)")
+        ("s,seed", "Use a seed for RNG (optionally set seed manually)",
+         cxxopts::value<int>()->implicit_value("1337"))
+        ("S,Silent", "Only output one line of summary at the end")
+        ("o,output", "Output computed cut into file", cxxopts::value<std::string>())
+        ("p,partition", "Partition file to compare with", cxxopts::value<std::string>());
+return options;
 }
 
 void parse_options(int argc, char **argv, CutMatching<ListGraph> &cm) {
-    auto options = create_options();
-    auto result = options.parse(argc, argv);
-    if (result.count("file")) {
-        READ_GRAPH_FROM_FILE = true;
-        IN_GRAPH_FILE = result["file"].as<string>();
-    }
-    if (result.count("nodes"))
-        N_NODES = result["nodes"].as<long>();
-    if (result.count("rounds"))
-        N_ROUNDS = result["rounds"].as<long>();
-    if (result.count("verbose"))
-        VERBOSE = result["verbose"].as<bool>();
-    if (result.count("Silent"))
-        SILENT = result["Silent"].as<bool>();
-    if (result.count("paths"))
-        PRINT_PATHS = result["paths"].as<bool>();
-    if (result.count("seed"))
-        cm.engine = default_random_engine(result["seed"].as<int>());
-    else
-        cm.engine = default_random_engine(random_device()());
-    if (result.count("output")) {
-        OUTPUT_CUT = true;
-        OUTPUT_FILE = result["output"].as<string>();
-    }
-    if (result.count("partition")) {
-        COMPARE_PARTITION = true;
-        PARTITION_FILE = result["partition"].as<string>();
-    }
+auto options = create_options();
+auto result = options.parse(argc, argv);
+if (result.count("file")) {
+    READ_GRAPH_FROM_FILE = true;
+    IN_GRAPH_FILE = result["file"].as<string>();
+}
+if (result.count("nodes"))
+    N_NODES = result["nodes"].as<long>();
+if (result.count("rounds"))
+    N_ROUNDS = result["rounds"].as<long>();
+if (result.count("verbose"))
+    VERBOSE = result["verbose"].as<bool>();
+if (result.count("Silent"))
+    SILENT = result["Silent"].as<bool>();
+if (result.count("paths"))
+    PRINT_PATHS = result["paths"].as<bool>();
+if (result.count("seed"))
+    cm.engine = default_random_engine(result["seed"].as<int>());
+else
+    cm.engine = default_random_engine(random_device()());
+if (result.count("output")) {
+    OUTPUT_CUT = true;
+    OUTPUT_FILE = result["output"].as<string>();
+}
+if (result.count("partition")) {
+    COMPARE_PARTITION = true;
+    PARTITION_FILE = result["partition"].as<string>();
+}
 }
 
 // TODO Selecting best cut not only hightest cap
 int main(int argc, char **argv) {
-    CutMatching<ListGraph> cm;
-    parse_options(argc, argv, cm);
-    cm.run();
-    return 0;
+CutMatching<ListGraph> cm;
+parse_options(argc, argv, cm);
+cm.run();
+return 0;
 }
 
 #pragma clang diagnostic pop
