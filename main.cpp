@@ -87,7 +87,8 @@ struct InputConfiguration {
 
 struct Configuration {
     InputConfiguration input;
-} config;
+    mutable default_random_engine random_engine;
+};
 
 
 // TODO
@@ -153,35 +154,149 @@ struct CutStats {
         cout << "E/min(|S|, |comp(S)|) = " << expansion() << endl;
     }
 };
+// Reads the file filename,
+// creates that graph in graph g which is assumed to be empty
+// In the process fills nodes with each node created at the index of (its id in the file minus one)
+// And sets each node's original_ids id to be (its id in the file minus one).
+// Of course original_ids must be initialized onto the graph g already earlier.
+static void parse_chaco_format(const string &filename, ListGraph &g, vector<Node> &nodes) {
+    assert(nodes.empty());
+    if(!SILENT) cout << "Reading graph from " << filename << endl;
+    ifstream file;
+    file.open(filename);
+    if (!file) {
+        cerr << "Unable to read file " << filename << endl;
+        exit(1);
+    }
 
-template<class G>
+    string line;
+    stringstream ss;
+    getline(file, line);
+    ss.str(line);
+
+    int n_verts, n_edges;
+    ss >> n_verts >> n_edges;
+    if(!SILENT) cout << "Reading a graph with V " << n_verts << "E " << n_edges << endl;
+    g.reserveNode(n_verts);
+    g.reserveNode(n_edges);
+
+    for (size_t i = 0; i < n_verts; i++) {
+        Node n = g.addNode();
+        nodes.push_back(n);
+    }
+
+    for (size_t i = 0; i < n_verts; i++) {
+        getline(file, line);
+        ss.clear();
+        ss << line;
+        Node u = nodes[i];
+        size_t v_name;
+        while (ss >> v_name) {
+            Node v = nodes[v_name - 1];
+            if (findEdge(g, u, v) == INVALID) {
+                g.addEdge(u, v);
+            }
+        }
+    }
+
+    if (n_verts % 2 != 0) {
+        if(!SILENT) cout << "Odd number of vertices, adding extra one." << endl;
+        Node n = g.addNode();
+        g.addEdge(nodes[0], n);
+        nodes.push_back(n);
+    }
+}
+
+void generate_large_graph(G &g, vector<Node> &nodes) {
+    nodes.reserve(N_NODES);
+    for (int i = 0; i < N_NODES; i++) {
+        nodes.push_back(g.addNode());
+    }
+
+    g.addEdge(nodes[0], nodes[1]);
+    g.addEdge(nodes[1], nodes[2]);
+    g.addEdge(nodes[2], nodes[0]);
+
+    int lim1 = N_NODES / 3;
+    int lim2 = 2 * N_NODES / 3;
+
+    for (int i = 3; i < lim1; i++) {
+        ListGraph::Node u = nodes[i];
+        ListGraph::Node v = nodes[0];
+        g.addEdge(u, v);
+    }
+    for (int i = lim1; i < lim2; i++) {
+        ListGraph::Node u = nodes[i];
+        ListGraph::Node v = nodes[1];
+        g.addEdge(u, v);
+    }
+    for (int i = lim2; i < N_NODES; i++) {
+        ListGraph::Node u = nodes[i];
+        ListGraph::Node v = nodes[2];
+        g.addEdge(u, v);
+    }
+}
+
+
+struct GraphContext {
+    G g;
+    //size_t num_vertices;
+    vector<Node> nodes;
+    Cut reference_cut;
+};
+
+
+void read_partition_file(const string &filename, const vector<Node> &nodes, Cut &partition) {
+    ifstream file;
+    file.open(filename);
+    if (!file) {
+        cerr << "Unable to read file " << filename << endl;
+        exit(1);
+    }
+    bool b;
+    size_t i = 0;
+    while (file >> b) {
+        if (b) partition.insert(nodes[i]);
+        ++i;
+    }
+    if (VERBOSE) cout << "Reference patition size: " << partition.size() << endl;
+}
+
+struct InitializedGraphContext {
+    GraphContext &gc;
+};
+
+InitializedGraphContext createInputGraph(GraphContext &gc, InputConfiguration config) {
+    if (config.load_from_file) {
+        parse_chaco_format(config.file_name, gc.g, gc.nodes);
+
+        if (COMPARE_PARTITION) {
+            read_partition_file(PARTITION_FILE, gc.nodes, gc.reference_cut);
+        }
+    } else {
+        if (VERBOSE) cout << "Generating graph with " << N_NODES << " nodes." << endl;
+        generate_large_graph(gc.g, gc.nodes);
+    }
+    return {gc};
+}
+
 struct CutMatching {
-
-
-    default_random_engine engine;
-    uniform_int_distribution<int> uniform_dist;
+    const Configuration &config;
+    GraphContext &gc;
+    // Input graph
+    CutMatching(InitializedGraphContext &igc, const Configuration &config_) : config(config_), gc(igc.gc) {};
 
     struct Context {
     public:
-        G g;
-        vector<Node> nodes; // Indexed by file id - 1.
-        Cut reference_cut;
-        NodeMapi original_ids;
+        G &g;
+        vector<Node> &nodes; // Indexed by file id - 1.
+        Cut &reference_cut;
         size_t num_vertices;
         vector<Matchingp> matchings;
         vector<Cutp> cuts;
 
-        explicit Context() : original_ids(g) {
-            if (config.input.load_from_file) {
-                parse_chaco_format(config.input.file_name, g, nodes, original_ids);
-
-                if (COMPARE_PARTITION) {
-                    read_partition_file(PARTITION_FILE, nodes, reference_cut);
-                }
-            } else {
-                if (VERBOSE) cout << "Generating graph with " << N_NODES << " nodes." << endl;
-                generate_large_graph(g, nodes);
-            }
+        explicit Context(G &g_, vector<Node> &nodes_, Cut &reference_cut_ )
+        : g(g_), nodes(nodes_), reference_cut(reference_cut_) {
 
             num_vertices = countNodes(g);
             assert(num_vertices % 2 == 0);
@@ -239,24 +354,6 @@ struct CutMatching {
         size_t capacity;
     };
 
-    CutMatching() : uniform_dist(0, 1) {};
-
-    static void read_partition_file(const string &filename, const vector<Node> &nodes, Cut &partition) {
-        ifstream file;
-        file.open(filename);
-        if (!file) {
-            cerr << "Unable to read file " << filename << endl;
-            exit(1);
-        }
-        bool b;
-        size_t i = 0;
-        while (file >> b) {
-            if (b) partition.insert(nodes[i]);
-            ++i;
-        }
-        if (VERBOSE) cout << "Reference patition size: " << partition.size() << endl;
-    }
-
     // Soooooo, we want to develop the partition comparison stuff.
 
     // Actually, cut player gets H
@@ -269,9 +366,10 @@ struct CutMatching {
         NodeMapd probs(g);
         vector<Node> all_nodes;
 
+        uniform_int_distribution<int> uniform_dist(0, 1);
         for (NodeIt n(g); n != INVALID; ++n) {
             all_nodes.push_back(n);
-            probs[n] = uniform_dist(engine) ? 1.0 / all_nodes.size() : -1.0 / all_nodes.size(); // TODO
+            probs[n] = uniform_dist(config.random_engine) ? 1.0 / all_nodes.size() : -1.0 / all_nodes.size(); // TODO
         }
 
         size_t num_vertices = all_nodes.size();
@@ -482,90 +580,6 @@ struct CutMatching {
         assert(s_added == t_added);
     }
 
-    static void generate_large_graph(G &g, vector<Node> &nodes) {
-        nodes.reserve(N_NODES);
-        for (int i = 0; i < N_NODES; i++) {
-            nodes.push_back(g.addNode());
-        }
-
-        g.addEdge(nodes[0], nodes[1]);
-        g.addEdge(nodes[1], nodes[2]);
-        g.addEdge(nodes[2], nodes[0]);
-
-        int lim1 = N_NODES / 3;
-        int lim2 = 2 * N_NODES / 3;
-
-        for (int i = 3; i < lim1; i++) {
-            ListGraph::Node u = nodes[i];
-            ListGraph::Node v = nodes[0];
-            g.addEdge(u, v);
-        }
-        for (int i = lim1; i < lim2; i++) {
-            ListGraph::Node u = nodes[i];
-            ListGraph::Node v = nodes[1];
-            g.addEdge(u, v);
-        }
-        for (int i = lim2; i < N_NODES; i++) {
-            ListGraph::Node u = nodes[i];
-            ListGraph::Node v = nodes[2];
-            g.addEdge(u, v);
-        }
-    }
-
-    // Reads the file filename,
-    // creates that graph in graph g which is assumed to be empty
-    // In the process fills nodes with each node created at the index of (its id in the file minus one)
-    // And sets each node's original_ids id to be (its id in the file minus one).
-    // Of course original_ids must be initialized onto the graph g already earlier.
-    static void parse_chaco_format(const string &filename, ListGraph &g, vector<Node> &nodes, NodeMapi &original_ids) {
-        assert(nodes.empty());
-        if(!SILENT) cout << "Reading graph from " << filename << endl;
-        ifstream file;
-        file.open(filename);
-        if (!file) {
-            cerr << "Unable to read file " << filename << endl;
-            exit(1);
-        }
-
-        string line;
-        stringstream ss;
-        getline(file, line);
-        ss.str(line);
-
-        int n_verts, n_edges;
-        ss >> n_verts >> n_edges;
-        if(!SILENT) cout << "Reading a graph with V " << n_verts << "E " << n_edges << endl;
-        g.reserveNode(n_verts);
-        g.reserveNode(n_edges);
-
-        for (size_t i = 0; i < n_verts; i++) {
-            Node n = g.addNode();
-            nodes.push_back(n);
-            original_ids[n] = i;
-        }
-
-        for (size_t i = 0; i < n_verts; i++) {
-            getline(file, line);
-            ss.clear();
-            ss << line;
-            Node u = nodes[i];
-            size_t v_name;
-            while (ss >> v_name) {
-                Node v = nodes[v_name - 1];
-                if (findEdge(g, u, v) == INVALID) {
-                    g.addEdge(u, v);
-                }
-            }
-        }
-
-        if (n_verts % 2 != 0) {
-            if(!SILENT) cout << "Odd number of vertices, adding extra one." << endl;
-            Node n = g.addNode();
-            g.addEdge(nodes[0], n);
-            nodes.push_back(n);
-        }
-    }
-
     size_t one_round(Context &c) {
         Bisectionp bisection = cut_player(c.g, c.matchings);
 
@@ -642,7 +656,7 @@ struct CutMatching {
     }
 
     void run() {
-        Context c;
+        Context c(gc.g, gc.nodes, gc.reference_cut);
         if (N_ROUNDS >= 1) {
             auto best_round = run_rounds(c);
             cout << "The cut with highest capacity required was found on round" << best_round << endl;
@@ -682,7 +696,7 @@ cxxopts::Options create_options() {
     return options;
 }
 
-void parse_options(int argc, char **argv, CutMatching<ListGraph> &cm) {
+void parse_options(int argc, char **argv, Configuration &config) {
     auto cmd_options = create_options();
     auto result = cmd_options.parse(argc, argv);
 
@@ -701,9 +715,9 @@ void parse_options(int argc, char **argv, CutMatching<ListGraph> &cm) {
     if (result.count("paths"))
         PRINT_PATHS = result["paths"].as<bool>();
     if (result.count("seed"))
-        cm.engine = default_random_engine(result["seed"].as<int>());
+        config.random_engine = default_random_engine(result["seed"].as<int>());
     else
-        cm.engine = default_random_engine(random_device()());
+        config.random_engine = default_random_engine(random_device()());
     if (result.count("output")) {
         OUTPUT_CUT = true;
         OUTPUT_FILE = result["output"].as<string>();
@@ -718,9 +732,12 @@ void parse_options(int argc, char **argv, CutMatching<ListGraph> &cm) {
 // TODO extract graph creation from algo
 // TODO extract final answer presentation from algo
 int main(int argc, char **argv) {
+    Configuration config;
+    parse_options(argc, argv, config);
+    GraphContext gc;
+    InitializedGraphContext igc = createInputGraph(gc, config.input);
 
-    CutMatching<ListGraph> cm;
-    parse_options(argc, argv, cm);
+    CutMatching cm(igc, config);
     cm.run();
     return 0;
 }
