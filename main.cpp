@@ -42,6 +42,14 @@ string OUTPUT_FILE;
 
 const double MICROSECS = 1000000.0;
 
+
+// TODO
+// I want H -phi tracking
+// For that I need to start from scratch (are we there?) We are there!
+// and then
+// 1) print H-phi
+// 2) Adapt a stopping routine
+
 template<class G>
 struct CutMatching {
     using NodeMapd = typename G::template NodeMap<double>;
