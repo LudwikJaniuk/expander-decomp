@@ -26,6 +26,34 @@ using namespace lemon;
 using namespace std;
 using namespace std::chrono;
 
+using G = ListGraph;
+using NodeMapd = typename G::template NodeMap<double>;
+using Node = typename G::Node;
+using NodeIt = typename G::NodeIt;
+using Snapshot = typename G::Snapshot;
+using Edge = typename G::Edge;
+using EdgeIt = typename G::EdgeIt;
+using IncEdgeIt = typename G::IncEdgeIt;
+using OutArcIt = typename G::OutArcIt;
+using Paths = vector<array<Node, 2>>;
+using ArcLookup = ArcLookUp<G>;
+// LEMON uses ints internally. We might want to look into this
+template<class T>
+using EdgeMap = typename G::template EdgeMap<T>;
+using EdgeMapi = EdgeMap<int>;
+template<class T>
+using NodeMap = typename G::template NodeMap<T>;
+using NodeMapi = NodeMap<int>;
+using NodeNeighborMap = NodeMap<vector<tuple<Node, int>>>;
+using FlowAlgo = Preflow<G, EdgeMapi>;
+using Matching = ListEdgeSet<ListGraph>;
+using Matchingp = unique_ptr<Matching>;
+using Bisection = set<Node>;
+using Bisectionp = unique_ptr<Bisection>;
+using Cut = set<Node>;
+using Cutp = unique_ptr<Cut>;
+using CutMap = NodeMap<bool>;
+
 // TO categorize a little, what are the run options...
 // Tbh these should maybe be separeate programs...
 
@@ -126,35 +154,9 @@ struct CutStats {
     }
 };
 
-
 template<class G>
 struct CutMatching {
-    using NodeMapd = typename G::template NodeMap<double>;
-    using Node = typename G::Node;
-    using NodeIt = typename G::NodeIt;
-    using Snapshot = typename G::Snapshot;
-    using Edge = typename G::Edge;
-    using EdgeIt = typename G::EdgeIt;
-    using IncEdgeIt = typename G::IncEdgeIt;
-    using OutArcIt = typename G::OutArcIt;
-    using Paths = vector<array<Node, 2>>;
-    using ArcLookup = ArcLookUp<G>;
-    // LEMON uses ints internally. We might want to look into this
-    template<class T>
-    using EdgeMap = typename G::template EdgeMap<T>;
-    using EdgeMapi = EdgeMap<int>;
-    template<class T>
-    using NodeMap = typename G::template NodeMap<T>;
-    using NodeMapi = NodeMap<int>;
-    using NodeNeighborMap = NodeMap<vector<tuple<Node, int>>>;
-    using FlowAlgo = Preflow<G, EdgeMapi>;
-    using Matching = ListEdgeSet<ListGraph>;
-    using Matchingp = unique_ptr<Matching>;
-    using Bisection = set<Node>;
-    using Bisectionp = unique_ptr<Bisection>;
-    using Cut = set<Node>;
-    using Cutp = unique_ptr<Cut>;
-    using CutMap = NodeMap<bool>;
+
 
     default_random_engine engine;
     uniform_int_distribution<int> uniform_dist;
@@ -716,6 +718,7 @@ void parse_options(int argc, char **argv, CutMatching<ListGraph> &cm) {
 // TODO extract graph creation from algo
 // TODO extract final answer presentation from algo
 int main(int argc, char **argv) {
+
     CutMatching<ListGraph> cm;
     parse_options(argc, argv, cm);
     cm.run();
