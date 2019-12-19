@@ -42,8 +42,6 @@ int N_ROUNDS = 5;
 bool PRINT_PATHS = false;
 bool VERBOSE = false;
 bool SILENT = false;
-bool READ_GRAPH_FROM_FILE = false;
-string IN_GRAPH_FILE;
 bool COMPARE_PARTITION = false;
 string PARTITION_FILE;
 bool OUTPUT_CUT = false;
@@ -51,6 +49,17 @@ string OUTPUT_FILE;
 // END PARAMETERS
 
 const double MICROSECS = 1000000.0;
+
+struct InputConfiguration {
+    bool load_from_file = false;
+    string file_name = "";
+
+    size_t num_nodes = 1000;
+};
+
+struct Configuration {
+    InputConfiguration input;
+} config;
 
 
 // TODO
@@ -161,8 +170,8 @@ struct CutMatching {
         vector<Cutp> cuts;
 
         explicit Context() : original_ids(g) {
-            if (READ_GRAPH_FROM_FILE) {
-                parse_chaco_format(IN_GRAPH_FILE, g, nodes, original_ids);
+            if (config.input.load_from_file) {
+                parse_chaco_format(config.input.file_name, g, nodes, original_ids);
 
                 if (COMPARE_PARTITION) {
                     read_partition_file(PARTITION_FILE, nodes, reference_cut);
@@ -637,74 +646,80 @@ struct CutMatching {
             cout << "The cut with highest capacity required was found on round" << best_round << endl;
             cout << "Best cut sparsity: " << endl;
             auto &best_cut = *c.cuts[best_round];
-        CutStats<G>(c.g, c.num_vertices, best_cut).print();
-        if (OUTPUT_CUT) { write_cut(c, best_cut); }
-    }
+            CutStats<G>(c.g, c.num_vertices, best_cut).print();
+            if (OUTPUT_CUT) { write_cut(c, best_cut); }
+        }
 
-    if (COMPARE_PARTITION) { // Output reference cut
-        cout << endl
-             << "The given partition achieved the following:"
-             << endl;
-        CutStats<G>(c.g, c.num_vertices, c.reference_cut).print();
+        if (COMPARE_PARTITION) { // Output reference cut
+            cout << endl
+                 << "The given partition achieved the following:"
+                 << endl;
+            CutStats<G>(c.g, c.num_vertices, c.reference_cut).print();
+        }
     }
-}
 };
 
 cxxopts::Options create_options() {
-cxxopts::Options options("Janiuk graph partition",
-                         "Individual project implementation of thatchapon's paper to find graph partitions. Currently only cut-matching game.");
-options.add_options()
-        ("f,file", "File to read graph from", cxxopts::value<std::string>())
-        ("n,nodes", "Number of nodes in graph to generate. Should be even. Ignored if -f is set.",
-         cxxopts::value<long>()->default_value("100"))
-        ("r,rounds", "Number of rounds to run cut-matching game", cxxopts::value<long>()->default_value("5"))
-        ("d,paths", "Whether to print paths")
-        ("v,verbose", "Whether to print nodes and cuts (does not include paths)")
-        ("s,seed", "Use a seed for RNG (optionally set seed manually)",
-         cxxopts::value<int>()->implicit_value("1337"))
-        ("S,Silent", "Only output one line of summary at the end")
-        ("o,output", "Output computed cut into file", cxxopts::value<std::string>())
-        ("p,partition", "Partition file to compare with", cxxopts::value<std::string>());
-return options;
+    cxxopts::Options options("Janiuk graph partition",
+                             "Individual project implementation of thatchapon's paper to find graph partitions. Currently only cut-matching game.");
+    options.add_options()
+            ("f,file", "File to read graph from", cxxopts::value<std::string>())
+            ("n,nodes", "Number of nodes in graph to generate. Should be even. Ignored if -f is set.",
+             cxxopts::value<long>()->default_value("100"))
+
+            ("r,rounds", "Number of rounds to run cut-matching game", cxxopts::value<long>()->default_value("5"))
+
+            ("o,output", "Output computed cut into file", cxxopts::value<std::string>())
+
+            ("d,paths", "Whether to print paths")
+            ("v,verbose", "Whether to print nodes and cuts (does not include paths)")
+            ("s,seed", "Use a seed for RNG (optionally set seed manually)",
+             cxxopts::value<int>()->implicit_value("1337"))
+            ("S,Silent", "Only output one line of summary at the end")
+            ("p,partition", "Partition file to compare with", cxxopts::value<std::string>());
+    return options;
 }
 
 void parse_options(int argc, char **argv, CutMatching<ListGraph> &cm) {
-auto options = create_options();
-auto result = options.parse(argc, argv);
-if (result.count("file")) {
-    READ_GRAPH_FROM_FILE = true;
-    IN_GRAPH_FILE = result["file"].as<string>();
-}
-if (result.count("nodes"))
-    N_NODES = result["nodes"].as<long>();
-if (result.count("rounds"))
-    N_ROUNDS = result["rounds"].as<long>();
-if (result.count("verbose"))
-    VERBOSE = result["verbose"].as<bool>();
-if (result.count("Silent"))
-    SILENT = result["Silent"].as<bool>();
-if (result.count("paths"))
-    PRINT_PATHS = result["paths"].as<bool>();
-if (result.count("seed"))
-    cm.engine = default_random_engine(result["seed"].as<int>());
-else
-    cm.engine = default_random_engine(random_device()());
-if (result.count("output")) {
-    OUTPUT_CUT = true;
-    OUTPUT_FILE = result["output"].as<string>();
-}
-if (result.count("partition")) {
-    COMPARE_PARTITION = true;
-    PARTITION_FILE = result["partition"].as<string>();
-}
+    auto cmd_options = create_options();
+    auto result = cmd_options.parse(argc, argv);
+
+    if (result.count("file")) {
+        config.input.load_from_file = true;
+        config.input.file_name = result["file"].as<string>();
+    }
+    if (result.count("nodes"))
+        N_NODES = result["nodes"].as<long>();
+    if (result.count("rounds"))
+        N_ROUNDS = result["rounds"].as<long>();
+    if (result.count("verbose"))
+        VERBOSE = result["verbose"].as<bool>();
+    if (result.count("Silent"))
+        SILENT = result["Silent"].as<bool>();
+    if (result.count("paths"))
+        PRINT_PATHS = result["paths"].as<bool>();
+    if (result.count("seed"))
+        cm.engine = default_random_engine(result["seed"].as<int>());
+    else
+        cm.engine = default_random_engine(random_device()());
+    if (result.count("output")) {
+        OUTPUT_CUT = true;
+        OUTPUT_FILE = result["output"].as<string>();
+    }
+    if (result.count("partition")) {
+        COMPARE_PARTITION = true;
+        PARTITION_FILE = result["partition"].as<string>();
+    }
 }
 
 // TODO Selecting best cut not only hightest cap
+// TODO extract graph creation from algo
+// TODO extract final answer presentation from algo
 int main(int argc, char **argv) {
-CutMatching<ListGraph> cm;
-parse_options(argc, argv, cm);
-cm.run();
-return 0;
+    CutMatching<ListGraph> cm;
+    parse_options(argc, argv, cm);
+    cm.run();
+    return 0;
 }
 
 #pragma clang diagnostic pop
