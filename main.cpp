@@ -256,6 +256,7 @@ struct CutMatching {
         size_t num_vertices = all_nodes.size();
 
         ListEdgeSet H(g);
+        ListEdgeSet H_single(g);
         for (const unique_ptr<M> &m : matchings) {
             for (MEdgeIt e(*m); e != INVALID; ++e) {
                 Node u = m->u(e);
@@ -265,6 +266,11 @@ struct CutMatching {
                 probs[v] = avg;
 
                 H.addEdge(u, v);
+                // Updating H_single
+                if(findEdge(H_single, u, v) == INVALID) {
+                    assert(findEdge(H_single, v, u) == INVALID);
+                    H_single.addEdge(u, v);
+                }
             }
         }
 
@@ -278,8 +284,10 @@ struct CutMatching {
         auto b = Bisectionp(new Bisection(all_nodes.begin(), all_nodes.end()));
         if (VERBOSE) { print_cut(*b); }
 
-        cout << "H expansion: " << endl;
-        CutStats<decltype(H)>(H, num_vertices, *b).print();
+        auto hcs = CutStats<decltype(H)>(H, num_vertices, *b);
+        cout << "H expansion: " << hcs.expansion() << ", num cross: " << hcs.crossing_edges << endl;
+        auto hscs = CutStats<decltype(H_single)>(H_single, num_vertices, *b);
+        cout << "H_single expansion: " << hscs.expansion() << ", num cross: " << hscs.crossing_edges << endl;
 
         return b;
     }
