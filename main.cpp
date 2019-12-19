@@ -26,6 +26,16 @@ using namespace lemon;
 using namespace std;
 using namespace std::chrono;
 
+// TO categorize a little, what are the run options...
+// Tbh these should maybe be separeate programs...
+
+// Either we generatea graph or load it from file
+// So basically, "what's the source of the graph", there needs to be a graph and it has to come from somewhere...
+
+// Then, what do we do with the graph, we run the cutmatching game on it right, what parameters
+
+// Finally, what do we do with the output
+
 // PARAMETERS:
 int N_NODES = 1000;
 int N_ROUNDS = 5;
