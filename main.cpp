@@ -22,6 +22,10 @@
 #include "cxxopts.hpp"
 #include "preliminaries.h"
 
+// TODO now
+// Clean the code much more, to be able to do the stopping and edge version
+// Basically get unnecessary stuff out of the algo
+
 using namespace lemon;
 using namespace std;
 using namespace std::chrono;
@@ -70,8 +74,6 @@ int N_ROUNDS = 5;
 bool PRINT_PATHS = false;
 bool VERBOSE = false;
 bool SILENT = false;
-bool COMPARE_PARTITION = false;
-string PARTITION_FILE;
 bool OUTPUT_CUT = false;
 string OUTPUT_FILE;
 // END PARAMETERS
@@ -81,12 +83,12 @@ const double MICROSECS = 1000000.0;
 struct InputConfiguration {
     bool load_from_file = false;
     string file_name = "";
-
-    size_t num_nodes = 1000;
 };
 
 struct Configuration {
     InputConfiguration input;
+    bool compare_partition = false;
+    string partition_file = "";
     mutable default_random_engine random_engine;
 };
 
@@ -289,9 +291,6 @@ InitializedGraphContext createInputGraph(GraphContext &gc, InputConfiguration co
     if (config.load_from_file) {
         parse_chaco_format(config.file_name, gc.g, gc.nodes);
 
-        if (COMPARE_PARTITION) {
-            read_partition_file(PARTITION_FILE, gc.nodes, gc.reference_cut);
-        }
     } else {
         if (VERBOSE) cout << "Generating graph with " << N_NODES << " nodes." << endl;
         generate_large_graph(gc.g, gc.nodes);
@@ -309,13 +308,13 @@ struct CutMatching {
     public:
         G &g;
         vector<Node> &nodes; // Indexed by file id - 1.
-        Cut &reference_cut;
         size_t num_vertices;
         vector<Matchingp> matchings;
         vector<Cutp> cuts;
 
         explicit Context(G &g_, vector<Node> &nodes_, Cut &reference_cut_ )
-        : g(g_), nodes(nodes_), reference_cut(reference_cut_) {
+        : g(g_), nodes(nodes_)
+        {
 
             num_vertices = countNodes(g);
             assert(num_vertices % 2 == 0);
@@ -665,13 +664,6 @@ struct CutMatching {
             CutStats<G>(c.g, c.num_vertices, best_cut).print();
             if (OUTPUT_CUT) { write_cut(c.nodes, best_cut); }
         }
-
-        if (COMPARE_PARTITION) { // Output reference cut
-            cout << endl
-                 << "The given partition achieved the following:"
-                 << endl;
-            CutStats<G>(c.g, c.num_vertices, c.reference_cut).print();
-        }
     }
 };
 
@@ -723,8 +715,8 @@ void parse_options(int argc, char **argv, Configuration &config) {
         OUTPUT_FILE = result["output"].as<string>();
     }
     if (result.count("partition")) {
-        COMPARE_PARTITION = true;
-        PARTITION_FILE = result["partition"].as<string>();
+        config.compare_partition = true;
+        config.partition_file = result["partition"].as<string>();
     }
 }
 
@@ -734,11 +726,21 @@ void parse_options(int argc, char **argv, Configuration &config) {
 int main(int argc, char **argv) {
     Configuration config;
     parse_options(argc, argv, config);
+
     GraphContext gc;
     InitializedGraphContext igc = createInputGraph(gc, config.input);
 
     CutMatching cm(igc, config);
     cm.run();
+
+    if (config.compare_partition) {
+        read_partition_file(config.partition_file, gc.nodes, gc.reference_cut);
+        cout << endl
+             << "The given partition achieved the following:"
+             << endl;
+        CutStats<G>(gc.g, gc.nodes.size(), gc.reference_cut).print();
+    }
+
     return 0;
 }
 
