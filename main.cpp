@@ -319,7 +319,7 @@ struct CutMatching {
         vector<Matchingp> matchings;
         vector<Cutp> cuts;
 
-        explicit Context(G &g_, vector<Node> &nodes_, Cut &reference_cut_ )
+        explicit Context(G &g_, vector<Node> &nodes_)
         : g(g_), nodes(nodes_)
         {
 
@@ -338,12 +338,12 @@ struct CutMatching {
         const size_t num_vertices;
         Snapshot snap; //RAII
 
-        explicit MatchingContext(Context &c)
-                : g(c.g),
-                  capacity(g),
-                  cut_map(g),
-                  snap(g),
-                  num_vertices(c.num_vertices) {}
+        explicit MatchingContext(G &g_, size_t num_vertices_)
+                : g(g_),
+                  capacity(g_),
+                  cut_map(g_),
+                  snap(g_),
+                  num_vertices(num_vertices_) {}
 
         ~MatchingContext() {
             snap.restore();
@@ -561,8 +561,8 @@ struct CutMatching {
 
 // returns capacity that was required
 // Maybe: make the binsearch an actual binsearch
-    MatchResult matching_player(Context &c, const set<Node> &bisection, ListEdgeSet<G> &m_out) {
-        MatchingContext mg(c);
+    MatchResult matching_player(G& g, size_t num_vertices, const set<Node> &bisection, ListEdgeSet<G> &m_out) {
+        MatchingContext mg(g, num_vertices);
         make_sink_source(mg, bisection);
 
         unique_ptr<FlowAlgo> p;
@@ -611,7 +611,7 @@ struct CutMatching {
         Matchingp matchingp(new Matching(c.g));
 
         if (VERBOSE) cout << "Running Matching player" << endl;
-        MatchResult mr = matching_player(c, *bisection, *matchingp);
+        MatchResult mr = matching_player(c.g, c.num_vertices, *bisection, *matchingp);
         size_t cap = mr.capacity;
         if (VERBOSE) { print_matching(matchingp); }
 
@@ -662,7 +662,7 @@ struct CutMatching {
     }
 
     void run() {
-        Context c(gc.g, gc.nodes, gc.reference_cut);
+        Context c(gc.g, gc.nodes);
         if (N_ROUNDS >= 1) {
             auto best_round = run_rounds(c);
             cout << "The cut with highest capacity required was found on round" << best_round << endl;
