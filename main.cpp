@@ -237,6 +237,25 @@ void generate_large_graph(G &g, vector<Node> &nodes) {
     }
 }
 
+void write_cut(const vector<Node> &nodes, const Cut &cut) {
+    ofstream file;
+    file.open(OUTPUT_FILE);
+    if (!file) {
+        cout << "Cannot open file " << OUTPUT_FILE << endl;
+        return;
+    }
+
+    cout << "Writing partition with "
+         << nodes.size()
+         << " nodes to file "
+         << OUTPUT_FILE
+         << endl;
+    for (const auto &n : nodes) {
+        file << (cut.count(n) ? "1" : "0") << "\n";
+    }
+    file.close();
+}
+
 
 struct GraphContext {
     G g;
@@ -636,25 +655,6 @@ struct CutMatching {
         return best_cap_index;
     }
 
-    void write_cut(const Context &c, const Cut &cut) {
-        ofstream file;
-        file.open(OUTPUT_FILE);
-        if (!file) {
-            cout << "Cannot open file " << OUTPUT_FILE << endl;
-            return;
-        }
-
-        cout << "Writing partition with "
-             << c.nodes.size()
-             << " nodes to file "
-             << OUTPUT_FILE
-             << endl;
-        for (const auto &n : c.nodes) {
-            file << (cut.count(n) ? "1" : "0") << "\n";
-        }
-        file.close();
-    }
-
     void run() {
         Context c(gc.g, gc.nodes, gc.reference_cut);
         if (N_ROUNDS >= 1) {
@@ -663,7 +663,7 @@ struct CutMatching {
             cout << "Best cut sparsity: " << endl;
             auto &best_cut = *c.cuts[best_round];
             CutStats<G>(c.g, c.num_vertices, best_cut).print();
-            if (OUTPUT_CUT) { write_cut(c, best_cut); }
+            if (OUTPUT_CUT) { write_cut(c.nodes, best_cut); }
         }
 
         if (COMPARE_PARTITION) { // Output reference cut
