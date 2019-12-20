@@ -89,7 +89,8 @@ struct Configuration {
     InputConfiguration input;
     bool compare_partition = false;
     string partition_file = "";
-    mutable default_random_engine random_engine;
+    bool seed_randomness = false;
+    int seed;
 };
 
 
@@ -301,8 +302,14 @@ InitializedGraphContext createInputGraph(GraphContext &gc, InputConfiguration co
 struct CutMatching {
     const Configuration &config;
     GraphContext &gc;
+    default_random_engine &random_engine;
     // Input graph
-    CutMatching(InitializedGraphContext &igc, const Configuration &config_) : config(config_), gc(igc.gc) {};
+    CutMatching(InitializedGraphContext &igc, const Configuration &config_, default_random_engine &random_engine_)
+    :
+    config(config_),
+    gc(igc.gc),
+    random_engine(random_engine_)
+    { };
 
     struct Context {
     public:
@@ -387,7 +394,7 @@ struct CutMatching {
         uniform_int_distribution<int> uniform_dist(0, 1);
         for (NodeIt n(g); n != INVALID; ++n) {
             all_nodes.push_back(n);
-            probs[n] = uniform_dist(config.random_engine) ? 1.0 / all_nodes.size() : -1.0 / all_nodes.size(); // TODO
+            probs[n] = uniform_dist(random_engine) ? 1.0 / all_nodes.size() : -1.0 / all_nodes.size(); // TODO
         }
 
         size_t num_vertices = all_nodes.size();
@@ -706,10 +713,12 @@ void parse_options(int argc, char **argv, Configuration &config) {
         SILENT = result["Silent"].as<bool>();
     if (result.count("paths"))
         PRINT_PATHS = result["paths"].as<bool>();
-    if (result.count("seed"))
-        config.random_engine = default_random_engine(result["seed"].as<int>());
-    else
-        config.random_engine = default_random_engine(random_device()());
+
+    if (result.count("seed")) {
+        config.seed_randomness = true;
+        config.seed = result["seed"].as<int>();
+    }
+
     if (result.count("output")) {
         OUTPUT_CUT = true;
         OUTPUT_FILE = result["output"].as<string>();
@@ -730,7 +739,10 @@ int main(int argc, char **argv) {
     GraphContext gc;
     InitializedGraphContext igc = createInputGraph(gc, config.input);
 
-    CutMatching cm(igc, config);
+    default_random_engine random_engine = config.seed_randomness
+                    ? default_random_engine(config.seed)
+                    : default_random_engine(random_device()());
+    CutMatching cm(igc, config, random_engine);
     cm.run();
 
     if (config.compare_partition) {
