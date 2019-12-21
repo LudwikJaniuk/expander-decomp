@@ -68,6 +68,7 @@ using CutMap = NodeMap<bool>;
 
 // Finally, what do we do with the output
 
+// TODO Purge basically
 // PARAMETERS:
 int N_NODES = 1000;
 int N_ROUNDS = 5;
@@ -93,10 +94,21 @@ struct Configuration {
     int seed;
 };
 
+struct GraphContext {
+    G g;
+    //size_t num_vertices;
+    vector<Node> nodes;
+    Cut reference_cut;
+};
+
+struct RoundReport {
+    size_t index;
+    size_t capacity_required_for_full_flow;
+    Cutp cut;
+};
 
 // TODO
 // 2) Adapt a stopping routine for H-phi tracking
-
 
 template <class G>
 struct CutStats {
@@ -255,15 +267,6 @@ void write_cut(const vector<Node> &nodes, const Cut &cut) {
     file.close();
 }
 
-
-struct GraphContext {
-    G g;
-    //size_t num_vertices;
-    vector<Node> nodes;
-    Cut reference_cut;
-};
-
-
 void read_partition_file(const string &filename, const vector<Node> &nodes, Cut &partition) {
     ifstream file;
     file.open(filename);
@@ -280,11 +283,7 @@ void read_partition_file(const string &filename, const vector<Node> &nodes, Cut 
     if (VERBOSE) cout << "Reference patition size: " << partition.size() << endl;
 }
 
-struct InitializedGraphContext {
-    GraphContext &gc;
-};
-
-InitializedGraphContext createInputGraph(GraphContext &gc, InputConfiguration config) {
+void initGraph(GraphContext &gc, InputConfiguration config) {
     if (config.load_from_file) {
         parse_chaco_format(config.file_name, gc.g, gc.nodes);
 
@@ -292,14 +291,7 @@ InitializedGraphContext createInputGraph(GraphContext &gc, InputConfiguration co
         if (VERBOSE) cout << "Generating graph with " << N_NODES << " nodes." << endl;
         generate_large_graph(gc.g, gc.nodes);
     }
-    return {gc};
 }
-
-struct RoundReport {
-    size_t index;
-    size_t capacity_required_for_full_flow;
-    Cutp cut;
-};
 
 struct CutMatching {
     const Configuration &config;
@@ -307,10 +299,10 @@ struct CutMatching {
     default_random_engine &random_engine;
     vector<unique_ptr<RoundReport>> rounds;
     // Input graph
-    CutMatching(InitializedGraphContext &igc, const Configuration &config_, default_random_engine &random_engine_)
+    CutMatching(GraphContext &gc, const Configuration &config_, default_random_engine &random_engine_)
     :
     config(config_),
-    gc(igc.gc),
+    gc(gc),
     random_engine(random_engine_)
     { };
 
@@ -648,26 +640,20 @@ struct CutMatching {
         cout << endl;
     }
 
-    void print_end_round(int i) const {
+    void print_end_round_message(int i) const {
         if (VERBOSE) cout << "======================" << endl;
         if(!SILENT) cout << "== End round " << i << " ==" << endl;
         if (VERBOSE) cout << "======================" << endl;
-    }
-
-    void run_rounds(Context &c) {
-        for (int i = 0; i < N_ROUNDS; i++) {
-            rounds.push_back(one_round(c, i));
-            print_end_round(i);
-        }
     }
 
     void run() {
         Context c(gc.g, gc.nodes);
         // TODO refactor to have "run" be on some stopping condition
         // Documenting everything, and then presentation chooses however it wants.
-        if (N_ROUNDS >= 1) {
-            // TODO returning "best round" is a bad idea
-            run_rounds(c);
+        Context &c1 = c;
+        for (int i = 0; i < N_ROUNDS; i++) {
+            rounds.push_back(one_round(c1, i));
+            print_end_round_message(i);
         }
     }
 };
@@ -735,13 +721,12 @@ int main(int argc, char **argv) {
     parse_options(argc, argv, config);
 
     GraphContext gc;
-    //TODO remove IGC
-    InitializedGraphContext igc = createInputGraph(gc, config.input);
+    initGraph(gc, config.input);
 
     default_random_engine random_engine = config.seed_randomness
                     ? default_random_engine(config.seed)
                     : default_random_engine(random_device()());
-    CutMatching cm(igc, config, random_engine);
+    CutMatching cm(gc, config, random_engine);
     cm.run();
 
     assert(!cm.rounds.empty());
