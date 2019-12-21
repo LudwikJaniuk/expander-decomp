@@ -95,11 +95,7 @@ struct Configuration {
 
 
 // TODO
-// I want H -phi tracking
-// For that I need to start from scratch (are we there?) We are there!
-// and then
-// 1) print H-phi
-// 2) Adapt a stopping routine
+// 2) Adapt a stopping routine for H-phi tracking
 
 
 template <class G>
@@ -299,10 +295,17 @@ InitializedGraphContext createInputGraph(GraphContext &gc, InputConfiguration co
     return {gc};
 }
 
+struct RoundReport {
+    size_t index;
+    size_t capacity_required_for_full_flow;
+    Cutp cut;
+};
+
 struct CutMatching {
     const Configuration &config;
     GraphContext &gc;
     default_random_engine &random_engine;
+    vector<unique_ptr<RoundReport>> rounds;
     // Input graph
     CutMatching(InitializedGraphContext &igc, const Configuration &config_, default_random_engine &random_engine_)
     :
@@ -394,7 +397,9 @@ struct CutMatching {
         uniform_int_distribution<int> uniform_dist(0, 1);
         for (NodeIt n(g); n != INVALID; ++n) {
             all_nodes.push_back(n);
-            probs[n] = uniform_dist(random_engine) ? 1.0 / all_nodes.size() : -1.0 / all_nodes.size(); // TODO
+            probs[n] = uniform_dist(random_engine)
+                    ? 1.0 / all_nodes.size()
+                    : -1.0 / all_nodes.size();
         }
 
         size_t num_vertices = all_nodes.size();
@@ -605,7 +610,7 @@ struct CutMatching {
         assert(s_added == t_added);
     }
 
-    size_t one_round(Context &c) {
+    unique_ptr<RoundReport> one_round(Context &c, size_t round_index) {
         Bisectionp bisection = cut_player(c.g, c.matchings);
 
         Matchingp matchingp(new Matching(c.g));
@@ -616,8 +621,12 @@ struct CutMatching {
         if (VERBOSE) { print_matching(matchingp); }
 
         c.matchings.push_back(move(matchingp));
-        c.cuts.push_back(move(mr.cut_from_flow));
-        return cap;
+        //c.cuts.push_back(move(mr.cut_from_flow));
+        unique_ptr<RoundReport> report = make_unique<RoundReport>();
+        report->index = round_index;
+        report->capacity_required_for_full_flow = cap;
+        report->cut = move(mr.cut_from_flow);
+        return move(report);
 
         // We want to implement that it parses partitions
         // That has nothing to do with the rounds lol
@@ -645,31 +654,20 @@ struct CutMatching {
         if (VERBOSE) cout << "======================" << endl;
     }
 
-    size_t run_rounds(Context &c) {
-        size_t best_cap = 0;
-        size_t best_cap_index = 999999;
+    void run_rounds(Context &c) {
         for (int i = 0; i < N_ROUNDS; i++) {
-            size_t cap = one_round(c);
+            rounds.push_back(one_round(c, i));
             print_end_round(i);
-
-            if (cap > best_cap) {
-                best_cap = cap;
-                best_cap_index = i;
-            }
         }
-
-        return best_cap_index;
     }
 
     void run() {
         Context c(gc.g, gc.nodes);
+        // TODO refactor to have "run" be on some stopping condition
+        // Documenting everything, and then presentation chooses however it wants.
         if (N_ROUNDS >= 1) {
-            auto best_round = run_rounds(c);
-            cout << "The cut with highest capacity required was found on round" << best_round << endl;
-            cout << "Best cut sparsity: " << endl;
-            auto &best_cut = *c.cuts[best_round];
-            CutStats<G>(c.g, c.num_vertices, best_cut).print();
-            if (OUTPUT_CUT) { write_cut(c.nodes, best_cut); }
+            // TODO returning "best round" is a bad idea
+            run_rounds(c);
         }
     }
 };
@@ -737,6 +735,7 @@ int main(int argc, char **argv) {
     parse_options(argc, argv, config);
 
     GraphContext gc;
+    //TODO remove IGC
     InitializedGraphContext igc = createInputGraph(gc, config.input);
 
     default_random_engine random_engine = config.seed_randomness
@@ -744,6 +743,17 @@ int main(int argc, char **argv) {
                     : default_random_engine(random_device()());
     CutMatching cm(igc, config, random_engine);
     cm.run();
+
+    assert(!cm.rounds.empty());
+    auto& best_round = *max_element(cm.rounds.begin(), cm.rounds.end(), [](auto &a, auto &b) {
+        return a->capacity_required_for_full_flow < b->capacity_required_for_full_flow;
+    });
+
+    cout << "The cut with highest capacity required was found on round" << best_round->index << endl;
+    cout << "Best cut sparsity: " << endl;
+    auto &best_cut = best_round->cut;
+    CutStats<G>(gc.g, gc.nodes.size(), *best_cut).print();
+    if (OUTPUT_CUT) { write_cut(gc.nodes, *best_cut); }
 
     if (config.compare_partition) {
         read_partition_file(config.partition_file, gc.nodes, gc.reference_cut);
