@@ -96,7 +96,6 @@ struct Configuration {
 
 struct GraphContext {
     G g;
-    //size_t num_vertices;
     vector<Node> nodes;
     Cut reference_cut;
 };
@@ -293,11 +292,31 @@ void initGraph(GraphContext &gc, InputConfiguration config) {
     }
 }
 
+void print_end_round_message(int i) {
+    if (VERBOSE) cout << "======================" << endl;
+    if(!SILENT) cout << "== End round " << i << " ==" << endl;
+    if (VERBOSE) cout << "======================" << endl;
+}
+
+void print_matching(const Matchingp &m) {
+    for (Matching::EdgeIt e(*m); e != INVALID; ++e) {
+        cout << "(" << m->id(m->u(e)) << ", " << m->id(m->v(e)) << "), ";
+    }
+    cout << endl;
+}
+
+void print_cut(const Bisection &out_cut) {
+    for (Node n : out_cut) {
+        cout << G::id(n) << ", ";
+    }
+    cout << endl;
+}
+
 struct CutMatching {
     const Configuration &config;
     GraphContext &gc;
     default_random_engine &random_engine;
-    vector<unique_ptr<RoundReport>> rounds;
+    vector<unique_ptr<RoundReport>> past_rounds;
     // Input graph
     CutMatching(GraphContext &gc, const Configuration &config_, default_random_engine &random_engine_)
     :
@@ -324,6 +343,8 @@ struct CutMatching {
         }
     };
 
+    // During the matching step a lot of local setup is actually made, so it makes sense to group it
+    // inside a "matching context" that exists for the duration of the mathing step
     struct MatchingContext {
         G &g;
         Node s;
@@ -375,63 +396,6 @@ struct CutMatching {
     };
 
     // Soooooo, we want to develop the partition comparison stuff.
-
-    // Actually, cut player gets H
-// Actually Actually, sure it gets H but it just needs the matchings...
-    template<typename M>
-    Bisectionp cut_player(const G &g, const vector<unique_ptr<M>> &matchings) {
-        if (VERBOSE) cout << "Running Cut player" << endl;
-        using MEdgeIt = typename M::EdgeIt;
-
-        NodeMapd probs(g);
-        vector<Node> all_nodes;
-
-        uniform_int_distribution<int> uniform_dist(0, 1);
-        for (NodeIt n(g); n != INVALID; ++n) {
-            all_nodes.push_back(n);
-            probs[n] = uniform_dist(random_engine)
-                    ? 1.0 / all_nodes.size()
-                    : -1.0 / all_nodes.size();
-        }
-
-        size_t num_vertices = all_nodes.size();
-
-        ListEdgeSet H(g);
-        ListEdgeSet H_single(g);
-        for (const unique_ptr<M> &m : matchings) {
-            for (MEdgeIt e(*m); e != INVALID; ++e) {
-                Node u = m->u(e);
-                Node v = m->v(e);
-                double avg = probs[u] / 2 + probs[v] / 2;
-                probs[u] = avg;
-                probs[v] = avg;
-
-                H.addEdge(u, v);
-                // Updating H_single
-                if(findEdge(H_single, u, v) == INVALID) {
-                    assert(findEdge(H_single, v, u) == INVALID);
-                    H_single.addEdge(u, v);
-                }
-            }
-        }
-
-        sort(all_nodes.begin(), all_nodes.end(), [&](Node a, Node b) {
-            return probs[a] < probs[b];
-        });
-
-        size_t size = all_nodes.size();
-        assert(size % 2 == 0);
-        all_nodes.resize(size / 2);
-        auto b = Bisectionp(new Bisection(all_nodes.begin(), all_nodes.end()));
-        if (VERBOSE) { print_cut(*b); }
-
-        auto hcs = CutStats<decltype(H)>(H, num_vertices, *b);
-        cout << "H expansion: " << hcs.expansion() << ", num cross: " << hcs.crossing_edges << endl;
-        auto hscs = CutStats<decltype(H_single)>(H_single, num_vertices, *b);
-        cout << "H_single expansion: " << hscs.expansion() << ", num cross: " << hscs.crossing_edges << endl;
-
-        return b;
-    }
 
 // For some reason lemon returns arbitrary values for flow, the difference is correct tho
     inline
@@ -556,7 +520,89 @@ struct CutMatching {
         decompose_paths_fast(mg, p, paths);
     }
 
-// returns capacity that was required
+    void make_sink_source(MatchingContext &mg, const set<Node> &cut) const {
+        G &g = mg.g;
+        mg.s = g.addNode();
+        mg.t = g.addNode();
+        int s_added = 0;
+        int t_added = 0;
+        for (NodeIt n(g); n != INVALID; ++n) {
+            if (n == mg.s) continue;
+            if (n == mg.t) continue;
+            Edge e;
+            if (cut.count(n)) {
+                e = g.addEdge(mg.s, n);
+                s_added++;
+            } else {
+                e = g.addEdge(n, mg.t);
+                t_added++;
+            }
+            mg.capacity[e] = 1;
+        }
+        assert(s_added == t_added);
+    }
+
+    // Actually, cut player gets H
+// Actually Actually, sure it gets H but it just needs the matchings...
+    template<typename M>
+    Bisectionp cut_player(const G &g, const vector<unique_ptr<M>> &matchings) {
+        if (VERBOSE) cout << "Running Cut player" << endl;
+        using MEdgeIt = typename M::EdgeIt;
+
+        NodeMapd probs(g);
+        vector<Node> all_nodes;
+
+        uniform_int_distribution<int> uniform_dist(0, 1);
+        for (NodeIt n(g); n != INVALID; ++n) {
+            all_nodes.push_back(n);
+            probs[n] = uniform_dist(random_engine)
+                       ? 1.0 / all_nodes.size()
+                       : -1.0 / all_nodes.size();
+        }
+
+        size_t num_vertices = all_nodes.size();
+
+        ListEdgeSet H(g);
+        ListEdgeSet H_single(g);
+        for (const unique_ptr<M> &m : matchings) {
+            for (MEdgeIt e(*m); e != INVALID; ++e) {
+                Node u = m->u(e);
+                Node v = m->v(e);
+                double avg = probs[u] / 2 + probs[v] / 2;
+                probs[u] = avg;
+                probs[v] = avg;
+
+                H.addEdge(u, v);
+                // Updating H_single
+                if(findEdge(H_single, u, v) == INVALID) {
+                    assert(findEdge(H_single, v, u) == INVALID);
+                    H_single.addEdge(u, v);
+                }
+            }
+        }
+
+        sort(all_nodes.begin(), all_nodes.end(), [&](Node a, Node b) {
+            return probs[a] < probs[b];
+        });
+
+        size_t size = all_nodes.size();
+        assert(size % 2 == 0);
+        all_nodes.resize(size / 2);
+        auto b = Bisectionp(new Bisection(all_nodes.begin(), all_nodes.end()));
+        if (VERBOSE) {
+            cout << "Cut player gave the following cut: " << endl;
+            print_cut(*b);
+        }
+
+        auto hcs = CutStats<decltype(H)>(H, num_vertices, *b);
+        cout << "H expansion: " << hcs.expansion() << ", num cross: " << hcs.crossing_edges << endl;
+        auto hscs = CutStats<decltype(H_single)>(H_single, num_vertices, *b);
+        cout << "H_single expansion: " << hscs.expansion() << ", num cross: " << hscs.crossing_edges << endl;
+
+        return b;
+    }
+
+    // returns capacity that was required
 // Maybe: make the binsearch an actual binsearch
     MatchResult matching_player(G& g, size_t num_vertices, const set<Node> &bisection, ListEdgeSet<G> &m_out) {
         MatchingContext mg(g, num_vertices);
@@ -580,28 +626,6 @@ struct CutMatching {
         return mr;
     }
 
-    void make_sink_source(MatchingContext &mg, const set<Node> &cut) const {
-        G &g = mg.g;
-        mg.s = g.addNode();
-        mg.t = g.addNode();
-        int s_added = 0;
-        int t_added = 0;
-        for (NodeIt n(g); n != INVALID; ++n) {
-            if (n == mg.s) continue;
-            if (n == mg.t) continue;
-            Edge e;
-            if (cut.count(n)) {
-                e = g.addEdge(mg.s, n);
-                s_added++;
-            } else {
-                e = g.addEdge(n, mg.t);
-                t_added++;
-            }
-            mg.capacity[e] = 1;
-        }
-        assert(s_added == t_added);
-    }
-
     unique_ptr<RoundReport> one_round(Context &c, size_t round_index) {
         Bisectionp bisection = cut_player(c.g, c.matchings);
 
@@ -610,7 +634,10 @@ struct CutMatching {
         if (VERBOSE) cout << "Running Matching player" << endl;
         MatchResult mr = matching_player(c.g, c.num_vertices, *bisection, *matchingp);
         size_t cap = mr.capacity;
-        if (VERBOSE) { print_matching(matchingp); }
+        if (VERBOSE) {
+            cout << "Matching player gave the following matching: " << endl;
+            print_matching(matchingp);
+        }
 
         c.matchings.push_back(move(matchingp));
         //c.cuts.push_back(move(mr.cut_from_flow));
@@ -624,35 +651,13 @@ struct CutMatching {
         // That has nothing to do with the rounds lol
     }
 
-    void print_matching(const Matchingp &m) {
-        cout << "Matching player gave the following matching: " << endl;
-        for (Matching::EdgeIt e(*m); e != INVALID; ++e) {
-            cout << "(" << m->id(m->u(e)) << ", " << m->id(m->v(e)) << "), ";
-        }
-        cout << endl;
-    }
-
-    void print_cut(const Bisection &out_cut) const {
-        cout << "Cut player gave the following cut: " << endl;
-        for (Node n : out_cut) {
-            cout << G::id(n) << ", ";
-        }
-        cout << endl;
-    }
-
-    void print_end_round_message(int i) const {
-        if (VERBOSE) cout << "======================" << endl;
-        if(!SILENT) cout << "== End round " << i << " ==" << endl;
-        if (VERBOSE) cout << "======================" << endl;
-    }
-
     void run() {
         Context c(gc.g, gc.nodes);
         // TODO refactor to have "run" be on some stopping condition
         // Documenting everything, and then presentation chooses however it wants.
         Context &c1 = c;
         for (int i = 0; i < N_ROUNDS; i++) {
-            rounds.push_back(one_round(c1, i));
+            past_rounds.push_back(one_round(c1, i));
             print_end_round_message(i);
         }
     }
@@ -729,8 +734,8 @@ int main(int argc, char **argv) {
     CutMatching cm(gc, config, random_engine);
     cm.run();
 
-    assert(!cm.rounds.empty());
-    auto& best_round = *max_element(cm.rounds.begin(), cm.rounds.end(), [](auto &a, auto &b) {
+    assert(!cm.past_rounds.empty());
+    auto& best_round = *max_element(cm.past_rounds.begin(), cm.past_rounds.end(), [](auto &a, auto &b) {
         return a->capacity_required_for_full_flow < b->capacity_required_for_full_flow;
     });
 
