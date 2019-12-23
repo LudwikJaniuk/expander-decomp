@@ -70,7 +70,6 @@ using CutMap = NodeMap<bool>;
 
 // TODO Purge basically
 // PARAMETERS:
-int N_NODES = 1000;
 int N_ROUNDS = 5;
 bool PRINT_PATHS = false;
 bool VERBOSE = false;
@@ -83,7 +82,11 @@ const double MICROSECS = 1000000.0;
 
 struct InputConfiguration {
     bool load_from_file = false;
+
     string file_name = "";
+
+    size_t n_nodes_to_generate;
+    enum { LARGE } type;
 };
 
 struct Configuration {
@@ -217,9 +220,10 @@ static void parse_chaco_format(const string &filename, ListGraph &g, vector<Node
     }
 }
 
-void generate_large_graph(G &g, vector<Node> &nodes) {
-    nodes.reserve(N_NODES);
-    for (int i = 0; i < N_NODES; i++) {
+void generate_large_graph(G &g, vector<Node> &nodes, size_t n_nodes) {
+    assert(n_nodes > 0);
+    nodes.reserve(n_nodes);
+    for (int i = 0; i < n_nodes; i++) {
         nodes.push_back(g.addNode());
     }
 
@@ -227,8 +231,8 @@ void generate_large_graph(G &g, vector<Node> &nodes) {
     g.addEdge(nodes[1], nodes[2]);
     g.addEdge(nodes[2], nodes[0]);
 
-    int lim1 = N_NODES / 3;
-    int lim2 = 2 * N_NODES / 3;
+    int lim1 = n_nodes / 3;
+    int lim2 = 2 * n_nodes / 3;
 
     for (int i = 3; i < lim1; i++) {
         ListGraph::Node u = nodes[i];
@@ -240,7 +244,7 @@ void generate_large_graph(G &g, vector<Node> &nodes) {
         ListGraph::Node v = nodes[1];
         g.addEdge(u, v);
     }
-    for (int i = lim2; i < N_NODES; i++) {
+    for (int i = lim2; i < n_nodes; i++) {
         ListGraph::Node u = nodes[i];
         ListGraph::Node v = nodes[2];
         g.addEdge(u, v);
@@ -287,9 +291,20 @@ void initGraph(GraphContext &gc, InputConfiguration config) {
         parse_chaco_format(config.file_name, gc.g, gc.nodes);
 
     } else {
-        if (VERBOSE) cout << "Generating graph with " << N_NODES << " nodes." << endl;
-        generate_large_graph(gc.g, gc.nodes);
+        if (VERBOSE) cout << "Generating graph with " << config.n_nodes_to_generate << " nodes." << endl;
+        generate_large_graph(gc.g, gc.nodes, config.n_nodes_to_generate);
     }
+}
+
+// For some reason lemon returns arbitrary values for flow, the difference is correct tho
+inline
+int flow(
+        const ArcLookUp<G> &alp,
+        const unique_ptr<Preflow<G, EdgeMapi>> &f,
+        Node u,
+        Node v
+) {
+    return f->flow(alp(u, v)) - f->flow(alp(v, u));
 }
 
 void print_end_round_message(int i) {
@@ -318,7 +333,6 @@ struct CutMatching {
     default_random_engine &random_engine;
     vector<unique_ptr<RoundReport>> past_rounds;
     vector<Matchingp> matchings;
-    vector<Cutp> cuts;
     // Input graph
     CutMatching(GraphContext &gc, const Configuration &config_, default_random_engine &random_engine_)
     :
@@ -384,17 +398,6 @@ struct CutMatching {
     };
 
     // Soooooo, we want to develop the partition comparison stuff.
-
-// For some reason lemon returns arbitrary values for flow, the difference is correct tho
-    inline
-    int flow(
-            const ArcLookUp<G> &alp,
-            const unique_ptr<Preflow<G, EdgeMapi>> &f,
-            Node u,
-            Node v
-    ) {
-        return f->flow(alp(u, v)) - f->flow(alp(v, u));
-    }
 
     inline void extract_path_fast(
             const G &g,
@@ -679,7 +682,8 @@ void parse_options(int argc, char **argv, Configuration &config) {
         config.input.file_name = result["file"].as<string>();
     }
     if (result.count("nodes"))
-        N_NODES = result["nodes"].as<long>();
+        assert(config.input.load_from_file == false);
+        config.input.n_nodes_to_generate = result["nodes"].as<long>();
     if (result.count("rounds"))
         N_ROUNDS = result["rounds"].as<long>();
     if (result.count("verbose"))
