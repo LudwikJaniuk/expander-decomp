@@ -70,10 +70,6 @@ using CutMap = NodeMap<bool>;
 
 // TODO Purge basically
 // PARAMETERS:
-bool PRINT_PATHS = false;
-bool VERBOSE = false;
-bool SILENT = false;
-bool OUTPUT_CUT = false;
 string OUTPUT_FILE;
 // END PARAMETERS
 
@@ -95,6 +91,24 @@ struct Configuration {
     bool seed_randomness = false;
     int seed;
     int max_rounds;
+    bool silent = false;
+    bool verbose = false;
+    bool output_cut;
+};
+
+enum LogLevel {
+    PROGRESS,
+    INFO,
+    DEBUG
+};
+
+
+struct Logger {
+    Configuration& config;
+    void log(LogLevel ll, string msg) {
+        if(config.silent) return;
+        if(ll == DEBUG) if(!config.verbose) return;
+    }
 };
 
 struct GraphContext {
@@ -407,7 +421,6 @@ struct CutMatching {
             Node t, // For assertsions
             array<Node, 2> &out_path
     ) {
-        if (PRINT_PATHS) cout << "Path: " << g.id(u_orig);
         out_path[0] = u_orig;
         Node u = u_orig;
         while (true) {
@@ -422,11 +435,9 @@ struct CutMatching {
                 assert(u != u_orig);
 
                 out_path[1] = u;
-                if (PRINT_PATHS) cout << endl;
                 break;
             }
 
-            if (PRINT_PATHS) cout << " -> " << g.id(v);
             u = v;
         }
     }
@@ -689,7 +700,7 @@ void parse_options(int argc, char **argv, Configuration &config) {
     if (result.count("verbose"))
         VERBOSE = result["verbose"].as<bool>();
     if (result.count("Silent"))
-        SILENT = result["Silent"].as<bool>();
+        config.silent = result["Silent"].as<bool>();
     if (result.count("paths"))
         PRINT_PATHS = result["paths"].as<bool>();
 
@@ -715,6 +726,8 @@ int main(int argc, char **argv) {
     Configuration config;
     parse_options(argc, argv, config);
 
+    Logger l {config};
+
     GraphContext gc;
     initGraph(gc, config.input);
 
@@ -733,7 +746,7 @@ int main(int argc, char **argv) {
     cout << "Best cut sparsity: " << endl;
     auto &best_cut = best_round->cut;
     CutStats<G>(gc.g, gc.nodes.size(), *best_cut).print();
-    if (OUTPUT_CUT) { write_cut(gc.nodes, *best_cut); }
+    if (config.output_cut) { write_cut(gc.nodes, *best_cut); }
 
     if (config.compare_partition) {
         read_partition_file(config.partition_file, gc.nodes, gc.reference_cut);
