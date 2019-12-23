@@ -70,7 +70,6 @@ using CutMap = NodeMap<bool>;
 
 // TODO Purge basically
 // PARAMETERS:
-int N_ROUNDS = 5;
 bool PRINT_PATHS = false;
 bool VERBOSE = false;
 bool SILENT = false;
@@ -95,6 +94,7 @@ struct Configuration {
     string partition_file = "";
     bool seed_randomness = false;
     int seed;
+    int max_rounds;
 };
 
 struct GraphContext {
@@ -645,7 +645,7 @@ struct CutMatching {
     void run() {
         // TODO refactor to have "run" be on some stopping condition
         // Documenting everything, and then presentation chooses however it wants.
-        for (int i = 0; i < N_ROUNDS; i++) {
+        for (int i = 0; i < config.max_rounds || config.max_rounds == 0; i++) {
             past_rounds.push_back(one_round(i));
             print_end_round_message(i);
         }
@@ -660,7 +660,7 @@ cxxopts::Options create_options() {
             ("n,nodes", "Number of nodes in graph to generate. Should be even. Ignored if -f is set.",
              cxxopts::value<long>()->default_value("100"))
 
-            ("r,rounds", "Number of rounds to run cut-matching game", cxxopts::value<long>()->default_value("5"))
+            ("r,max-rounds", "Number of rounds after which to stop (0 for no limit)", cxxopts::value<long>()->default_value("25"))
 
             ("o,output", "Output computed cut into file", cxxopts::value<std::string>())
 
@@ -684,8 +684,8 @@ void parse_options(int argc, char **argv, Configuration &config) {
     if (result.count("nodes"))
         assert(config.input.load_from_file == false);
         config.input.n_nodes_to_generate = result["nodes"].as<long>();
-    if (result.count("rounds"))
-        N_ROUNDS = result["rounds"].as<long>();
+    if (result.count("max-rounds"))
+        config.max_rounds = result["max-rounds"].as<long>();
     if (result.count("verbose"))
         VERBOSE = result["verbose"].as<bool>();
     if (result.count("Silent"))
