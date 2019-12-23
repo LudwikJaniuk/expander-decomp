@@ -323,24 +323,16 @@ struct CutMatching {
     config(config_),
     gc(gc),
     random_engine(random_engine_)
-    { };
+    {
+        assert(gc.nodes.size() % 2 == 0);
+        assert(gc.nodes.size() > 0);
+        assert(connected(gc.g));
+    };
 
     struct Context {
     public:
-        G &g;
-        vector<Node> &nodes; // Indexed by file id - 1.
-        size_t num_vertices;
         vector<Matchingp> matchings;
         vector<Cutp> cuts;
-
-        explicit Context(G &g_, vector<Node> &nodes_)
-        : g(g_), nodes(nodes_)
-        {
-
-            num_vertices = countNodes(g);
-            assert(num_vertices % 2 == 0);
-            assert(connected(g));
-        }
     };
 
     // During the matching step a lot of local setup is actually made, so it makes sense to group it
@@ -627,12 +619,12 @@ struct CutMatching {
     }
 
     unique_ptr<RoundReport> one_round(Context &c, size_t round_index) {
-        Bisectionp bisection = cut_player(c.g, c.matchings);
+        Bisectionp bisection = cut_player(gc.g, c.matchings);
 
-        Matchingp matchingp(new Matching(c.g));
+        Matchingp matchingp(new Matching(gc.g));
 
         if (VERBOSE) cout << "Running Matching player" << endl;
-        MatchResult mr = matching_player(c.g, c.num_vertices, *bisection, *matchingp);
+        MatchResult mr = matching_player(gc.g, gc.nodes.size(), *bisection, *matchingp);
         size_t cap = mr.capacity;
         if (VERBOSE) {
             cout << "Matching player gave the following matching: " << endl;
@@ -652,12 +644,11 @@ struct CutMatching {
     }
 
     void run() {
-        Context c(gc.g, gc.nodes);
+        Context c;
         // TODO refactor to have "run" be on some stopping condition
         // Documenting everything, and then presentation chooses however it wants.
-        Context &c1 = c;
         for (int i = 0; i < N_ROUNDS; i++) {
-            past_rounds.push_back(one_round(c1, i));
+            past_rounds.push_back(one_round(c, i));
             print_end_round_message(i);
         }
     }
