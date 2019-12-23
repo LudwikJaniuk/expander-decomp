@@ -317,6 +317,8 @@ struct CutMatching {
     GraphContext &gc;
     default_random_engine &random_engine;
     vector<unique_ptr<RoundReport>> past_rounds;
+    vector<Matchingp> matchings;
+    vector<Cutp> cuts;
     // Input graph
     CutMatching(GraphContext &gc, const Configuration &config_, default_random_engine &random_engine_)
     :
@@ -327,12 +329,6 @@ struct CutMatching {
         assert(gc.nodes.size() % 2 == 0);
         assert(gc.nodes.size() > 0);
         assert(connected(gc.g));
-    };
-
-    struct Context {
-    public:
-        vector<Matchingp> matchings;
-        vector<Cutp> cuts;
     };
 
     // During the matching step a lot of local setup is actually made, so it makes sense to group it
@@ -618,8 +614,8 @@ struct CutMatching {
         return mr;
     }
 
-    unique_ptr<RoundReport> one_round(Context &c, size_t round_index) {
-        Bisectionp bisection = cut_player(gc.g, c.matchings);
+    unique_ptr<RoundReport> one_round(size_t round_index) {
+        Bisectionp bisection = cut_player(gc.g, matchings);
 
         Matchingp matchingp(new Matching(gc.g));
 
@@ -631,7 +627,7 @@ struct CutMatching {
             print_matching(matchingp);
         }
 
-        c.matchings.push_back(move(matchingp));
+        matchings.push_back(move(matchingp));
         //c.cuts.push_back(move(mr.cut_from_flow));
         unique_ptr<RoundReport> report = make_unique<RoundReport>();
         report->index = round_index;
@@ -644,11 +640,10 @@ struct CutMatching {
     }
 
     void run() {
-        Context c;
         // TODO refactor to have "run" be on some stopping condition
         // Documenting everything, and then presentation chooses however it wants.
         for (int i = 0; i < N_ROUNDS; i++) {
-            past_rounds.push_back(one_round(c, i));
+            past_rounds.push_back(one_round(i));
             print_end_round_message(i);
         }
     }
