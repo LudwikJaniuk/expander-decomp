@@ -99,6 +99,8 @@ struct Configuration {
     bool show_help_and_exit = false;
     bool use_H_phi_target = false;
     double H_phi_target = 0;
+    bool use_G_phi_target = false;
+    double G_phi_target = 0;
 };
 
 struct GraphContext {
@@ -111,6 +113,7 @@ struct RoundReport {
     size_t index;
     size_t capacity_required_for_full_flow;
     double multi_h_expansion;
+    double g_expansion;
     Cutp cut;
 };
 
@@ -161,7 +164,7 @@ struct CutStats {
     }
 
     double expansion() {
-        return crossing_edges * 1. / min_side;
+        return min_side == 0 ? 0 : crossing_edges * 1. / min_side;
     }
 
     void print() {
@@ -637,6 +640,9 @@ struct CutMatching {
             print_matching(matchingp);
         }
 
+        report->g_expansion = CutStats<G>(gc.g, gc.nodes.size(), *mr.cut_from_flow).expansion();
+        cout << "G cut expansion " << report->g_expansion << endl;
+
         matchings.push_back(move(matchingp));
         //c.cuts.push_back(move(mr.cut_from_flow));
         report->index = round_index;
@@ -655,17 +661,22 @@ struct CutMatching {
             past_rounds.push_back(one_round(i));
             print_end_round_message(i);
 
-            cout << past_rounds[past_rounds.size()-1]->multi_h_expansion << endl;
-            cout << config.H_phi_target << endl;
-            cout << config.use_H_phi_target << endl;
             if(config.use_H_phi_target && past_rounds[past_rounds.size() - 1]->multi_h_expansion >= config.H_phi_target) {
-                cout << "H Expansion target reached. According to theory, this means we probably won't find a better cut. That is, assuming you set H_phi right.  " << endl;
+                cout << "H Expansion target reached. According to theory, this means we probably won't find a better cut. That is, assuming you set H_phi right. "
+                        "If was used together with G_phi target, this also certifies the input graph is a G_phi expander." << endl;
+                break;
+            }
+
+            if(config.use_G_phi_target && past_rounds[past_rounds.size() - 1]->g_expansion >= config.G_phi_target) {
+                cout << "G Expansion target reached. Cut-matching game has found a cut as good as you wanted it. Whether it is balanced or not is up to you."
+                     << endl;
                 break;
             }
         }
     }
 };
 
+// TODO and do we output the most expanding cut?
 cxxopts::Options create_options() {
     cxxopts::Options options("executable_name",
                              "Individual project implementation of thatchapon's paper to find graph partitions. Currently only cut-matching game. \
@@ -675,10 +686,10 @@ cxxopts::Options create_options() {
                              ");
     options.add_options()
             ("h,help", "Show help")
-            ("H_phi", "Phi expansion treshold for the H graph. Recommend to also set -r=0 or high enough. ",
+            ("G_phi", "Phi expansion target for the G graph. Means \"what is a good enough cut?\" Recommended with -r=0. This is the PHI from the paper. ",
+             cxxopts::value<double>()->implicit_value("0.8"))
+            ("H_phi", "Phi expansion treshold for the H graph. Recommend to also set -r=0. ",
             cxxopts::value<double>()->implicit_value("10.0"))
-            //("G_phi", "Phi expansion target for the G graph. Means \what is a good enough cut?\" This is the phi from the paper. ",
-            // cxxopts::value<double>()->implicit_value("10.0"))
             ("f,file", "File to read graph from", cxxopts::value<std::string>())
             ("r,max-rounds", "Number of rounds after which to stop (0 for no limit)", cxxopts::value<long>()->default_value("25"))
             ("s,seed", "Use a seed for RNG (optionally set seed manually)",
@@ -705,6 +716,10 @@ void parse_options(int argc, char **argv, Configuration &config) {
     if( result.count("H_phi")) {
         config.use_H_phi_target = true;
         config.H_phi_target = result["H_phi"].as<double>();
+    }
+    if( result.count("G_phi")) {
+        config.use_G_phi_target = true;
+        config.G_phi_target = result["G_phi"].as<double>();
     }
     if (result.count("file")) {
         config.input.load_from_file = true;
@@ -757,10 +772,10 @@ int main(int argc, char **argv) {
 
     assert(!cm.past_rounds.empty());
     auto& best_round = *max_element(cm.past_rounds.begin(), cm.past_rounds.end(), [](auto &a, auto &b) {
-        return a->capacity_required_for_full_flow < b->capacity_required_for_full_flow;
+        return a->g_expansion < b->g_expansion;
     });
 
-    cout << "The cut with highest capacity required was found on round" << best_round->index << endl;
+    cout << "The cut with highest expansion was found on round" << best_round->index << endl;
     cout << "Best cut sparsity: " << endl;
     auto &best_cut = best_round->cut;
     CutStats<G>(gc.g, gc.nodes.size(), *best_cut).print();
