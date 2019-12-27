@@ -95,6 +95,8 @@ struct Configuration {
     bool seed_randomness = false;
     int seed;
     int max_rounds;
+
+    bool show_help_and_exit = false;
 };
 
 struct GraphContext {
@@ -653,23 +655,26 @@ struct CutMatching {
 };
 
 cxxopts::Options create_options() {
-    cxxopts::Options options("Janiuk graph partition",
-                             "Individual project implementation of thatchapon's paper to find graph partitions. Currently only cut-matching game.");
+    cxxopts::Options options("executable_name",
+                             "Individual project implementation of thatchapon's paper to find graph partitions. Currently only cut-matching game. \
+                             \nRecommended usage: \n\texecutable_name -s -f ./path/to/graph -o output.txt\
+                             \nCurrently only running a fixed amount of rounds is supported, but the more correct \
+                             \nversion of running until H becomes an expander is coming soon.\
+                             ");
     options.add_options()
+            ("h,help", "Show help")
             ("f,file", "File to read graph from", cxxopts::value<std::string>())
-            ("n,nodes", "Number of nodes in graph to generate. Should be even. Ignored if -f is set.",
-             cxxopts::value<long>()->default_value("100"))
-
             ("r,max-rounds", "Number of rounds after which to stop (0 for no limit)", cxxopts::value<long>()->default_value("25"))
-
-            ("o,output", "Output computed cut into file", cxxopts::value<std::string>())
-
-            ("d,paths", "Whether to print paths")
-            ("v,verbose", "Whether to print nodes and cuts (does not include paths)")
             ("s,seed", "Use a seed for RNG (optionally set seed manually)",
              cxxopts::value<int>()->implicit_value("1337"))
+            ("p,partition", "Partition file to compare with", cxxopts::value<std::string>())
+            ("o,output", "Output computed cut into file. The cut is written as the vertices of one side of the cut.", cxxopts::value<std::string>())
+            ("n,nodes", "Number of nodes in graph to generate. Should be even. Ignored if -f is set.",
+             cxxopts::value<long>()->default_value("100"))
             ("S,Silent", "Only output one line of summary at the end")
-            ("p,partition", "Partition file to compare with", cxxopts::value<std::string>());
+            ("v,verbose", "Debug; Whether to print nodes and cuts Does not include paths. Produces a LOT of output on large graphs.")
+            ("d,paths", "Debug; Whether to print paths")
+            ;
     return options;
 }
 
@@ -677,6 +682,10 @@ void parse_options(int argc, char **argv, Configuration &config) {
     auto cmd_options = create_options();
     auto result = cmd_options.parse(argc, argv);
 
+    if (result.count("help")) {
+        config.show_help_and_exit = true;
+        cout << cmd_options.help() << endl;
+    }
     if (result.count("file")) {
         config.input.load_from_file = true;
         config.input.file_name = result["file"].as<string>();
@@ -714,6 +723,8 @@ void parse_options(int argc, char **argv, Configuration &config) {
 int main(int argc, char **argv) {
     Configuration config;
     parse_options(argc, argv, config);
+
+    if(config.show_help_and_exit) return 0;
 
     GraphContext gc;
     initGraph(gc, config.input);
