@@ -97,6 +97,8 @@ struct Configuration {
     int max_rounds;
 
     bool show_help_and_exit = false;
+    bool use_H_phi_target = false;
+    double H_phi_target = 0;
 };
 
 struct GraphContext {
@@ -108,6 +110,7 @@ struct GraphContext {
 struct RoundReport {
     size_t index;
     size_t capacity_required_for_full_flow;
+    double multi_h_expansion;
     Cutp cut;
 };
 
@@ -538,7 +541,7 @@ struct CutMatching {
     // Actually, cut player gets H
 // Actually Actually, sure it gets H but it just needs the matchings...
     template<typename M>
-    Bisectionp cut_player(const G &g, const vector<unique_ptr<M>> &matchings) {
+    Bisectionp cut_player(const G &g, const vector<unique_ptr<M>> &matchings, double &h_multi_exp_out) {
         if (VERBOSE) cout << "Running Cut player" << endl;
         using MEdgeIt = typename M::EdgeIt;
 
@@ -589,6 +592,7 @@ struct CutMatching {
 
         auto hcs = CutStats<decltype(H)>(H, num_vertices, *b);
         cout << "H expansion: " << hcs.expansion() << ", num cross: " << hcs.crossing_edges << endl;
+        h_multi_exp_out = hcs.expansion();
         auto hscs = CutStats<decltype(H_single)>(H_single, num_vertices, *b);
         cout << "H_single expansion: " << hscs.expansion() << ", num cross: " << hscs.crossing_edges << endl;
 
@@ -620,7 +624,8 @@ struct CutMatching {
     }
 
     unique_ptr<RoundReport> one_round(size_t round_index) {
-        Bisectionp bisection = cut_player(gc.g, matchings);
+        unique_ptr<RoundReport> report = make_unique<RoundReport>();
+        Bisectionp bisection = cut_player(gc.g, matchings, report->multi_h_expansion);
 
         Matchingp matchingp(new Matching(gc.g));
 
@@ -634,7 +639,6 @@ struct CutMatching {
 
         matchings.push_back(move(matchingp));
         //c.cuts.push_back(move(mr.cut_from_flow));
-        unique_ptr<RoundReport> report = make_unique<RoundReport>();
         report->index = round_index;
         report->capacity_required_for_full_flow = cap;
         report->cut = move(mr.cut_from_flow);
@@ -650,6 +654,14 @@ struct CutMatching {
         for (int i = 0; i < config.max_rounds || config.max_rounds == 0; i++) {
             past_rounds.push_back(one_round(i));
             print_end_round_message(i);
+
+            cout << past_rounds[past_rounds.size()-1]->multi_h_expansion << endl;
+            cout << config.H_phi_target << endl;
+            cout << config.use_H_phi_target << endl;
+            if(config.use_H_phi_target && past_rounds[past_rounds.size() - 1]->multi_h_expansion >= config.H_phi_target) {
+                cout << "H Expansion target reached. According to theory, this means we probably won't find a better cut. That is, assuming you set H_phi right.  " << endl;
+                break;
+            }
         }
     }
 };
@@ -663,6 +675,10 @@ cxxopts::Options create_options() {
                              ");
     options.add_options()
             ("h,help", "Show help")
+            ("H_phi", "Phi expansion treshold for the H graph. Recommend to also set -r=0 or high enough. ",
+            cxxopts::value<double>()->implicit_value("10.0"))
+            //("G_phi", "Phi expansion target for the G graph. Means \what is a good enough cut?\" This is the phi from the paper. ",
+            // cxxopts::value<double>()->implicit_value("10.0"))
             ("f,file", "File to read graph from", cxxopts::value<std::string>())
             ("r,max-rounds", "Number of rounds after which to stop (0 for no limit)", cxxopts::value<long>()->default_value("25"))
             ("s,seed", "Use a seed for RNG (optionally set seed manually)",
@@ -685,6 +701,10 @@ void parse_options(int argc, char **argv, Configuration &config) {
     if (result.count("help")) {
         config.show_help_and_exit = true;
         cout << cmd_options.help() << endl;
+    }
+    if( result.count("H_phi")) {
+        config.use_H_phi_target = true;
+        config.H_phi_target = result["H_phi"].as<double>();
     }
     if (result.count("file")) {
         config.input.load_from_file = true;
