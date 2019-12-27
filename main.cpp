@@ -1,3 +1,4 @@
+// Authored by Ludvig Janiuk 2019 as part of individual project at KTH.
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "cert-msc32-c"
 #pragma ide diagnostic ignored "cppcoreguidelines-slicing"
