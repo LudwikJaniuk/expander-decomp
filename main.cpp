@@ -115,6 +115,7 @@ struct RoundReport {
     size_t capacity_required_for_full_flow;
     double multi_h_expansion;
     double g_expansion;
+    long volume;
     Cutp cut;
 };
 
@@ -129,8 +130,15 @@ struct CutStats {
     using EdgeIt = typename G::EdgeIt;
     using Bisection = set<Node>;
     size_t crossing_edges = 0;
+private:
+    bool is_min_side;
     size_t min_side = 0;
+    size_t cut_volume = 0;
     size_t max_side = 0;
+    size_t num_edges = 0;
+    long degreesum() { return num_edges*2;}
+    long noncut_volume () { return degreesum() - cut_volume;}
+public:
 
     CutStats(const G &g, size_t num_vertices, const Cut &cut) {
         initialize(g, num_vertices, cut);
@@ -138,18 +146,32 @@ struct CutStats {
 
     void initialize(const G &g, size_t num_vertices, const Cut &cut) {
         for (EdgeIt e(g); e != INVALID; ++e) {
+            ++num_edges;
             if (is_crossing(g, cut, e)) crossing_edges += 1;
+            if (any_in_cut(g, cut, e)) cut_volume += 1;
         }
+
         assert(cut.size() <= num_vertices);
         size_t other_size = num_vertices - cut.size();
         min_side = min(cut.size(), other_size);
         max_side = max(cut.size(), other_size);
+        is_min_side = cut.size() == min_side;
     }
 
     static bool is_crossing(const G &g, const Bisection &c, const Edge &e) {
         bool u_in = c.count(g.u(e));
         bool v_in = c.count(g.v(e));
         return u_in != v_in;
+    }
+
+    static bool any_in_cut(const G &g, const Bisection &c, const Edge &e) {
+        bool u_in = c.count(g.u(e));
+        bool v_in = c.count(g.v(e));
+        return u_in || v_in;
+    }
+
+    long minside_volume() {
+        return is_min_side ? cut_volume : noncut_volume();
     }
 
     size_t diff() {
@@ -641,14 +663,16 @@ struct CutMatching {
             print_matching(matchingp);
         }
 
-        report->g_expansion = CutStats<G>(gc.g, gc.nodes.size(), *mr.cut_from_flow).expansion();
-        cout << "G cut expansion " << report->g_expansion << endl;
-
         matchings.push_back(move(matchingp));
         //c.cuts.push_back(move(mr.cut_from_flow));
         report->index = round_index;
         report->capacity_required_for_full_flow = cap;
         report->cut = move(mr.cut_from_flow);
+        auto cs = CutStats<G>(gc.g, gc.nodes.size(), *report->cut);
+        report->g_expansion = cs.expansion();
+        cout << "G cut expansion " << report->g_expansion << endl;
+        report->volume = cs.minside_volume();
+        cout << "G cut volume " << report->volume << endl;
         return move(report);
 
         // We want to implement that it parses partitions
@@ -677,7 +701,11 @@ struct CutMatching {
     }
 };
 
-// TODO and do we output the most expanding cut?
+// TODO Make cut always the smallest
+// TODO Implement breaking-logik for unbalance
+// om vi hittar phi-cut med volym obanför treshold
+// Om vi hittar phi-cut med volum under treshold, så ingorerar vi det och kör p
+// och sen om vi når H, då definieras det bästa som phi-cuttet med högsta volym
 cxxopts::Options create_options() {
     cxxopts::Options options("executable_name",
                              "Individual project implementation of thatchapon's paper to find graph partitions. Currently only cut-matching game. \
