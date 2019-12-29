@@ -102,12 +102,16 @@ struct Configuration {
     double H_phi_target = 0;
     bool use_G_phi_target = false;
     double G_phi_target = 0;
+    // we only break if we find a good enough cut that is also this balanced (has this minside volume)
+    bool use_volume_treshold = false;
+    double volume_treshold_factor = 0;
 };
 
 struct GraphContext {
     G g;
     vector<Node> nodes;
     Cut reference_cut;
+    long num_edges;
 };
 
 struct RoundReport {
@@ -116,6 +120,7 @@ struct RoundReport {
     double multi_h_expansion;
     double g_expansion;
     long volume;
+    bool relatively_balanced;
     Cutp cut;
 };
 
@@ -172,6 +177,10 @@ public:
 
     long minside_volume() {
         return is_min_side ? cut_volume : noncut_volume();
+    }
+
+    long maxside_volume() {
+        return is_min_side ? noncut_volume() : cut_volume;
     }
 
     size_t diff() {
@@ -325,6 +334,8 @@ void initGraph(GraphContext &gc, InputConfiguration config) {
         if (VERBOSE) cout << "Generating graph with " << config.n_nodes_to_generate << " nodes." << endl;
         generate_large_graph(gc.g, gc.nodes, config.n_nodes_to_generate);
     }
+
+    gc.num_edges = countEdges(gc.g);
 }
 
 // For some reason lemon returns arbitrary values for flow, the difference is correct tho
@@ -364,6 +375,7 @@ struct CutMatching {
     default_random_engine &random_engine;
     vector<unique_ptr<RoundReport>> past_rounds;
     vector<Matchingp> matchings;
+    bool reached_H_target = false;
     // Input graph
     CutMatching(GraphContext &gc, const Configuration &config_, default_random_engine &random_engine_)
     :
@@ -649,6 +661,10 @@ struct CutMatching {
         return mr;
     }
 
+    long volume_treshold() {
+        return config.volume_treshold_factor * gc.num_edges;
+    }
+
     unique_ptr<RoundReport> one_round() {
         unique_ptr<RoundReport> report = make_unique<RoundReport>();
         Bisectionp bisection = cut_player(gc.g, matchings, report->multi_h_expansion);
@@ -672,12 +688,15 @@ struct CutMatching {
         report->g_expansion = cs.expansion();
         cout << "G cut expansion " << report->g_expansion << endl;
         report->volume = cs.minside_volume();
-        cout << "G cut volume " << report->volume << endl;
+        cout << "G cut minside volume " << cs.minside_volume() << endl;
+        cout << "G cut maxside volume " << cs.maxside_volume() << endl;
+        report->relatively_balanced = report->volume > volume_treshold();
         return move(report);
 
         // We want to implement that it parses partitions
         // That has nothing to do with the rounds lol
     }
+
 
     // Stopping condition
     bool should_stop() {
@@ -687,19 +706,32 @@ struct CutMatching {
 
         const auto& last_round = past_rounds[past_rounds.size() - 1];
         if(config.use_H_phi_target && last_round->multi_h_expansion >= config.H_phi_target) {
-            cout << "H Expansion target reached. According to theory, this means we probably won't find a better cut. That is, assuming you set H_phi right. "
-                    "If was used together with G_phi target, this also certifies the input graph is a G_phi expander." << endl;
+            cout << "H Expansion target reached, this will be case 1 or 3. According to theory, this means we probably won't find a better cut. That is, assuming you set H_phi right. "
+                    "If was used together with G_phi target, this also certifies the input graph is a G_phi expander unless there was a very unbaanced cut somewhere, which we will proceed to look for." << endl;
+            reached_H_target = true;
             return true;
         }
 
-        if(config.use_G_phi_target && last_round->g_expansion >= config.G_phi_target) {
-            cout << "G Expansion target reached. Cut-matching game has found a cut as good as you wanted it. Whether it is balanced or not is up to you."
-                 << endl;
-            return true;
+        if(config.use_G_phi_target)
+        if(last_round->g_expansion >= config.G_phi_target) {
+            if(config.use_volume_treshold && last_round->relatively_balanced) {
+                cout << "CASE2 G Expansion target reached with a cut that is relatively balanced. Cut-matching game has found a balanced cut as good as you wanted it."
+                     << endl;
+                return true;
+            }
+
+            if(!config.use_volume_treshold) {
+                cout << "G Expansion target reached. Cut-matching game has found a cut as good as you wanted it. Whether it is balanced or not is up to you."
+                     << endl;
+                return true;
+            }
         }
+
     }
 
     void run() {
+        cout << "VOlum treshold: " << volume_treshold() << endl;
+        cout << "VOlum tresholdf: " << config.volume_treshold_factor << endl;
         // TODO refactor to have "run" be on some stopping condition
         // Documenting everything, and then presentation chooses however it wants.
         while (!should_stop()) {
@@ -723,10 +755,12 @@ cxxopts::Options create_options() {
                              ");
     options.add_options()
             ("h,help", "Show help")
+            ("H_phi", "Phi expansion treshold for the H graph. Recommend to also set -r=0. ",
+             cxxopts::value<double>()->implicit_value("10.0"))
             ("G_phi", "Phi expansion target for the G graph. Means \"what is a good enough cut?\" Recommended with -r=0. This is the PHI from the paper. ",
              cxxopts::value<double>()->implicit_value("0.8"))
-            ("H_phi", "Phi expansion treshold for the H graph. Recommend to also set -r=0. ",
-            cxxopts::value<double>()->implicit_value("10.0"))
+            ("vol", "Volume treshold. Only used if G_phi is used. Will be multiplied by number of edges, so to require e.g. minimum 10% volume, write 0.1.",
+             cxxopts::value<double>()->implicit_value("0.1"))
             ("f,file", "File to read graph from", cxxopts::value<std::string>())
             ("r,max-rounds", "Number of rounds after which to stop (0 for no limit)", cxxopts::value<long>()->default_value("25"))
             ("s,seed", "Use a seed for RNG (optionally set seed manually)",
@@ -757,6 +791,10 @@ void parse_options(int argc, char **argv, Configuration &config) {
     if( result.count("G_phi")) {
         config.use_G_phi_target = true;
         config.G_phi_target = result["G_phi"].as<double>();
+    }
+    if( result.count("vol")) {
+        config.use_volume_treshold = true;
+        config.volume_treshold_factor = result["vol"].as<double>();
     }
     if (result.count("file")) {
         config.input.load_from_file = true;
@@ -807,15 +845,31 @@ int main(int argc, char **argv) {
     CutMatching cm(gc, config, random_engine);
     cm.run();
 
+    // TODO searching conditions different depending on if hit H
     assert(!cm.past_rounds.empty());
+    // Best by expnansion
     auto& best_round = *max_element(cm.past_rounds.begin(), cm.past_rounds.end(), [](auto &a, auto &b) {
         return a->g_expansion < b->g_expansion;
     });
 
-    cout << "The cut with highest expansion was found on round" << best_round->index << endl;
+    cout << "The best with highest expansion was found on round" << best_round->index << endl;
     cout << "Best cut sparsity: " << endl;
     auto &best_cut = best_round->cut;
     CutStats<G>(gc.g, gc.nodes.size(), *best_cut).print();
+
+    if(config.use_H_phi_target && config.use_G_phi_target && config.use_volume_treshold) {
+        if(cm.reached_H_target) {
+            if(best_round->g_expansion < config.G_phi_target) {
+                cout << "CASE1 NO Goodenough cut, G certified expander." << endl;
+            } else {
+                cout << "CASE3 Found goodenough but very unbalanced cut." << endl;
+            }
+        } else {
+            cout << "CASE2 Goodenough balanced cut" << endl;
+        }
+
+    }
+
     if (OUTPUT_CUT) { write_cut(gc.nodes, *best_cut); }
 
     if (config.compare_partition) {
