@@ -649,7 +649,7 @@ struct CutMatching {
         return mr;
     }
 
-    unique_ptr<RoundReport> one_round(size_t round_index) {
+    unique_ptr<RoundReport> one_round() {
         unique_ptr<RoundReport> report = make_unique<RoundReport>();
         Bisectionp bisection = cut_player(gc.g, matchings, report->multi_h_expansion);
 
@@ -665,7 +665,7 @@ struct CutMatching {
 
         matchings.push_back(move(matchingp));
         //c.cuts.push_back(move(mr.cut_from_flow));
-        report->index = round_index;
+        report->index = past_rounds.size();
         report->capacity_required_for_full_flow = cap;
         report->cut = move(mr.cut_from_flow);
         auto cs = CutStats<G>(gc.g, gc.nodes.size(), *report->cut);
@@ -679,24 +679,32 @@ struct CutMatching {
         // That has nothing to do with the rounds lol
     }
 
+    // Stopping condition
+    bool should_stop() {
+        int i = past_rounds.size();
+        if(i == 0) return false;
+        if(i >= config.max_rounds && config.max_rounds != 0) return true;
+
+        const auto& last_round = past_rounds[past_rounds.size() - 1];
+        if(config.use_H_phi_target && last_round->multi_h_expansion >= config.H_phi_target) {
+            cout << "H Expansion target reached. According to theory, this means we probably won't find a better cut. That is, assuming you set H_phi right. "
+                    "If was used together with G_phi target, this also certifies the input graph is a G_phi expander." << endl;
+            return true;
+        }
+
+        if(config.use_G_phi_target && last_round->g_expansion >= config.G_phi_target) {
+            cout << "G Expansion target reached. Cut-matching game has found a cut as good as you wanted it. Whether it is balanced or not is up to you."
+                 << endl;
+            return true;
+        }
+    }
+
     void run() {
         // TODO refactor to have "run" be on some stopping condition
         // Documenting everything, and then presentation chooses however it wants.
-        for (int i = 0; i < config.max_rounds || config.max_rounds == 0; i++) {
-            past_rounds.push_back(one_round(i));
-            print_end_round_message(i);
-
-            if(config.use_H_phi_target && past_rounds[past_rounds.size() - 1]->multi_h_expansion >= config.H_phi_target) {
-                cout << "H Expansion target reached. According to theory, this means we probably won't find a better cut. That is, assuming you set H_phi right. "
-                        "If was used together with G_phi target, this also certifies the input graph is a G_phi expander." << endl;
-                break;
-            }
-
-            if(config.use_G_phi_target && past_rounds[past_rounds.size() - 1]->g_expansion >= config.G_phi_target) {
-                cout << "G Expansion target reached. Cut-matching game has found a cut as good as you wanted it. Whether it is balanced or not is up to you."
-                     << endl;
-                break;
-            }
+        while (!should_stop()) {
+            past_rounds.push_back(one_round());
+            print_end_round_message(past_rounds.size()-1);
         }
     }
 };
