@@ -3,6 +3,7 @@
 #pragma ide diagnostic ignored "cppcoreguidelines-slicing"
 
 #include <iostream>
+#include <ostream>
 #include <algorithm>
 #include <random>
 #include <memory>
@@ -72,6 +73,22 @@ using CutMap = NodeMap<bool>;
 // PARAMETERS:
 string OUTPUT_FILE;
 // END PARAMETERS
+class Configuration;
+struct Logger {
+    bool silent = false;
+    bool verbose = false;
+    ofstream nul; // UNopened file stream, will act like /dev/null
+    Logger() : nul() { };
+    decltype(cout)& progress() {
+        return silent ? nul : cout ;
+    };
+    decltype(cout)& info() {
+        return cout;
+    };
+    decltype(cout)& debug() {
+        return verbose ? cout : nul;
+    };
+} l;
 
 const double MICROSECS = 1000000.0;
 
@@ -102,14 +119,6 @@ enum LogLevel {
     DEBUG
 };
 
-
-struct Logger {
-    Configuration& config;
-    void log(LogLevel ll, string msg) {
-        if(config.silent) return;
-        if(ll == DEBUG) if(!config.verbose) return;
-    }
-};
 
 struct GraphContext {
     G g;
@@ -188,7 +197,7 @@ struct CutStats {
 // Of course original_ids must be initialized onto the graph g already earlier.
 static void parse_chaco_format(const string &filename, ListGraph &g, vector<Node> &nodes) {
     assert(nodes.empty());
-    if(!SILENT) cout << "Reading graph from " << filename << endl;
+    l.progress() << "Reading graph from " << filename << endl;
     ifstream file;
     file.open(filename);
     if (!file) {
@@ -203,7 +212,7 @@ static void parse_chaco_format(const string &filename, ListGraph &g, vector<Node
 
     int n_verts, n_edges;
     ss >> n_verts >> n_edges;
-    if(!SILENT) cout << "Reading a graph with V " << n_verts << "E " << n_edges << endl;
+    l.progress() << "Reading a graph with V " << n_verts << "E " << n_edges << endl;
     g.reserveNode(n_verts);
     g.reserveNode(n_edges);
 
@@ -227,7 +236,7 @@ static void parse_chaco_format(const string &filename, ListGraph &g, vector<Node
     }
 
     if (n_verts % 2 != 0) {
-        if(!SILENT) cout << "Odd number of vertices, adding extra one." << endl;
+        l.progress() << "Odd number of vertices, adding extra one." << endl;
         Node n = g.addNode();
         g.addEdge(nodes[0], n);
         nodes.push_back(n);
@@ -297,7 +306,7 @@ void read_partition_file(const string &filename, const vector<Node> &nodes, Cut 
         if (b) partition.insert(nodes[i]);
         ++i;
     }
-    if (VERBOSE) cout << "Reference patition size: " << partition.size() << endl;
+    l.debug() << "Reference patition size: " << partition.size() << endl;
 }
 
 void initGraph(GraphContext &gc, InputConfiguration config) {
@@ -305,7 +314,7 @@ void initGraph(GraphContext &gc, InputConfiguration config) {
         parse_chaco_format(config.file_name, gc.g, gc.nodes);
 
     } else {
-        if (VERBOSE) cout << "Generating graph with " << config.n_nodes_to_generate << " nodes." << endl;
+        l.debug() << "Generating graph with " << config.n_nodes_to_generate << " nodes." << endl;
         generate_large_graph(gc.g, gc.nodes, config.n_nodes_to_generate);
     }
 }
@@ -322,23 +331,23 @@ int flow(
 }
 
 void print_end_round_message(int i) {
-    if (VERBOSE) cout << "======================" << endl;
-    if(!SILENT) cout << "== End round " << i << " ==" << endl;
-    if (VERBOSE) cout << "======================" << endl;
+    l.debug() << "======================" << endl;
+    l.progress() << "== End round " << i << " ==" << endl;
+    l.debug() << "======================" << endl;
 }
 
-void print_matching(const Matchingp &m) {
+void print_matching(const Matchingp &m, decltype(cout)& stream) {
     for (Matching::EdgeIt e(*m); e != INVALID; ++e) {
-        cout << "(" << m->id(m->u(e)) << ", " << m->id(m->v(e)) << "), ";
+        stream << "(" << m->id(m->u(e)) << ", " << m->id(m->v(e)) << "), ";
     }
-    cout << endl;
+    stream << endl;
 }
 
-void print_cut(const Bisection &out_cut) {
+void print_cut(const Bisection &out_cut, decltype(cout)& stream) {
     for (Node n : out_cut) {
-        cout << G::id(n) << ", ";
+        stream << G::id(n) << ", ";
     }
-    cout << endl;
+    stream << endl;
 }
 
 struct CutMatching {
@@ -483,16 +492,16 @@ struct CutMatching {
 
             p.reset(new Preflow<G, EdgeMapi>(mg.g, mg.capacity, mg.s, mg.t));
 
-            if(!SILENT) cout << "Cap " << cap << " ... " << flush;
+            l.progress() << "Cap " << cap << " ... " << flush;
 
             auto start2 = high_resolution_clock::now();
             p->runMinCut(); // Note that "startSecondPhase" must be run to get flows for individual verts
             auto stop2 = high_resolution_clock::now();
             auto duration2 = duration_cast<microseconds>(stop2 - start2);
 
-            if(!SILENT) cout << "flow: " << p->flowValue() << " (" << (duration2.count() / MICROSECS) << " s)" << endl;
+            l.progress() << "flow: " << p->flowValue() << " (" << (duration2.count() / MICROSECS) << " s)" << endl;
             if (p->flowValue() == mg.num_vertices / 2) {
-                if (VERBOSE) cout << "We have achieved full flow, but half this capacity didn't manage that!" << endl;
+                l.debug() << "We have achieved full flow, but half this capacity didn't manage that!" << endl;
                 // Already an expander I guess?
                 if (cap == 1) {
                     // TODO code duplication
@@ -513,7 +522,7 @@ struct CutMatching {
 
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
-        if(!SILENT) cout << "Flow search took (seconds) " << (duration.count() / 1000000.0) << endl;
+        l.progress() << "Flow search took (seconds) " << (duration.count() / 1000000.0) << endl;
 
         return result;
     }
@@ -548,7 +557,7 @@ struct CutMatching {
 // Actually Actually, sure it gets H but it just needs the matchings...
     template<typename M>
     Bisectionp cut_player(const G &g, const vector<unique_ptr<M>> &matchings) {
-        if (VERBOSE) cout << "Running Cut player" << endl;
+        l.debug() << "Running Cut player" << endl;
         using MEdgeIt = typename M::EdgeIt;
 
         NodeMapd probs(g);
@@ -591,15 +600,13 @@ struct CutMatching {
         assert(size % 2 == 0);
         all_nodes.resize(size / 2);
         auto b = Bisectionp(new Bisection(all_nodes.begin(), all_nodes.end()));
-        if (VERBOSE) {
-            cout << "Cut player gave the following cut: " << endl;
-            print_cut(*b);
-        }
+        l.debug() << "Cut player gave the following cut: " << endl;
+        print_cut(*b, l.debug());
 
         auto hcs = CutStats<decltype(H)>(H, num_vertices, *b);
-        cout << "H expansion: " << hcs.expansion() << ", num cross: " << hcs.crossing_edges << endl;
+        l.progress() << "H expansion: " << hcs.expansion() << ", num cross: " << hcs.crossing_edges << endl;
         auto hscs = CutStats<decltype(H_single)>(H_single, num_vertices, *b);
-        cout << "H_single expansion: " << hscs.expansion() << ", num cross: " << hscs.crossing_edges << endl;
+        l.progress() << "H_single expansion: " << hscs.expansion() << ", num cross: " << hscs.crossing_edges << endl;
 
         return b;
     }
@@ -633,13 +640,11 @@ struct CutMatching {
 
         Matchingp matchingp(new Matching(gc.g));
 
-        if (VERBOSE) cout << "Running Matching player" << endl;
+        l.debug() << "Running Matching player" << endl;
         MatchResult mr = matching_player(gc.g, gc.nodes.size(), *bisection, *matchingp);
         size_t cap = mr.capacity;
-        if (VERBOSE) {
-            cout << "Matching player gave the following matching: " << endl;
-            print_matching(matchingp);
-        }
+        l.debug() << "Matching player gave the following matching: " << endl;
+        print_matching(matchingp, l.debug());
 
         matchings.push_back(move(matchingp));
         //c.cuts.push_back(move(mr.cut_from_flow));
@@ -693,16 +698,14 @@ void parse_options(int argc, char **argv, Configuration &config) {
         config.input.file_name = result["file"].as<string>();
     }
     if (result.count("nodes"))
-        assert(config.input.load_from_file == false);
+        assert(!config.input.load_from_file);
         config.input.n_nodes_to_generate = result["nodes"].as<long>();
     if (result.count("max-rounds"))
         config.max_rounds = result["max-rounds"].as<long>();
     if (result.count("verbose"))
-        VERBOSE = result["verbose"].as<bool>();
+        l.verbose = result["verbose"].as<bool>();
     if (result.count("Silent"))
-        config.silent = result["Silent"].as<bool>();
-    if (result.count("paths"))
-        PRINT_PATHS = result["paths"].as<bool>();
+        l.silent = result["Silent"].as<bool>();
 
     if (result.count("seed")) {
         config.seed_randomness = true;
@@ -710,7 +713,7 @@ void parse_options(int argc, char **argv, Configuration &config) {
     }
 
     if (result.count("output")) {
-        OUTPUT_CUT = true;
+        config.output_cut = true;
         OUTPUT_FILE = result["output"].as<string>();
     }
     if (result.count("partition")) {
@@ -725,8 +728,6 @@ void parse_options(int argc, char **argv, Configuration &config) {
 int main(int argc, char **argv) {
     Configuration config;
     parse_options(argc, argv, config);
-
-    Logger l {config};
 
     GraphContext gc;
     initGraph(gc, config.input);
