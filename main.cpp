@@ -1,3 +1,4 @@
+// Authored by Ludvig Janiuk 2019 as part of individual project at KTH.
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "cert-msc32-c"
 #pragma ide diagnostic ignored "cppcoreguidelines-slicing"
@@ -111,12 +112,14 @@ struct Configuration {
     bool silent = false;
     bool verbose = false;
     bool output_cut;
-};
-
-enum LogLevel {
-    PROGRESS,
-    INFO,
-    DEBUG
+    bool show_help_and_exit = false;
+    bool use_H_phi_target = false;
+    double H_phi_target = 0;
+    bool use_G_phi_target = false;
+    double G_phi_target = 0;
+    // we only break if we find a good enough cut that is also this balanced (has this minside volume)
+    bool use_volume_treshold = false;
+    double volume_treshold_factor = 0;
 };
 
 
@@ -124,11 +127,16 @@ struct GraphContext {
     G g;
     vector<Node> nodes;
     Cut reference_cut;
+    long num_edges;
 };
 
 struct RoundReport {
     size_t index;
     size_t capacity_required_for_full_flow;
+    double multi_h_expansion;
+    double g_expansion;
+    long volume;
+    bool relatively_balanced;
     Cutp cut;
 };
 
@@ -143,8 +151,15 @@ struct CutStats {
     using EdgeIt = typename G::EdgeIt;
     using Bisection = set<Node>;
     size_t crossing_edges = 0;
+private:
+    bool is_min_side;
     size_t min_side = 0;
+    size_t cut_volume = 0;
     size_t max_side = 0;
+    size_t num_edges = 0;
+    long degreesum() { return num_edges*2;}
+    long noncut_volume () { return degreesum() - cut_volume;}
+public:
 
     CutStats(const G &g, size_t num_vertices, const Cut &cut) {
         initialize(g, num_vertices, cut);
@@ -152,18 +167,36 @@ struct CutStats {
 
     void initialize(const G &g, size_t num_vertices, const Cut &cut) {
         for (EdgeIt e(g); e != INVALID; ++e) {
+            ++num_edges;
             if (is_crossing(g, cut, e)) crossing_edges += 1;
+            if (any_in_cut(g, cut, e)) cut_volume += 1;
         }
+
         assert(cut.size() <= num_vertices);
         size_t other_size = num_vertices - cut.size();
         min_side = min(cut.size(), other_size);
         max_side = max(cut.size(), other_size);
+        is_min_side = cut.size() == min_side;
     }
 
     static bool is_crossing(const G &g, const Bisection &c, const Edge &e) {
         bool u_in = c.count(g.u(e));
         bool v_in = c.count(g.v(e));
         return u_in != v_in;
+    }
+
+    static bool any_in_cut(const G &g, const Bisection &c, const Edge &e) {
+        bool u_in = c.count(g.u(e));
+        bool v_in = c.count(g.v(e));
+        return u_in || v_in;
+    }
+
+    long minside_volume() {
+        return is_min_side ? cut_volume : noncut_volume();
+    }
+
+    long maxside_volume() {
+        return is_min_side ? noncut_volume() : cut_volume;
     }
 
     size_t diff() {
@@ -179,7 +212,7 @@ struct CutStats {
     }
 
     double expansion() {
-        return crossing_edges * 1. / min_side;
+        return min_side == 0 ? 0 : crossing_edges * 1. / min_side;
     }
 
     void print() {
@@ -317,6 +350,8 @@ void initGraph(GraphContext &gc, InputConfiguration config) {
         l.debug() << "Generating graph with " << config.n_nodes_to_generate << " nodes." << endl;
         generate_large_graph(gc.g, gc.nodes, config.n_nodes_to_generate);
     }
+
+    gc.num_edges = countEdges(gc.g);
 }
 
 // For some reason lemon returns arbitrary values for flow, the difference is correct tho
@@ -356,6 +391,7 @@ struct CutMatching {
     default_random_engine &random_engine;
     vector<unique_ptr<RoundReport>> past_rounds;
     vector<Matchingp> matchings;
+    bool reached_H_target = false;
     // Input graph
     CutMatching(GraphContext &gc, const Configuration &config_, default_random_engine &random_engine_)
     :
@@ -556,7 +592,7 @@ struct CutMatching {
     // Actually, cut player gets H
 // Actually Actually, sure it gets H but it just needs the matchings...
     template<typename M>
-    Bisectionp cut_player(const G &g, const vector<unique_ptr<M>> &matchings) {
+    Bisectionp cut_player(const G &g, const vector<unique_ptr<M>> &matchings, double &h_multi_exp_out) {
         l.debug() << "Running Cut player" << endl;
         using MEdgeIt = typename M::EdgeIt;
 
@@ -605,6 +641,7 @@ struct CutMatching {
 
         auto hcs = CutStats<decltype(H)>(H, num_vertices, *b);
         l.progress() << "H expansion: " << hcs.expansion() << ", num cross: " << hcs.crossing_edges << endl;
+        h_multi_exp_out = hcs.expansion();
         auto hscs = CutStats<decltype(H_single)>(H_single, num_vertices, *b);
         l.progress() << "H_single expansion: " << hscs.expansion() << ", num cross: " << hscs.crossing_edges << endl;
 
@@ -635,8 +672,13 @@ struct CutMatching {
         return mr;
     }
 
-    unique_ptr<RoundReport> one_round(size_t round_index) {
-        Bisectionp bisection = cut_player(gc.g, matchings);
+    long volume_treshold() {
+        return config.volume_treshold_factor * gc.num_edges;
+    }
+
+    unique_ptr<RoundReport> one_round() {
+        unique_ptr<RoundReport> report = make_unique<RoundReport>();
+        Bisectionp bisection = cut_player(gc.g, matchings, report->multi_h_expansion);
 
         Matchingp matchingp(new Matching(gc.g));
 
@@ -648,44 +690,96 @@ struct CutMatching {
 
         matchings.push_back(move(matchingp));
         //c.cuts.push_back(move(mr.cut_from_flow));
-        unique_ptr<RoundReport> report = make_unique<RoundReport>();
-        report->index = round_index;
+        report->index = past_rounds.size();
         report->capacity_required_for_full_flow = cap;
         report->cut = move(mr.cut_from_flow);
+        auto cs = CutStats<G>(gc.g, gc.nodes.size(), *report->cut);
+        report->g_expansion = cs.expansion();
+        l.progress() << "G cut expansion " << report->g_expansion << endl;
+        report->volume = cs.minside_volume();
+        l.progress() << "G cut minside volume " << cs.minside_volume() << endl;
+        l.progress() << "G cut maxside volume " << cs.maxside_volume() << endl;
+        report->relatively_balanced = report->volume > volume_treshold();
         return move(report);
 
         // We want to implement that it parses partitions
         // That has nothing to do with the rounds lol
     }
 
+
+    // Stopping condition
+    bool should_stop() {
+        int i = past_rounds.size();
+        if(i == 0) return false;
+        if(i >= config.max_rounds && config.max_rounds != 0) return true;
+
+        const auto& last_round = past_rounds[past_rounds.size() - 1];
+        if(config.use_H_phi_target && last_round->multi_h_expansion >= config.H_phi_target) {
+            cout << "H Expansion target reached, this will be case 1 or 3. According to theory, this means we probably won't find a better cut. That is, assuming you set H_phi right. "
+                    "If was used together with G_phi target, this also certifies the input graph is a G_phi expander unless there was a very unbaanced cut somewhere, which we will proceed to look for." << endl;
+            reached_H_target = true;
+            return true;
+        }
+
+        if(config.use_G_phi_target)
+        if(last_round->g_expansion >= config.G_phi_target) {
+            if(config.use_volume_treshold && last_round->relatively_balanced) {
+                cout << "CASE2 G Expansion target reached with a cut that is relatively balanced. Cut-matching game has found a balanced cut as good as you wanted it."
+                     << endl;
+                return true;
+            }
+
+            if(!config.use_volume_treshold) {
+                cout << "G Expansion target reached. Cut-matching game has found a cut as good as you wanted it. Whether it is balanced or not is up to you."
+                     << endl;
+                return true;
+            }
+        }
+
+    }
+
     void run() {
         // TODO refactor to have "run" be on some stopping condition
         // Documenting everything, and then presentation chooses however it wants.
-        for (int i = 0; i < config.max_rounds || config.max_rounds == 0; i++) {
-            past_rounds.push_back(one_round(i));
-            print_end_round_message(i);
+        while (!should_stop()) {
+            past_rounds.push_back(one_round());
+            print_end_round_message(past_rounds.size()-1);
         }
     }
 };
 
+// TODO Make cut always the smallest
+// TODO Implement breaking-logik for unbalance
+// om vi hittar phi-cut med volym obanför treshold
+// Om vi hittar phi-cut med volum under treshold, så ingorerar vi det och kör p
+// och sen om vi når H, då definieras det bästa som phi-cuttet med högsta volym
 cxxopts::Options create_options() {
-    cxxopts::Options options("Janiuk graph partition",
-                             "Individual project implementation of thatchapon's paper to find graph partitions. Currently only cut-matching game.");
+    cxxopts::Options options("executable_name",
+                             "Individual project implementation of thatchapon's paper to find graph partitions. Currently only cut-matching game. \
+                             \nRecommended usage: \n\texecutable_name -s -f ./path/to/graph -o output.txt\
+                             \nCurrently only running a fixed amount of rounds is supported, but the more correct \
+                             \nversion of running until H becomes an expander is coming soon.\
+                             ");
     options.add_options()
+            ("h,help", "Show help")
+            ("H_phi", "Phi expansion treshold for the H graph. Recommend to also set -r=0. ",
+             cxxopts::value<double>()->implicit_value("10.0"))
+            ("G_phi", "Phi expansion target for the G graph. Means \"what is a good enough cut?\" Recommended with -r=0. This is the PHI from the paper. ",
+             cxxopts::value<double>()->implicit_value("0.8"))
+            ("vol", "Volume treshold. Only used if G_phi is used. Will be multiplied by number of edges, so to require e.g. minimum 10% volume, write 0.1.",
+             cxxopts::value<double>()->implicit_value("0.1"))
             ("f,file", "File to read graph from", cxxopts::value<std::string>())
-            ("n,nodes", "Number of nodes in graph to generate. Should be even. Ignored if -f is set.",
-             cxxopts::value<long>()->default_value("100"))
-
             ("r,max-rounds", "Number of rounds after which to stop (0 for no limit)", cxxopts::value<long>()->default_value("25"))
-
-            ("o,output", "Output computed cut into file", cxxopts::value<std::string>())
-
-            ("d,paths", "Whether to print paths")
-            ("v,verbose", "Whether to print nodes and cuts (does not include paths)")
             ("s,seed", "Use a seed for RNG (optionally set seed manually)",
              cxxopts::value<int>()->implicit_value("1337"))
+            ("p,partition", "Partition file to compare with", cxxopts::value<std::string>())
+            ("o,output", "Output computed cut into file. The cut is written as the vertices of one side of the cut.", cxxopts::value<std::string>())
+            ("n,nodes", "Number of nodes in graph to generate. Should be even. Ignored if -f is set.",
+             cxxopts::value<long>()->default_value("100"))
             ("S,Silent", "Only output one line of summary at the end")
-            ("p,partition", "Partition file to compare with", cxxopts::value<std::string>());
+            ("v,verbose", "Debug; Whether to print nodes and cuts Does not include paths. Produces a LOT of output on large graphs.")
+            ("d,paths", "Debug; Whether to print paths")
+            ;
     return options;
 }
 
@@ -693,6 +787,22 @@ void parse_options(int argc, char **argv, Configuration &config) {
     auto cmd_options = create_options();
     auto result = cmd_options.parse(argc, argv);
 
+    if (result.count("help")) {
+        config.show_help_and_exit = true;
+        cout << cmd_options.help() << endl;
+    }
+    if( result.count("H_phi")) {
+        config.use_H_phi_target = true;
+        config.H_phi_target = result["H_phi"].as<double>();
+    }
+    if( result.count("G_phi")) {
+        config.use_G_phi_target = true;
+        config.G_phi_target = result["G_phi"].as<double>();
+    }
+    if( result.count("vol")) {
+        config.use_volume_treshold = true;
+        config.volume_treshold_factor = result["vol"].as<double>();
+    }
     if (result.count("file")) {
         config.input.load_from_file = true;
         config.input.file_name = result["file"].as<string>();
@@ -729,6 +839,8 @@ int main(int argc, char **argv) {
     Configuration config;
     parse_options(argc, argv, config);
 
+    if(config.show_help_and_exit) return 0;
+
     GraphContext gc;
     initGraph(gc, config.input);
 
@@ -738,15 +850,31 @@ int main(int argc, char **argv) {
     CutMatching cm(gc, config, random_engine);
     cm.run();
 
+    // TODO searching conditions different depending on if hit H
     assert(!cm.past_rounds.empty());
+    // Best by expnansion
     auto& best_round = *max_element(cm.past_rounds.begin(), cm.past_rounds.end(), [](auto &a, auto &b) {
-        return a->capacity_required_for_full_flow < b->capacity_required_for_full_flow;
+        return a->g_expansion < b->g_expansion;
     });
 
-    cout << "The cut with highest capacity required was found on round" << best_round->index << endl;
+    cout << "The best with highest expansion was found on round" << best_round->index << endl;
     cout << "Best cut sparsity: " << endl;
     auto &best_cut = best_round->cut;
     CutStats<G>(gc.g, gc.nodes.size(), *best_cut).print();
+
+    if(config.use_H_phi_target && config.use_G_phi_target && config.use_volume_treshold) {
+        if(cm.reached_H_target) {
+            if(best_round->g_expansion < config.G_phi_target) {
+                cout << "CASE1 NO Goodenough cut, G certified expander." << endl;
+            } else {
+                cout << "CASE3 Found goodenough but very unbalanced cut." << endl;
+            }
+        } else {
+            cout << "CASE2 Goodenough balanced cut" << endl;
+        }
+
+    }
+
     if (config.output_cut) { write_cut(gc.nodes, *best_cut); }
 
     if (config.compare_partition) {
