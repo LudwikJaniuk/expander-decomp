@@ -718,8 +718,6 @@ struct CutMatching {
     }
 
     void run() {
-        // TODO refactor to have "run" be on some stopping condition
-        // Documenting everything, and then presentation chooses however it wants.
         while (!should_stop()) {
             past_rounds.push_back(one_round());
             print_end_round_message(past_rounds.size()-1);
@@ -727,8 +725,8 @@ struct CutMatching {
     }
 };
 
-// TODO Make cut always the smallest
-// TODO Implement breaking-logik for unbalance
+// TODO Make cut always the smallest (maybe)
+// TODO (In edge version) Implement breaking-logik for unbalance
 // om vi hittar phi-cut med volym obanför treshold
 // Om vi hittar phi-cut med volum under treshold, så ingorerar vi det och kör p
 // och sen om vi når H, då definieras det bästa som phi-cuttet med högsta volym
@@ -811,9 +809,6 @@ void parse_options(int argc, char **argv, Configuration &config) {
     }
 }
 
-// TODO Selecting best cut not only hightest cap
-// TODO extract graph creation from algo
-// TODO extract final answer presentation from algo
 int main(int argc, char **argv) {
     Configuration config;
     parse_options(argc, argv, config);
@@ -829,7 +824,6 @@ int main(int argc, char **argv) {
     CutMatching cm(gc, config, random_engine);
     cm.run();
 
-    // TODO searching conditions different depending on if hit H
     assert(!cm.past_rounds.empty());
     // Best by expnansion
     auto& best_round = *max_element(cm.past_rounds.begin(), cm.past_rounds.end(), [](auto &a, auto &b) {
