@@ -123,7 +123,6 @@ struct RoundReport {
     Cutp cut;
 };
 
-
 template <class G>
 struct CutStats {
     using Node = typename G::Node;
@@ -132,6 +131,7 @@ struct CutStats {
     using EdgeIt = typename G::EdgeIt;
     using Bisection = set<Node>;
     size_t crossing_edges = 0;
+
 private:
     bool is_min_side;
     size_t min_side = 0;
@@ -140,8 +140,8 @@ private:
     size_t num_edges = 0;
     long degreesum() { return num_edges*2;}
     long noncut_volume () { return degreesum() - cut_volume;}
-public:
 
+public:
     CutStats(const G &g, size_t num_vertices, const Cut &cut) {
         initialize(g, num_vertices, cut);
     }
@@ -495,42 +495,42 @@ struct CutMatching {
         }
     }
 
-    void runMinCutAndReport(unique_ptr<FlowAlgo> &p) const {
+    void runMinCut(const MatchingContext &mg, unique_ptr<FlowAlgo> &p) const {
+        p.reset(new Preflow<G, EdgeMapi>(mg.g, mg.capacity, mg.s, mg.t));
         auto start2 = now();
         p->runMinCut(); // Note that "startSecondPhase" must be run to get flows for individual verts
         auto stop2 = now();
-
         l.progress() << "flow: " << p->flowValue() << " (" << duration_sec(start2, stop2) << " s)" << endl;
+    }
+
+    void setMatchingCapacities(MatchingContext &mg, size_t cap) const {
+        for (EdgeIt e(mg.g); e != INVALID; ++e) {
+            if (mg.touches_source_or_sink(e)) continue;
+            mg.capacity[e] = cap;
+        }
     }
 
     MatchResult bin_search_flows(MatchingContext &mg, unique_ptr<FlowAlgo> &p) const {
         auto start = now();
         size_t cap = 1;
         for (; cap < mg.num_vertices; cap *= 2) {
-            for (EdgeIt e(mg.g); e != INVALID; ++e) {
-                if (mg.touches_source_or_sink(e)) continue;
-                mg.capacity[e] = cap;
-            }
-
-            p.reset(new Preflow<G, EdgeMapi>(mg.g, mg.capacity, mg.s, mg.t));
             l.progress() << "Cap " << cap << " ... " << flush;
-            runMinCutAndReport(p);
+            setMatchingCapacities(mg, cap);
+            runMinCut(mg, p);
 
-            if (p->flowValue() == mg.num_vertices / 2) {
-                l.debug() << "We have achieved full flow, but half this capacity didn't manage that!" << endl;
-                // Already an expander I guess?
-                if (cap == 1) {
-                    // TODO code duplication
-                    mg.reset_cut_map();
-                    p->minCutMap(mg.cut_map);
-                }
-                break;
-            }
+            bool reachedFullFlow = p->flowValue() == mg.num_vertices / 2;
+            if (reachedFullFlow) l.debug() << "We have achieved full flow, but half this capacity didn't manage that!" << endl;
 
             // So it will always have the mincutmap of "before"
-            // recomputed too many times of course but whatever
-            mg.reset_cut_map();
-            p->minCutMap(mg.cut_map);
+            // mincuptmap is recomputed too many times of course but whatever
+            // If we reached it with cap 1, already an expander I guess?
+            // In this case this was never done even once, so we have to do it before breaking
+            if (!reachedFullFlow || cap == 1) {
+                mg.reset_cut_map();
+                p->minCutMap(mg.cut_map);
+            }
+
+            if (reachedFullFlow) break;
         }
 
         // Not we copy out the cut
