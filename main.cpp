@@ -70,10 +70,6 @@ using CutMap = NodeMap<bool>;
 
 // Finally, what do we do with the output
 
-// TODO Purge basically
-// PARAMETERS:
-string OUTPUT_FILE;
-// END PARAMETERS
 class Configuration;
 struct Logger {
     bool silent = false;
@@ -112,6 +108,7 @@ struct Configuration {
     bool silent = false;
     bool verbose = false;
     bool output_cut;
+    string output_file;
     bool show_help_and_exit = false;
     bool use_H_phi_target = false;
     double H_phi_target = 0;
@@ -307,18 +304,18 @@ void generate_large_graph(G &g, vector<Node> &nodes, size_t n_nodes) {
     }
 }
 
-void write_cut(const vector<Node> &nodes, const Cut &cut) {
+void write_cut(const vector<Node> &nodes, const Cut &cut, string file_name) {
     ofstream file;
-    file.open(OUTPUT_FILE);
+    file.open(file_name);
     if (!file) {
-        cout << "Cannot open file " << OUTPUT_FILE << endl;
+        cout << "Cannot open file " << file_name << endl;
         return;
     }
 
     cout << "Writing partition with "
          << nodes.size()
          << " nodes to file "
-         << OUTPUT_FILE
+         << file_name
          << endl;
     for (const auto &n : nodes) {
         file << (cut.count(n) ? "1" : "0") << "\n";
@@ -824,7 +821,7 @@ void parse_options(int argc, char **argv, Configuration &config) {
 
     if (result.count("output")) {
         config.output_cut = true;
-        OUTPUT_FILE = result["output"].as<string>();
+        config.output_file = result["output"].as<string>();
     }
     if (result.count("partition")) {
         config.compare_partition = true;
@@ -875,7 +872,7 @@ int main(int argc, char **argv) {
 
     }
 
-    if (config.output_cut) { write_cut(gc.nodes, *best_cut); }
+    if (config.output_cut) { write_cut(gc.nodes, *best_cut, config.output_file); }
 
     if (config.compare_partition) {
         read_partition_file(config.partition_file, gc.nodes, gc.reference_cut);
