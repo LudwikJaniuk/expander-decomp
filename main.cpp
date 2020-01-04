@@ -27,6 +27,7 @@
 // TODO now
 // Clean the code much more, to be able to do the stopping and edge version
 // Basically get unnecessary stuff out of the algo
+// TODO REmove graphcontext idea? What good does it do...
 
 using namespace lemon;
 using namespace std;
@@ -43,12 +44,9 @@ using IncEdgeIt = typename G::IncEdgeIt;
 using OutArcIt = typename G::OutArcIt;
 using Paths = vector<array<Node, 2>>;
 using ArcLookup = ArcLookUp<G>;
-// LEMON uses ints internally. We might want to look into this
-template<class T>
-using EdgeMap = typename G::template EdgeMap<T>;
-using EdgeMapi = EdgeMap<int>;
-template<class T>
-using NodeMap = typename G::template NodeMap<T>;
+template<class T> using EdgeMap = typename G::template EdgeMap<T>;
+using EdgeMapi = EdgeMap<int>; // LEMON uses ints internally. We might want to look into this
+template<class T> using NodeMap = typename G::template NodeMap<T>;
 using NodeMapi = NodeMap<int>;
 using NodeNeighborMap = NodeMap<vector<tuple<Node, int>>>;
 using FlowAlgo = Preflow<G, EdgeMapi>;
@@ -60,17 +58,38 @@ using Cut = set<Node>;
 using Cutp = unique_ptr<Cut>;
 using CutMap = NodeMap<bool>;
 
-// TO categorize a little, what are the run options...
-// Tbh these should maybe be separeate programs...
+const double MICROSECS = 1000000.0;
+const auto& now = high_resolution_clock::now;
+double duration_sec(const high_resolution_clock::time_point& start, high_resolution_clock::time_point& stop) {
+    return duration_cast<microseconds>(stop - start).count() / MICROSECS;
+}
 
-// Either we generatea graph or load it from file
-// So basically, "what's the source of the graph", there needs to be a graph and it has to come from somewhere...
+struct InputConfiguration {
+    bool load_from_file = false;
+    string file_name = "";
+    size_t n_nodes_to_generate;
+    enum { LARGE } type;
+};
 
-// Then, what do we do with the graph, we run the cutmatching game on it right, what parameters
+struct Configuration {
+    InputConfiguration input;
+    bool compare_partition = false;
+    string partition_file = "";
+    bool seed_randomness = false;
+    int seed;
+    int max_rounds;
+    bool output_cut;
+    string output_file;
+    bool show_help_and_exit = false;
+    bool use_H_phi_target = false;
+    double H_phi_target = 0;
+    bool use_G_phi_target = false;
+    double G_phi_target = 0;
+    // we only break if we find a good enough cut that is also this balanced (has this minside volume)
+    bool use_volume_treshold = false;
+    double volume_treshold_factor = 0;
+};
 
-// Finally, what do we do with the output
-
-class Configuration;
 struct Logger {
     bool silent = false;
     bool verbose = false;
@@ -86,39 +105,6 @@ struct Logger {
         return verbose ? cout : nul;
     };
 } l;
-
-const double MICROSECS = 1000000.0;
-
-struct InputConfiguration {
-    bool load_from_file = false;
-
-    string file_name = "";
-
-    size_t n_nodes_to_generate;
-    enum { LARGE } type;
-};
-
-struct Configuration {
-    InputConfiguration input;
-    bool compare_partition = false;
-    string partition_file = "";
-    bool seed_randomness = false;
-    int seed;
-    int max_rounds;
-    bool silent = false;
-    bool verbose = false;
-    bool output_cut;
-    string output_file;
-    bool show_help_and_exit = false;
-    bool use_H_phi_target = false;
-    double H_phi_target = 0;
-    bool use_G_phi_target = false;
-    double G_phi_target = 0;
-    // we only break if we find a good enough cut that is also this balanced (has this minside volume)
-    bool use_volume_treshold = false;
-    double volume_treshold_factor = 0;
-};
-
 
 struct GraphContext {
     G g;
@@ -137,8 +123,6 @@ struct RoundReport {
     Cutp cut;
 };
 
-// TODO
-// 2) Adapt a stopping routine for H-phi tracking
 
 template <class G>
 struct CutStats {
@@ -449,8 +433,7 @@ struct CutMatching {
 
     struct MatchResult {
         Cutp cut_from_flow;
-        // First capacity (minumum) that worked to get full flow thru
-        size_t capacity;
+        size_t capacity; // First capacity (minumum) that worked to get full flow thru
     };
 
     // Soooooo, we want to develop the partition comparison stuff.
@@ -512,10 +495,16 @@ struct CutMatching {
         }
     }
 
-    MatchResult bin_search_flows(MatchingContext &mg, unique_ptr<FlowAlgo> &p) const {
-        // TODO Output cut
-        auto start = high_resolution_clock::now();
+    void runMinCutAndReport(unique_ptr<FlowAlgo> &p) const {
+        auto start2 = now();
+        p->runMinCut(); // Note that "startSecondPhase" must be run to get flows for individual verts
+        auto stop2 = now();
 
+        l.progress() << "flow: " << p->flowValue() << " (" << duration_sec(start2, stop2) << " s)" << endl;
+    }
+
+    MatchResult bin_search_flows(MatchingContext &mg, unique_ptr<FlowAlgo> &p) const {
+        auto start = now();
         size_t cap = 1;
         for (; cap < mg.num_vertices; cap *= 2) {
             for (EdgeIt e(mg.g); e != INVALID; ++e) {
@@ -524,15 +513,9 @@ struct CutMatching {
             }
 
             p.reset(new Preflow<G, EdgeMapi>(mg.g, mg.capacity, mg.s, mg.t));
-
             l.progress() << "Cap " << cap << " ... " << flush;
+            runMinCutAndReport(p);
 
-            auto start2 = high_resolution_clock::now();
-            p->runMinCut(); // Note that "startSecondPhase" must be run to get flows for individual verts
-            auto stop2 = high_resolution_clock::now();
-            auto duration2 = duration_cast<microseconds>(stop2 - start2);
-
-            l.progress() << "flow: " << p->flowValue() << " (" << (duration2.count() / MICROSECS) << " s)" << endl;
             if (p->flowValue() == mg.num_vertices / 2) {
                 l.debug() << "We have achieved full flow, but half this capacity didn't manage that!" << endl;
                 // Already an expander I guess?
@@ -553,9 +536,8 @@ struct CutMatching {
         // Not we copy out the cut
         MatchResult result{mg.extract_cut(), cap};
 
-        auto stop = high_resolution_clock::now();
-        auto duration = duration_cast<microseconds>(stop - start);
-        l.progress() << "Flow search took (seconds) " << (duration.count() / 1000000.0) << endl;
+        auto stop = now();
+        l.progress() << "Flow search took (seconds) " << duration_sec(start, stop) << endl;
 
         return result;
     }
