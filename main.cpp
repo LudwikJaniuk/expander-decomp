@@ -109,7 +109,6 @@ struct Logger {
 struct GraphContext {
     G g;
     vector<Node> nodes;
-    Cut reference_cut;
     long num_edges;
 };
 
@@ -714,7 +713,6 @@ struct CutMatching {
                 return true;
             }
         }
-
     }
 
     void run() {
@@ -851,11 +849,13 @@ int main(int argc, char **argv) {
     if (config.output_cut) { write_cut(gc.nodes, *best_cut, config.output_file); }
 
     if (config.compare_partition) {
-        read_partition_file(config.partition_file, gc.nodes, gc.reference_cut);
+        Cut reference_cut;
+        read_partition_file(config.partition_file, gc.nodes, reference_cut);
+
         cout << endl
              << "The given partition achieved the following:"
              << endl;
-        CutStats<G>(gc.g, gc.nodes.size(), gc.reference_cut).print();
+        CutStats<G>(gc.g, gc.nodes.size(), reference_cut).print();
     }
 
     return 0;
