@@ -53,8 +53,10 @@ using Paths = vector<array<Node, 2>>;
 using ArcLookup = ArcLookUp<G>;
 template<class T> using EdgeMap = typename G::template EdgeMap<T>;
 using EdgeMapi = EdgeMap<int>; // LEMON uses ints internally. We might want to look into this
+using EdgeMapb = EdgeMap<bool>; // LEMON uses ints internally. We might want to look into this
 template<class T> using NodeMap = typename G::template NodeMap<T>;
 using NodeMapi = NodeMap<int>;
+using NodeMapb= NodeMap<bool>;
 using NodeNeighborMap = NodeMap<vector<tuple<Node, int>>>;
 using FlowAlgo = Preflow<G, EdgeMapi>;
 using Matching = ListEdgeSet<ListGraph>;
@@ -118,8 +120,16 @@ struct GraphContext {
 // I'd say implementing our own adaptor is more effort, we can just do the snapshot thing
 // Actually lets just subdivide manually at the start and we dont even need to restore.
 struct SubdividedGraphContext {
+    SubdividedGraphContext (GraphContext& gc) :
+    origContext(gc),
+    nf(sub_g),
+    ef(sub_g),
+    only_splits(sub_g, nf, ef) {} ;
     GraphContext& origContext;
     G sub_g;
+    NodeMapb nf;
+    EdgeMapb ef;
+    SubGraph<G> only_splits;
     vector<Node> split_vertices;
 };
 
@@ -377,6 +387,21 @@ void print_cut(const Bisection &out_cut, decltype(cout)& stream) {
     stream << endl;
 }
 
+void print_graph(G& g, decltype(cout)& stream) {
+    stream << "Printing a graph" << endl;
+    stream << "Vertices: " << countNodes(g) << ", Edges: " << countEdges(g) << endl;
+    stream << "==" << endl;
+    for(NodeIt n(g); n != INVALID; ++n) {
+        stream << g.id(n) << ", ";
+    }
+    stream << "\n==" << endl;
+    for(EdgeIt e(g); e != INVALID; ++e) {
+        stream << g.id(e) << ": " << g.id(g.u(e)) << " - " << g.id(g.v(e)) << "\n";
+    }
+    stream << endl;
+}
+
+
 // Actually copies the graph.
 void createSubdividedGraph(SubdividedGraphContext& sgc) {
     graphCopy(sgc.origContext.g, sgc.sub_g).run();
@@ -387,12 +412,17 @@ void createSubdividedGraph(SubdividedGraphContext& sgc) {
         edges.push_back(e);
     }
 
+    for (NodeIt n(g); n != INVALID; ++n) {
+        sgc.only_splits.disable(n);
+    }
+
     for(auto& e : edges) {
         Node u = g.u(e);
         Node v = g.v(e);
         g.erase(e);
 
         Node s = g.addNode();
+        sgc.only_splits.enable(s);
         g.addEdge(u, s);
         g.addEdge(s, v);
 
@@ -403,20 +433,31 @@ void createSubdividedGraph(SubdividedGraphContext& sgc) {
 struct CutMatching {
     const Configuration &config;
     GraphContext &gc;
+    SubdividedGraphContext sgc;
     default_random_engine &random_engine;
     vector<unique_ptr<RoundReport>> past_rounds;
     vector<Matchingp> matchings;
+    vector<Matchingp> sub_matchings;
     bool reached_H_target = false;
     // Input graph
     CutMatching(GraphContext &gc, const Configuration &config_, default_random_engine &random_engine_)
     :
     config(config_),
     gc(gc),
+    sgc{gc},
     random_engine(random_engine_)
     {
         assert(gc.nodes.size() % 2 == 0);
         assert(gc.nodes.size() > 0);
         assert(connected(gc.g));
+
+        createSubdividedGraph(sgc);
+        cout << "Subdivision: ";
+        for(Node& n : sgc.split_vertices) {
+            cout << sgc.sub_g.id(n) << ", ";
+        }
+        cout << endl;
+        print_graph(sgc.sub_g, cout);
     };
 
     // During the matching step a lot of local setup is actually made, so it makes sense to group it
@@ -602,18 +643,21 @@ struct CutMatching {
         assert(s_added == t_added);
     }
 
+
+
     // Actually, cut player gets H
 // Actually Actually, sure it gets H but it just needs the matchings...
-    template<typename M>
-    Bisectionp cut_player(const G &g, const vector<unique_ptr<M>> &matchings, double &h_multi_exp_out) {
+// TODO Ok so can we just call this with split_only and matchings of those?
+    template<typename GG, typename M>
+    Bisectionp cut_player(const GG &g, const vector<unique_ptr<M>> &given_matchings, double &h_multi_exp_out) {
         l.debug() << "Running Cut player" << endl;
         using MEdgeIt = typename M::EdgeIt;
 
-        NodeMapd probs(g);
+        typename GG::template NodeMap<double> probs(g);
         vector<Node> all_nodes;
 
         uniform_int_distribution<int> uniform_dist(0, 1);
-        for (NodeIt n(g); n != INVALID; ++n) {
+        for (typename GG::NodeIt n(g); n != INVALID; ++n) {
             all_nodes.push_back(n);
             probs[n] = uniform_dist(random_engine)
                        ? 1.0 / all_nodes.size()
@@ -624,7 +668,7 @@ struct CutMatching {
 
         ListEdgeSet H(g);
         ListEdgeSet H_single(g);
-        for (const unique_ptr<M> &m : matchings) {
+        for (const unique_ptr<M> &m : given_matchings) {
             for (MEdgeIt e(*m); e != INVALID; ++e) {
                 Node u = m->u(e);
                 Node v = m->v(e);
@@ -652,6 +696,8 @@ struct CutMatching {
         l.debug() << "Cut player gave the following cut: " << endl;
         print_cut(*b, l.debug());
 
+        // So how does it give output?
+        // Ok it assigns h_outs, but actually also returns Bisectionp
         auto hcs = CutStats<decltype(H)>(H, num_vertices, *b);
         l.progress() << "H expansion: " << hcs.expansion() << ", num cross: " << hcs.crossing_edges << endl;
         h_multi_exp_out = hcs.expansion();
@@ -660,6 +706,7 @@ struct CutMatching {
 
         return b;
     }
+
 
     // returns capacity that was required
 // Maybe: make the binsearch an actual binsearch
@@ -689,23 +736,29 @@ struct CutMatching {
         return config.volume_treshold_factor * gc.num_edges;
     }
 
+    // Ok lets attack from here
+    // Theres a lot of risk for problems with "is this a cut in the orig graph or in the splits?
     unique_ptr<RoundReport> one_round() {
         unique_ptr<RoundReport> report = make_unique<RoundReport>();
 
+        // So this needs to be a bisection of splitnodes, I feel this could be very opaque.
+        // We'd need a subgraph that is just the splitnodes
         Bisectionp bisection = cut_player(gc.g, matchings, report->multi_h_expansion);
 
+        double h_multi_out_sub = 0;
+        Bisectionp sub_bisection = cut_player(sgc.only_splits, sub_matchings, h_multi_out_sub);
+        // Well ok, it's doing the first random thing well.
+        // TODO test on rest...
+
+
+        // Matching on splitnodes, but we need to also save the actual cut...
         Matchingp matchingp(new Matching(gc.g));
-
-        l.debug() << "Running Matching player" << endl;
         MatchResult mr = matching_player(*bisection, *matchingp);
-        size_t cap = mr.capacity;
-        l.debug() << "Matching player gave the following matching: " << endl;
-        print_matching(matchingp, l.debug());
-
         matchings.push_back(move(matchingp));
+
         //c.cuts.push_back(move(mr.cut_from_flow));
         report->index = past_rounds.size();
-        report->capacity_required_for_full_flow = cap;
+        report->capacity_required_for_full_flow = mr.capacity;
         report->cut = move(mr.cut_from_flow);
         auto cs = CutStats<G>(gc.g, gc.nodes.size(), *report->cut);
         report->g_expansion = cs.expansion();
@@ -843,20 +896,6 @@ void parse_options(int argc, char **argv, Configuration &config) {
     }
 }
 
-void print_graph(G& g, decltype(cout)& stream) {
-    stream << "Printing a graph" << endl;
-    stream << "Vertices: " << countNodes(g) << ", Edges: " << countEdges(g) << endl;
-    stream << "==" << endl;
-    for(NodeIt n(g); n != INVALID; ++n) {
-        stream << g.id(n) << ", ";
-    }
-    stream << "\n==" << endl;
-    for(EdgeIt e(g); e != INVALID; ++e) {
-        stream << g.id(e) << ": " << g.id(g.u(e)) << " - " << g.id(g.v(e)) << "\n";
-    }
-    stream << endl;
-}
-
 int main(int argc, char **argv) {
     Configuration config;
     parse_options(argc, argv, config);
@@ -871,15 +910,6 @@ int main(int argc, char **argv) {
     default_random_engine random_engine = config.seed_randomness
                     ? default_random_engine(config.seed)
                     : default_random_engine(random_device()());
-
-    SubdividedGraphContext sgc{gc};
-    createSubdividedGraph(sgc);
-    cout << "Subdivision: ";
-    for(Node& n : sgc.split_vertices) {
-        cout << sgc.sub_g.id(n) << ", ";
-    }
-    cout << endl;
-    print_graph(sgc.sub_g, cout);
 
     CutMatching cm(gc, config, random_engine);
     cm.run();
