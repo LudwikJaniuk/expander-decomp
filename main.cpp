@@ -27,7 +27,14 @@
 // TODO now
 // Clean the code much more, to be able to do the stopping and edge version
 // Basically get unnecessary stuff out of the algo
-// TODO REmove graphcontext idea? What good does it do...
+
+// TODO OK how do we do edge version...
+// Whats the plan for hte edge version? Lets describe it in text
+// 1. At the start of the algo, we need to make the subdivision graph.
+// 2. And we need the set of subivided vertices. we could store it in the context to start with.
+// 3. Then cut player needs to do the cut on those instead, can this be cone in an opaque way?
+// 4. The matching player has to push flow differently and compile the cut differently. This will be a big difference.
+
 
 using namespace lemon;
 using namespace std;
@@ -68,7 +75,6 @@ struct InputConfiguration {
     bool load_from_file = false;
     string file_name = "";
     size_t n_nodes_to_generate;
-    enum { LARGE } type;
 };
 
 struct Configuration {
@@ -98,9 +104,6 @@ struct Logger {
     decltype(cout)& progress() {
         return silent ? nul : cout ;
     };
-    decltype(cout)& info() {
-        return cout;
-    };
     decltype(cout)& debug() {
         return verbose ? cout : nul;
     };
@@ -112,6 +115,15 @@ struct GraphContext {
     long num_edges;
 };
 
+// I'd say implementing our own adaptor is more effort, we can just do the snapshot thing
+// Actually lets just subdivide manually at the start and we dont even need to restore.
+struct SubdividedGraphContext {
+    GraphContext& origContext;
+    G sub_g;
+    vector<Node> split_vertices;
+};
+
+// TODO What chnages will be necessary?
 struct RoundReport {
     size_t index;
     size_t capacity_required_for_full_flow;
@@ -365,6 +377,29 @@ void print_cut(const Bisection &out_cut, decltype(cout)& stream) {
     stream << endl;
 }
 
+// Actually copies the graph.
+void createSubdividedGraph(SubdividedGraphContext& sgc) {
+    graphCopy(sgc.origContext.g, sgc.sub_g).run();
+    G& g = sgc.sub_g;
+
+    vector<Edge> edges;
+    for (EdgeIt e(g); e != INVALID; ++e) {
+        edges.push_back(e);
+    }
+
+    for(auto& e : edges) {
+        Node u = g.u(e);
+        Node v = g.v(e);
+        g.erase(e);
+
+        Node s = g.addNode();
+        g.addEdge(u, s);
+        g.addEdge(s, v);
+
+        sgc.split_vertices.push_back(s);
+    }
+}
+
 struct CutMatching {
     const Configuration &config;
     GraphContext &gc;
@@ -387,36 +422,38 @@ struct CutMatching {
     // During the matching step a lot of local setup is actually made, so it makes sense to group it
     // inside a "matching context" that exists for the duration of the mathing step
     struct MatchingContext {
-        G &g;
+        G& g;
+        GraphContext& gc;
         Node s;
         Node t;
         EdgeMapi capacity;
         CutMap cut_map;
-        const size_t num_vertices;
         Snapshot snap; //RAII
 
-        explicit MatchingContext(G &g_, size_t num_vertices_)
-                : g(g_),
-                  capacity(g_),
-                  cut_map(g_),
-                  snap(g_),
-                  num_vertices(num_vertices_) {}
+        explicit MatchingContext(GraphContext &gc_)
+        :
+        g(gc_.g),
+        gc(gc_),
+        capacity(gc.g),
+        cut_map(gc.g),
+        snap(gc.g)
+        {}
 
         ~MatchingContext() {
             snap.restore();
         }
 
         bool touches_source_or_sink(Edge &e) {
-            return this->g.u(e) == s
-                   || this->g.v(e) == s
-                   || this->g.u(e) == t
-                   || this->g.v(e) == t;
+            return gc.g.u(e) == s
+                   || gc.g.v(e) == s
+                   || gc.g.u(e) == t
+                   || gc.g.v(e) == t;
         }
 
         // Fills given cut pointer with a copy of the cut map
         Cutp extract_cut() {
             Cutp cut(new Cut);
-            for (NodeIt n(this->g); n != INVALID; ++n) {
+            for (NodeIt n(gc.g); n != INVALID; ++n) {
                 if (n == s || n == t) continue;
                 if (cut_map[n]) cut->insert(n);
             }
@@ -424,7 +461,7 @@ struct CutMatching {
         }
 
         void reset_cut_map() {
-            for (NodeIt n(this->g); n != INVALID; ++n) {
+            for (NodeIt n(gc.g); n != INVALID; ++n) {
                 cut_map[n] = false;
             }
         }
@@ -434,8 +471,6 @@ struct CutMatching {
         Cutp cut_from_flow;
         size_t capacity; // First capacity (minumum) that worked to get full flow thru
     };
-
-    // Soooooo, we want to develop the partition comparison stuff.
 
     inline void extract_path_fast(
             const G &g,
@@ -512,12 +547,12 @@ struct CutMatching {
     MatchResult bin_search_flows(MatchingContext &mg, unique_ptr<FlowAlgo> &p) const {
         auto start = now();
         size_t cap = 1;
-        for (; cap < mg.num_vertices; cap *= 2) {
+        for (; cap < mg.gc.nodes.size(); cap *= 2) {
             l.progress() << "Cap " << cap << " ... " << flush;
             setMatchingCapacities(mg, cap);
             runMinCut(mg, p);
 
-            bool reachedFullFlow = p->flowValue() == mg.num_vertices / 2;
+            bool reachedFullFlow = p->flowValue() == mg.gc.nodes.size() / 2;
             if (reachedFullFlow) l.debug() << "We have achieved full flow, but half this capacity didn't manage that!" << endl;
 
             // So it will always have the mincutmap of "before"
@@ -628,8 +663,8 @@ struct CutMatching {
 
     // returns capacity that was required
 // Maybe: make the binsearch an actual binsearch
-    MatchResult matching_player(G& g, size_t num_vertices, const set<Node> &bisection, ListEdgeSet<G> &m_out) {
-        MatchingContext mg(g, num_vertices);
+    MatchResult matching_player(const set<Node> &bisection, ListEdgeSet<G> &m_out) {
+        MatchingContext mg(gc);
         make_sink_source(mg, bisection);
 
         unique_ptr<FlowAlgo> p;
@@ -656,12 +691,13 @@ struct CutMatching {
 
     unique_ptr<RoundReport> one_round() {
         unique_ptr<RoundReport> report = make_unique<RoundReport>();
+
         Bisectionp bisection = cut_player(gc.g, matchings, report->multi_h_expansion);
 
         Matchingp matchingp(new Matching(gc.g));
 
         l.debug() << "Running Matching player" << endl;
-        MatchResult mr = matching_player(gc.g, gc.nodes.size(), *bisection, *matchingp);
+        MatchResult mr = matching_player(*bisection, *matchingp);
         size_t cap = mr.capacity;
         l.debug() << "Matching player gave the following matching: " << endl;
         print_matching(matchingp, l.debug());
@@ -807,6 +843,20 @@ void parse_options(int argc, char **argv, Configuration &config) {
     }
 }
 
+void print_graph(G& g, decltype(cout)& stream) {
+    stream << "Printing a graph" << endl;
+    stream << "Vertices: " << countNodes(g) << ", Edges: " << countEdges(g) << endl;
+    stream << "==" << endl;
+    for(NodeIt n(g); n != INVALID; ++n) {
+        stream << g.id(n) << ", ";
+    }
+    stream << "\n==" << endl;
+    for(EdgeIt e(g); e != INVALID; ++e) {
+        stream << g.id(e) << ": " << g.id(g.u(e)) << " - " << g.id(g.v(e)) << "\n";
+    }
+    stream << endl;
+}
+
 int main(int argc, char **argv) {
     Configuration config;
     parse_options(argc, argv, config);
@@ -814,11 +864,23 @@ int main(int argc, char **argv) {
     if(config.show_help_and_exit) return 0;
 
     GraphContext gc;
+    // So right off the bat here, do we want to create the subdivision?
+    // No. Let CutMatching do it internally.
     initGraph(gc, config.input);
 
     default_random_engine random_engine = config.seed_randomness
                     ? default_random_engine(config.seed)
                     : default_random_engine(random_device()());
+
+    SubdividedGraphContext sgc{gc};
+    createSubdividedGraph(sgc);
+    cout << "Subdivision: ";
+    for(Node& n : sgc.split_vertices) {
+        cout << sgc.sub_g.id(n) << ", ";
+    }
+    cout << endl;
+    print_graph(sgc.sub_g, cout);
+
     CutMatching cm(gc, config, random_engine);
     cm.run();
 
