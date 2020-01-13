@@ -124,11 +124,13 @@ struct SubdividedGraphContext {
     origContext(gc),
     nf(sub_g),
     ef(sub_g),
+    n_cross_ref(sub_g, INVALID),
     only_splits(sub_g, nf, ef) {} ;
     GraphContext& origContext;
     G sub_g;
     NodeMapb nf;
     EdgeMapb ef;
+    NodeMap<Node> n_cross_ref;
     SubGraph<G> only_splits;
     vector<Node> split_vertices;
 };
@@ -405,7 +407,7 @@ void print_graph(G& g, decltype(cout)& stream) {
 
 // Actually copies the graph.
 void createSubdividedGraph(SubdividedGraphContext& sgc) {
-    graphCopy(sgc.origContext.g, sgc.sub_g).run();
+    graphCopy(sgc.origContext.g, sgc.sub_g).nodeCrossRef(sgc.n_cross_ref).run();
     G& g = sgc.sub_g;
 
     vector<Edge> edges;
@@ -436,7 +438,7 @@ struct CutMatching {
     GraphContext &gc;
     SubdividedGraphContext sgc;
     default_random_engine &random_engine;
-    vector<unique_ptr<RoundReport>> past_rounds;
+    //vector<unique_ptr<RoundReport>> past_rounds;
     vector<unique_ptr<RoundReport>> sub_past_rounds;
     vector<Matchingp> matchings;
     vector<Matchingp> sub_matchings;
@@ -759,11 +761,11 @@ struct CutMatching {
         return config.volume_treshold_factor * gc.num_edges;
     }
 
-    // TODO Its wrong anyway
     long sub_volume_treshold() {
-        return config.volume_treshold_factor * sgc.origContext.nodes.size() + sgc.split_vertices.size();
+        return config.volume_treshold_factor * sgc.origContext.nodes.size();
     }
 
+    /*
     // Ok lets attack from here
     // Theres a lot of risk for problems with "is this a cut in the orig graph or in the splits?
     unique_ptr<RoundReport> one_round() {
@@ -773,21 +775,10 @@ struct CutMatching {
         // We'd need a subgraph that is just the splitnodes
         Bisectionp bisection = cut_player(gc.g, matchings, report->multi_h_expansion);
 
-        // WIP SUB
-        double h_multi_out_sub = 0;
-        Bisectionp sub_bisection = cut_player(sgc.only_splits, sub_matchings, h_multi_out_sub);
-        // Well ok, it's doing the first random thing well.
-        // TODO test on rest...
-
         // Matching on splitnodes, but we need to also save the actual cut...
         Matchingp matchingp(new Matching());
         MatchResult mr = matching_player(*bisection, *matchingp);
         matchings.push_back(move(matchingp));
-
-        // WIP SUB
-        Matchingp smatchingp(new Matching());
-        MatchResult smr = sub_matching_player(*sub_bisection, *smatchingp);
-        sub_matchings.push_back(move(smatchingp));
 
         //c.cuts.push_back(move(mr.cut_from_flow));
         report->index = past_rounds.size();
@@ -802,7 +793,7 @@ struct CutMatching {
         report->relatively_balanced = report->volume > volume_treshold();
         return move(report);
     }
-
+*/
     // Ok lets attack from here
     // Theres a lot of risk for problems with "is this a cut in the orig graph or in the splits?
     unique_ptr<RoundReport> sub_one_round() {
@@ -817,11 +808,17 @@ struct CutMatching {
         MatchResult smr = sub_matching_player(*sub_bisection, *smatchingp);
         sub_matchings.push_back(move(smatchingp));
 
+        // TODO ocmputation of cut at the end is_ wrong...
         //c.cuts.push_back(move(mr.cut_from_flow));
         report->index = sub_past_rounds.size();
         report->capacity_required_for_full_flow = smr.capacity;
-        report->cut = move(smr.cut_from_flow);
-        auto cs = CutStats<G>(sgc.sub_g, sgc.origContext.nodes.size() + sgc.split_vertices.size(), *report->cut);
+        report->cut = make_unique<Cut>();
+        for(auto& n : *(smr.cut_from_flow)) {
+            if(sgc.n_cross_ref[n] != INVALID) {
+                report->cut->insert(sgc.n_cross_ref[n]);
+            }
+        }
+        auto cs = CutStats<G>(sgc.origContext.g, sgc.origContext.nodes.size(), *report->cut);
         report->g_expansion = cs.expansion();
         l.progress() << "SUBG cut expansion " << report->g_expansion << endl;
         report->volume = cs.minside_volume();
@@ -829,9 +826,11 @@ struct CutMatching {
         l.progress() << "SUBG cut maxside volume " << cs.maxside_volume() << endl;
         report->relatively_balanced = report->volume > sub_volume_treshold();
         return move(report);
+        // Thing is, the cut is not a "materialized cut" in the subdiv graph. But the stats we want are the implied
+        // cut on the orig graph.
     }
 
-
+    /*
     // Stopping condition
     bool should_stop() {
         int i = past_rounds.size();
@@ -861,12 +860,43 @@ struct CutMatching {
             }
         }
     }
+     */
+
+    // Stopping condition
+    bool sub_should_stop() {
+        int i = sub_past_rounds.size();
+        if(i == 0) return false;
+        if(i >= config.max_rounds && config.max_rounds != 0) return true;
+
+        const auto& last_round = sub_past_rounds[sub_past_rounds.size() - 1];
+        if(config.use_H_phi_target && last_round->multi_h_expansion >= config.H_phi_target) {
+            cout << "H Expansion target reached, this will be case 1 or 3. According to theory, this means we probably won't find a better cut. That is, assuming you set H_phi right. "
+                    "If was used together with G_phi target, this also certifies the input graph is a G_phi expander unless there was a very unbaanced cut somewhere, which we will proceed to look for." << endl;
+            reached_H_target = true;
+            return true;
+        }
+
+        if(config.use_G_phi_target)
+            if(last_round->g_expansion >= config.G_phi_target) {
+                if(config.use_volume_treshold && last_round->relatively_balanced) {
+                    cout << "CASE2 G Expansion target reached with a cut that is relatively balanced. Cut-matching game has found a balanced cut as good as you wanted it."
+                         << endl;
+                    return true;
+                }
+
+                if(!config.use_volume_treshold) {
+                    cout << "G Expansion target reached. Cut-matching game has found a cut as good as you wanted it. Whether it is balanced or not is up to you."
+                         << endl;
+                    return true;
+                }
+            }
+    }
 
     void run() {
-        while (!should_stop()) {
-            past_rounds.push_back(one_round());
+        while (!sub_should_stop()) {
+            //past_rounds.push_back(one_round());
             sub_past_rounds.push_back(sub_one_round());
-            print_end_round_message(past_rounds.size()-1);
+            print_end_round_message(sub_past_rounds.size()-1);
         }
     }
 };
@@ -973,9 +1003,9 @@ int main(int argc, char **argv) {
     CutMatching cm(gc, config, random_engine);
     cm.run();
 
-    assert(!cm.past_rounds.empty());
+    assert(!cm.sub_past_rounds.empty());
     // Best by expnansion
-    auto& best_round = *max_element(cm.past_rounds.begin(), cm.past_rounds.end(), [](auto &a, auto &b) {
+    auto& best_round = *max_element(cm.sub_past_rounds.begin(), cm.sub_past_rounds.end(), [](auto &a, auto &b) {
         return a->g_expansion < b->g_expansion;
     });
 
