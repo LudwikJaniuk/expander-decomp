@@ -437,6 +437,7 @@ struct CutMatching {
     SubdividedGraphContext sgc;
     default_random_engine &random_engine;
     vector<unique_ptr<RoundReport>> past_rounds;
+    vector<unique_ptr<RoundReport>> sub_past_rounds;
     vector<Matchingp> matchings;
     vector<Matchingp> sub_matchings;
     bool reached_H_target = false;
@@ -758,6 +759,11 @@ struct CutMatching {
         return config.volume_treshold_factor * gc.num_edges;
     }
 
+    // TODO Its wrong anyway
+    long sub_volume_treshold() {
+        return config.volume_treshold_factor * sgc.origContext.nodes.size() + sgc.split_vertices.size();
+    }
+
     // Ok lets attack from here
     // Theres a lot of risk for problems with "is this a cut in the orig graph or in the splits?
     unique_ptr<RoundReport> one_round() {
@@ -795,9 +801,34 @@ struct CutMatching {
         l.progress() << "G cut maxside volume " << cs.maxside_volume() << endl;
         report->relatively_balanced = report->volume > volume_treshold();
         return move(report);
+    }
 
-        // We want to implement that it parses partitions
-        // That has nothing to do with the rounds lol
+    // Ok lets attack from here
+    // Theres a lot of risk for problems with "is this a cut in the orig graph or in the splits?
+    unique_ptr<RoundReport> sub_one_round() {
+        unique_ptr<RoundReport> report = make_unique<RoundReport>();
+
+        double h_multi_out_sub = 0;
+        Bisectionp sub_bisection = cut_player(sgc.only_splits, sub_matchings, h_multi_out_sub);
+        // Well ok, it's doing the first random thing well.
+        // TODO test on rest...
+
+        Matchingp smatchingp(new Matching());
+        MatchResult smr = sub_matching_player(*sub_bisection, *smatchingp);
+        sub_matchings.push_back(move(smatchingp));
+
+        //c.cuts.push_back(move(mr.cut_from_flow));
+        report->index = sub_past_rounds.size();
+        report->capacity_required_for_full_flow = smr.capacity;
+        report->cut = move(smr.cut_from_flow);
+        auto cs = CutStats<G>(sgc.sub_g, sgc.origContext.nodes.size() + sgc.split_vertices.size(), *report->cut);
+        report->g_expansion = cs.expansion();
+        l.progress() << "SUBG cut expansion " << report->g_expansion << endl;
+        report->volume = cs.minside_volume();
+        l.progress() << "SUBG cut minside volume " << cs.minside_volume() << endl;
+        l.progress() << "SUBG cut maxside volume " << cs.maxside_volume() << endl;
+        report->relatively_balanced = report->volume > sub_volume_treshold();
+        return move(report);
     }
 
 
@@ -834,6 +865,7 @@ struct CutMatching {
     void run() {
         while (!should_stop()) {
             past_rounds.push_back(one_round());
+            sub_past_rounds.push_back(sub_one_round());
             print_end_round_message(past_rounds.size()-1);
         }
     }
