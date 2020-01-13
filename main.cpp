@@ -59,10 +59,8 @@ using NodeMapi = NodeMap<int>;
 using NodeMapb= NodeMap<bool>;
 using NodeNeighborMap = NodeMap<vector<tuple<Node, int>>>;
 using FlowAlgo = Preflow<G, EdgeMapi>;
-template <typename GG>
-using Matching = ListEdgeSet<GG>;
-template <typename GG>
-using Matchingp = unique_ptr<Matching<GG>>;
+using Matching = vector<array<Node, 2>>;
+using Matchingp = unique_ptr<Matching>;
 using Bisection = set<Node>;
 using Bisectionp = unique_ptr<Bisection>;
 using Cut = set<Node>;
@@ -376,9 +374,9 @@ void print_end_round_message(int i) {
 }
 
 template <typename GG>
-void print_matching(const Matchingp<GG> &m, decltype(cout)& stream) {
-    for (typename Matching<GG>::EdgeIt e(*m); e != INVALID; ++e) {
-        stream << "(" << m->id(m->u(e)) << ", " << m->id(m->v(e)) << "), ";
+void print_matching(GG& g, const Matchingp &m, decltype(cout)& stream) {
+    for (auto& e : *m) {
+        stream << "(" << g.id(e[0]) << ", " << g.id(e[1]) << "), ";
     }
     stream << endl;
 }
@@ -439,8 +437,8 @@ struct CutMatching {
     SubdividedGraphContext sgc;
     default_random_engine &random_engine;
     vector<unique_ptr<RoundReport>> past_rounds;
-    vector<Matchingp<G>> matchings;
-    vector<Matchingp<SubGraph<G>>> sub_matchings;
+    vector<Matchingp> matchings;
+    vector<Matchingp> sub_matchings;
     bool reached_H_target = false;
     // Input graph
     CutMatching(GraphContext &gc, const Configuration &config_, default_random_engine &random_engine_)
@@ -460,6 +458,7 @@ struct CutMatching {
     // During the matching step a lot of local setup is actually made, so it makes sense to group it
     // inside a "matching context" that exists for the duration of the mathing step
     struct MatchingContext {
+        // This NEEDS to be the whole graph
         G& g;
         Node s;
         Node t;
@@ -565,7 +564,8 @@ struct CutMatching {
         }
     }
 
-    void runMinCut(const MatchingContext &mg, unique_ptr<FlowAlgo> &p) const {
+    // Works for sub too, with the assumption that mg.g realy is the whole graph
+    void run_min_cut(const MatchingContext &mg, unique_ptr<FlowAlgo> &p) const {
         p.reset(new Preflow<G, EdgeMapi>(mg.g, mg.capacity, mg.s, mg.t));
         auto start2 = now();
         p->runMinCut(); // Note that "startSecondPhase" must be run to get flows for individual verts
@@ -573,7 +573,8 @@ struct CutMatching {
         l.progress() << "flow: " << p->flowValue() << " (" << duration_sec(start2, stop2) << " s)" << endl;
     }
 
-    void setMatchingCapacities(MatchingContext &mg, size_t cap) const {
+    // This should work well for sub too
+    void set_matching_capacities(MatchingContext &mg, size_t cap) const {
         for (EdgeIt e(mg.g); e != INVALID; ++e) {
             if (mg.touches_source_or_sink(e)) continue;
             mg.capacity[e] = cap;
@@ -586,8 +587,8 @@ struct CutMatching {
         //for (; cap < mg.gc.nodes.size(); cap *= 2) {
         for (; cap < flow_target*2; cap *= 2) {
             l.progress() << "Cap " << cap << " ... " << flush;
-            setMatchingCapacities(mg, cap);
-            runMinCut(mg, p);
+            set_matching_capacities(mg, cap);
+            run_min_cut(mg, p);
 
             //bool reachedFullFlow = p->flowValue() == mg.gc.nodes.size() / 2;
             bool reachedFullFlow = p->flowValue() >= flow_target;
@@ -618,13 +619,13 @@ struct CutMatching {
         decompose_paths_fast(mg, p, paths);
     }
 
-    void make_sink_source(MatchingContext &mg, const set<Node> &cut) const {
-        G &g = mg.g;
+    template <typename GG>
+    void make_sink_source(GG& g, MatchingContext &mg, const set<Node> &cut) const {
         mg.s = g.addNode();
         mg.t = g.addNode();
         int s_added = 0;
         int t_added = 0;
-        for (NodeIt n(g); n != INVALID; ++n) {
+        for (typename GG::NodeIt n(g); n != INVALID; ++n) {
             if (n == mg.s) continue;
             if (n == mg.t) continue;
             Edge e;
@@ -648,8 +649,6 @@ struct CutMatching {
     template<typename GG, typename M>
     Bisectionp cut_player(const GG &g, const vector<unique_ptr<M>> &given_matchings, double &h_multi_exp_out) {
         l.debug() << "Running Cut player" << endl;
-        using MEdgeIt = typename M::EdgeIt;
-
         typename GG::template NodeMap<double> probs(g);
         vector<Node> all_nodes;
 
@@ -666,9 +665,9 @@ struct CutMatching {
         ListEdgeSet H(g);
         ListEdgeSet H_single(g);
         for (const unique_ptr<M> &m : given_matchings) {
-            for (MEdgeIt e(*m); e != INVALID; ++e) {
-                Node u = m->u(e);
-                Node v = m->v(e);
+            for (auto& e : *m) {
+                Node u = e[0];
+                Node v = e[1];
                 double avg = probs[u] / 2 + probs[v] / 2;
                 probs[u] = avg;
                 probs[v] = avg;
@@ -709,38 +708,12 @@ struct CutMatching {
 // Maybe: make the binsearch an actual binsearch
 // TODO Let listedgeset just be 2-arrays of nodes. Lemon is getting in the way too much.
 // But also what is assigned in MtchResult?
-    MatchResult matching_player(const set<Node> &bisection, ListEdgeSet<G> &m_out) {
+    MatchResult matching_player(const set<Node> &bisection, Matching& m_out) {
         MatchingContext mg(gc.g);
-        make_sink_source(mg, bisection);
+        make_sink_source(mg.g, mg, bisection);
 
         unique_ptr<FlowAlgo> p;
         MatchResult mr = bin_search_flows(mg, p, gc.nodes.size()/2);
-
-        vector<array<Node, 2>> paths;
-        decompose_paths(mg, p, paths);
-
-        for (auto &path : paths) {
-            m_out.addEdge(path[0], path.back());
-        }
-        // Now how do we extract the cut?
-        // In this version, in one run of the matching the cut is strictly decided. We just need
-        // to decide which one of them.
-        // Only when we change to edge will the cut need to be explicitly extracted.
-        // Rn the important thing is to save cuts between rounds so I can choose the best.
-
-        return mr;
-    }
-/*
-    // returns capacity that was required
-// Maybe: make the binsearch an actual binsearch
-// TODO Let listedgeset just be 2-arrays of nodes. Lemon is getting in the way too much.
-// But also what is assigned in MtchResult?
-    MatchResult sub_matching_player(const set<Node> &bisection, vector<array<Node, 2>>& m_out) {
-        MatchingContext mg(gc);
-        make_sink_source(mg, bisection);
-
-        unique_ptr<FlowAlgo> p;
-        MatchResult mr = bin_search_flows(mg, p);
 
         decompose_paths(mg, p, m_out);
 
@@ -753,7 +726,28 @@ struct CutMatching {
         return mr;
     }
 
-*/
+    // returns capacity that was required
+// Maybe: make the binsearch an actual binsearch
+// TODO Let listedgeset just be 2-arrays of nodes. Lemon is getting in the way too much.
+// But also what is assigned in MtchResult?
+    MatchResult sub_matching_player(const set<Node> &bisection, vector<array<Node, 2>>& m_out) {
+        MatchingContext mg(gc.g);
+        make_sink_source(sgc.only_splits, mg, bisection);
+
+        unique_ptr<FlowAlgo> p;
+        MatchResult mr = bin_search_flows(mg, p, sgc.split_vertices.size()/2);
+
+        decompose_paths(mg, p, m_out);
+
+        // Now how do we extract the cut?
+        // In this version, in one run of the matching the cut is strictly decided. We just need
+        // to decide which one of them.
+        // Only when we change to edge will the cut need to be explicitly extracted.
+        // Rn the important thing is to save cuts between rounds so I can choose the best.
+
+        return mr;
+    }
+
     long volume_treshold() {
         return config.volume_treshold_factor * gc.num_edges;
     }
@@ -767,22 +761,25 @@ struct CutMatching {
         // We'd need a subgraph that is just the splitnodes
         Bisectionp bisection = cut_player(gc.g, matchings, report->multi_h_expansion);
 
+        /*
         // WIP SUB
         double h_multi_out_sub = 0;
         Bisectionp sub_bisection = cut_player(sgc.only_splits, sub_matchings, h_multi_out_sub);
         // Well ok, it's doing the first random thing well.
         // TODO test on rest...
 
+         */
 
         // Matching on splitnodes, but we need to also save the actual cut...
-        Matchingp<G> matchingp(new Matching<G>(gc.g));
+        Matchingp matchingp(new Matching());
         MatchResult mr = matching_player(*bisection, *matchingp);
         matchings.push_back(move(matchingp));
-
+/*
         // WIP SUB
-        Matchingp<SubGraph<G>> smatchingp(new Matching<SubGraph<G>>(sgc.only_splits));
-        //MatchResult mr = matching_player(*sub_bisection, *smatchingp);
+        Matchingp smatchingp(new Matching());
+        MatchResult smr = matching_player(*sub_bisection, *smatchingp);
         //sub_matchings.push_back(move(matchingp));
+        */
 
         //c.cuts.push_back(move(mr.cut_from_flow));
         report->index = past_rounds.size();
