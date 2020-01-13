@@ -638,7 +638,8 @@ struct CutMatching {
             }
             mg.capacity[e] = 1;
         }
-        assert(s_added == t_added);
+        int diff = s_added - t_added;
+        assert(-1 <= diff && diff <= 1);
     }
 
 
@@ -731,8 +732,13 @@ struct CutMatching {
 // TODO Let listedgeset just be 2-arrays of nodes. Lemon is getting in the way too much.
 // But also what is assigned in MtchResult?
     MatchResult sub_matching_player(const set<Node> &bisection, vector<array<Node, 2>>& m_out) {
-        MatchingContext mg(gc.g);
+        MatchingContext mg(sgc.sub_g);
         make_sink_source(sgc.only_splits, mg, bisection);
+        // TODO so have s, t been created on the big greaph?
+        Node s = mg.s;
+        int id = sgc.sub_g.id(s);
+        cout << id << endl;
+        cout << countNodes(sgc.sub_g) << endl;
 
         unique_ptr<FlowAlgo> p;
         MatchResult mr = bin_search_flows(mg, p, sgc.split_vertices.size()/2);
@@ -761,25 +767,21 @@ struct CutMatching {
         // We'd need a subgraph that is just the splitnodes
         Bisectionp bisection = cut_player(gc.g, matchings, report->multi_h_expansion);
 
-        /*
         // WIP SUB
         double h_multi_out_sub = 0;
         Bisectionp sub_bisection = cut_player(sgc.only_splits, sub_matchings, h_multi_out_sub);
         // Well ok, it's doing the first random thing well.
         // TODO test on rest...
 
-         */
-
         // Matching on splitnodes, but we need to also save the actual cut...
         Matchingp matchingp(new Matching());
         MatchResult mr = matching_player(*bisection, *matchingp);
         matchings.push_back(move(matchingp));
-/*
+
         // WIP SUB
         Matchingp smatchingp(new Matching());
-        MatchResult smr = matching_player(*sub_bisection, *smatchingp);
-        //sub_matchings.push_back(move(matchingp));
-        */
+        MatchResult smr = sub_matching_player(*sub_bisection, *smatchingp);
+        sub_matchings.push_back(move(smatchingp));
 
         //c.cuts.push_back(move(mr.cut_from_flow));
         report->index = past_rounds.size();
