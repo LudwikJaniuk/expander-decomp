@@ -1,163 +1,340 @@
 Reading graph from graphs/add20.graph
 Reading a graph with V 2395E 7462
 Odd number of vertices, adding extra one.
-Cap 1 ... flow: 1146 (0.001518 s)
-Cap 2 ... flow: 1184 (0.002293 s)
-Cap 4 ... flow: 1196 (0.001896 s)
-Cap 8 ... flow: 1198 (0.001574 s)
-Flow search took (seconds) 0.00784
+H expansion: 0, num cross: 0
+H_single expansion: 0, num cross: 0
+9859
+9861
+Cap 1 ... flow: 3623 (0.009076 s)
+Cap 2 ... flow: 3714 (0.008048 s)
+Cap 4 ... flow: 3729 (0.008693 s)
+Cap 8 ... flow: 3731 (0.01005 s)
+Flow search took (seconds) 0.037205
+SUBG cut expansion 3.45455
+SUBG cut minside volume 46
+SUBG cut maxside volume 14880
 == End round 0 ==
-Cap 1 ... flow: 1115 (0.001303 s)
-Cap 2 ... flow: 1168 (0.001131 s)
-Cap 4 ... flow: 1192 (0.001408 s)
-Cap 8 ... flow: 1198 (0.00169 s)
-Flow search took (seconds) 0.006013
+H expansion: 0, num cross: 0
+H_single expansion: 0, num cross: 0
+9859
+9861
+Cap 1 ... flow: 3548 (0.011305 s)
+Cap 2 ... flow: 3706 (0.006877 s)
+Cap 4 ... flow: 3725 (0.008311 s)
+Cap 8 ... flow: 3731 (0.009968 s)
+Flow search took (seconds) 0.037774
+SUBG cut expansion 1.35484
+SUBG cut minside volume 66
+SUBG cut maxside volume 14860
 == End round 1 ==
-Cap 1 ... flow: 1105 (0.004056 s)
-Cap 2 ... flow: 1163 (0.005066 s)
-Cap 4 ... flow: 1192 (0.00285 s)
-Cap 8 ... flow: 1198 (0.00184 s)
-Flow search took (seconds) 0.014399
+H expansion: 0.342804, num cross: 1279
+H_single expansion: 0.342804, num cross: 1279
+9859
+9861
+Cap 1 ... flow: 3479 (0.023551 s)
+Cap 2 ... flow: 3694 (0.008346 s)
+Cap 4 ... flow: 3722 (0.013475 s)
+Cap 8 ... flow: 3731 (0.014843 s)
+Flow search took (seconds) 0.061593
+SUBG cut expansion 0.978261
+SUBG cut minside volume 81
+SUBG cut maxside volume 14845
 == End round 2 ==
-Cap 1 ... flow: 1114 (0.001312 s)
-Cap 2 ... flow: 1165 (0.002452 s)
-Cap 4 ... flow: 1189 (0.001577 s)
-Cap 8 ... flow: 1198 (0.001638 s)
-Flow search took (seconds) 0.00747
+H expansion: 0.742428, num cross: 2770
+H_single expansion: 0.742428, num cross: 2770
+9859
+9861
+Cap 1 ... flow: 3423 (0.011418 s)
+Cap 2 ... flow: 3682 (0.007824 s)
+Cap 4 ... flow: 3718 (0.015079 s)
+Cap 8 ... flow: 3731 (0.012448 s)
+Flow search took (seconds) 0.048102
+SUBG cut expansion 0.742424
+SUBG cut minside volume 101
+SUBG cut maxside volume 14825
 == End round 3 ==
-Cap 1 ... flow: 1108 (0.002642 s)
-Cap 2 ... flow: 1160 (0.00213 s)
-Cap 4 ... flow: 1189 (0.003006 s)
-Cap 8 ... flow: 1198 (0.001621 s)
-Flow search took (seconds) 0.009964
+H expansion: 1.16001, num cross: 4328
+H_single expansion: 1.15626, num cross: 4314
+9859
+9861
+Cap 1 ... flow: 3388 (0.015085 s)
+Cap 2 ... flow: 3709 (0.01739 s)
+Cap 4 ... flow: 3727 (0.033755 s)
+Cap 8 ... flow: 3731 (0.016132 s)
+Flow search took (seconds) 0.084465
+SUBG cut expansion 0.2
+SUBG cut minside volume 7487
+SUBG cut maxside volume 7439
 == End round 4 ==
-Cap 1 ... flow: 1117 (0.001319 s)
-Cap 2 ... flow: 1169 (0.001229 s)
-Cap 4 ... flow: 1192 (0.001364 s)
-Cap 8 ... flow: 1198 (0.001749 s)
-Flow search took (seconds) 0.006116
+H expansion: 1.5859, num cross: 5917
+H_single expansion: 1.5717, num cross: 5864
+9859
+9861
+Cap 1 ... flow: 3350 (0.030052 s)
+Cap 2 ... flow: 3628 (0.052464 s)
+Cap 4 ... flow: 3723 (0.037434 s)
+Cap 8 ... flow: 3731 (0.015705 s)
+Flow search took (seconds) 0.137753
+SUBG cut expansion 0.2
+SUBG cut minside volume 7527
+SUBG cut maxside volume 7399
 == End round 5 ==
-Cap 1 ... flow: 1109 (0.001316 s)
-Cap 2 ... flow: 1167 (0.001125 s)
-Cap 4 ... flow: 1191 (0.001416 s)
-Cap 8 ... flow: 1198 (0.001537 s)
-Flow search took (seconds) 0.005848
+H expansion: 2.09837, num cross: 7829
+H_single expansion: 2.06459, num cross: 7703
+9859
+9861
+Cap 1 ... flow: 3432 (0.02469 s)
+Cap 2 ... flow: 3707 (0.007414 s)
+Cap 4 ... flow: 3726 (0.015634 s)
+Cap 8 ... flow: 3731 (0.014088 s)
+Flow search took (seconds) 0.063192
+SUBG cut expansion 1.57692
+SUBG cut minside volume 61
+SUBG cut maxside volume 14865
 == End round 6 ==
-Cap 1 ... flow: 1113 (0.001272 s)
-Cap 2 ... flow: 1163 (0.001215 s)
-Cap 4 ... flow: 1191 (0.001098 s)
-Cap 8 ... flow: 1198 (0.001472 s)
-Flow search took (seconds) 0.005522
+H expansion: 2.55562, num cross: 9535
+H_single expansion: 2.49022, num cross: 9291
+9859
+9861
+Cap 1 ... flow: 3358 (0.012603 s)
+Cap 2 ... flow: 3669 (0.008271 s)
+Cap 4 ... flow: 3724 (0.036027 s)
+Cap 8 ... flow: 3731 (0.015448 s)
+Flow search took (seconds) 0.074494
+SUBG cut expansion 0.185185
+SUBG cut minside volume 7512
+SUBG cut maxside volume 7414
 == End round 7 ==
-Cap 1 ... flow: 1082 (0.003638 s)
-Cap 2 ... flow: 1160 (0.003039 s)
-Cap 4 ... flow: 1188 (0.003909 s)
-Cap 8 ... flow: 1198 (0.001573 s)
-Flow search took (seconds) 0.012767
+H expansion: 3.03672, num cross: 11330
+H_single expansion: 2.92334, num cross: 10907
+9859
+9861
+Cap 1 ... flow: 3304 (0.020543 s)
+Cap 2 ... flow: 3592 (0.035832 s)
+Cap 4 ... flow: 3723 (0.016066 s)
+Cap 8 ... flow: 3731 (0.015305 s)
+Flow search took (seconds) 0.089153
+SUBG cut expansion 0.836364
+SUBG cut minside volume 95
+SUBG cut maxside volume 14831
 == End round 8 ==
-Cap 1 ... flow: 1090 (0.002008 s)
-Cap 2 ... flow: 1150 (0.001642 s)
-Cap 4 ... flow: 1185 (0.00144 s)
-Cap 8 ... flow: 1198 (0.001784 s)
-Flow search took (seconds) 0.007327
+H expansion: 3.37443, num cross: 12590
+H_single expansion: 3.2364, num cross: 12075
+9859
+9861
+Cap 1 ... flow: 3171 (0.032451 s)
+Cap 2 ... flow: 3563 (0.031692 s)
+Cap 4 ... flow: 3712 (0.012208 s)
+Cap 8 ... flow: 3731 (0.018461 s)
+Flow search took (seconds) 0.096236
+SUBG cut expansion 0.738462
+SUBG cut minside volume 105
+SUBG cut maxside volume 14821
 == End round 9 ==
-Cap 1 ... flow: 1093 (0.003963 s)
-Cap 2 ... flow: 1164 (0.001697 s)
-Cap 4 ... flow: 1191 (0.002698 s)
-Cap 8 ... flow: 1198 (0.001614 s)
-Flow search took (seconds) 0.010536
+H expansion: 3.97266, num cross: 14822
+H_single expansion: 3.76601, num cross: 14051
+9859
+9861
+Cap 1 ... flow: 3463 (0.009313 s)
+Cap 2 ... flow: 3707 (0.00807 s)
+Cap 4 ... flow: 3727 (0.015251 s)
+Cap 8 ... flow: 3731 (0.015559 s)
+Flow search took (seconds) 0.049582
+SUBG cut expansion 1.90476
+SUBG cut minside volume 56
+SUBG cut maxside volume 14870
 == End round 10 ==
-Cap 1 ... flow: 1124 (0.003176 s)
-Cap 2 ... flow: 1174 (0.003017 s)
-Cap 4 ... flow: 1192 (0.001905 s)
-Cap 8 ... flow: 1198 (0.00186 s)
-Flow search took (seconds) 0.010452
+H expansion: 4.43045, num cross: 16530
+H_single expansion: 4.18681, num cross: 15621
+9859
+9861
+Cap 1 ... flow: 3386 (0.012688 s)
+Cap 2 ... flow: 3687 (0.048486 s)
+Cap 4 ... flow: 3722 (0.020978 s)
+Cap 8 ... flow: 3731 (0.016221 s)
+Flow search took (seconds) 0.099884
+SUBG cut expansion 0.978261
+SUBG cut minside volume 81
+SUBG cut maxside volume 14845
 == End round 11 ==
-Cap 1 ... flow: 1024 (0.003575 s)
-Cap 2 ... flow: 1161 (0.002933 s)
-Cap 4 ... flow: 1188 (0.001509 s)
-Cap 8 ... flow: 1198 (0.001707 s)
-Flow search took (seconds) 0.010214
+H expansion: 4.75047, num cross: 17724
+H_single expansion: 4.46583, num cross: 16662
+9859
+9861
+Cap 1 ... flow: 3263 (0.02844 s)
+Cap 2 ... flow: 3689 (0.009533 s)
+Cap 4 ... flow: 3721 (0.01218 s)
+Cap 8 ... flow: 3731 (0.01255 s)
+Flow search took (seconds) 0.064255
+SUBG cut expansion 0.862745
+SUBG cut minside volume 85
+SUBG cut maxside volume 14841
 == End round 12 ==
-Cap 1 ... flow: 1104 (0.003881 s)
-Cap 2 ... flow: 1159 (0.003142 s)
-Cap 4 ... flow: 1188 (0.001537 s)
-Cap 8 ... flow: 1198 (0.001736 s)
-Flow search took (seconds) 0.010781
+H expansion: 5.17341, num cross: 19302
+H_single expansion: 4.84937, num cross: 18093
+9859
+9861
+Cap 1 ... flow: 3277 (0.031201 s)
+Cap 2 ... flow: 3689 (0.018071 s)
+Cap 4 ... flow: 3721 (0.017434 s)
+Cap 8 ... flow: 3731 (0.01389 s)
+Flow search took (seconds) 0.08207
+SUBG cut expansion 0.901961
+SUBG cut minside volume 86
+SUBG cut maxside volume 14840
 == End round 13 ==
-Cap 1 ... flow: 1097 (0.003443 s)
-Cap 2 ... flow: 1153 (0.003793 s)
-Cap 4 ... flow: 1188 (0.002627 s)
-Cap 8 ... flow: 1198 (0.00191 s)
-Flow search took (seconds) 0.012384
+H expansion: 5.6974, num cross: 21257
+H_single expansion: 5.28035, num cross: 19701
+9859
+9861
+Cap 1 ... flow: 3200 (0.0157 s)
+Cap 2 ... flow: 3565 (0.010893 s)
+Cap 4 ... flow: 3716 (0.013856 s)
+Cap 8 ... flow: 3731 (0.017217 s)
+Flow search took (seconds) 0.059108
+SUBG cut expansion 0.738462
+SUBG cut minside volume 105
+SUBG cut maxside volume 14821
 == End round 14 ==
-Cap 1 ... flow: 1114 (0.003501 s)
-Cap 2 ... flow: 1166 (0.002896 s)
-Cap 4 ... flow: 1191 (0.002906 s)
-Cap 8 ... flow: 1198 (0.001407 s)
-Flow search took (seconds) 0.011327
+H expansion: 5.86009, num cross: 21864
+H_single expansion: 5.44465, num cross: 20314
+9859
+9861
+Cap 1 ... flow: 3015 (0.027204 s)
+Cap 2 ... flow: 3499 (0.044308 s)
+Cap 4 ... flow: 3719 (0.02097 s)
+Cap 8 ... flow: 3731 (0.016358 s)
+Flow search took (seconds) 0.110415
+SUBG cut expansion 0.754098
+SUBG cut minside volume 95
+SUBG cut maxside volume 14831
 == End round 15 ==
-Cap 1 ... flow: 1065 (0.004896 s)
-Cap 2 ... flow: 1157 (0.004005 s)
-Cap 4 ... flow: 1187 (0.002823 s)
-Cap 8 ... flow: 1198 (0.001721 s)
-Flow search took (seconds) 0.014058
+H expansion: 6.41678, num cross: 23941
+H_single expansion: 5.91343, num cross: 22063
+9859
+9861
+Cap 1 ... flow: 3137 (0.031775 s)
+Cap 2 ... flow: 3404 (0.032998 s)
+Cap 4 ... flow: 3596 (0.044605 s)
+Cap 8 ... flow: 3731 (0.016934 s)
+Flow search took (seconds) 0.128585
+SUBG cut expansion 0.371041
+SUBG cut minside volume 7876
+SUBG cut maxside volume 7050
 == End round 16 ==
-Cap 1 ... flow: 1088 (0.001626 s)
-Cap 2 ... flow: 1150 (0.001341 s)
-Cap 4 ... flow: 1186 (0.001186 s)
-Cap 8 ... flow: 1198 (0.001561 s)
-Flow search took (seconds) 0.006213
+H expansion: 6.70356, num cross: 25011
+H_single expansion: 6.17475, num cross: 23038
+9859
+9861
+Cap 1 ... flow: 2972 (0.029969 s)
+Cap 2 ... flow: 3427 (0.013384 s)
+Cap 4 ... flow: 3718 (0.039409 s)
+Cap 8 ... flow: 3731 (0.015623 s)
+Flow search took (seconds) 0.100596
+SUBG cut expansion 0.189873
+SUBG cut minside volume 7532
+SUBG cut maxside volume 7394
 == End round 17 ==
-Cap 1 ... flow: 1099 (0.003039 s)
-Cap 2 ... flow: 1157 (0.0032 s)
-Cap 4 ... flow: 1190 (0.002975 s)
-Cap 8 ... flow: 1198 (0.001792 s)
-Flow search took (seconds) 0.011644
+H expansion: 7.44036, num cross: 27760
+H_single expansion: 6.82016, num cross: 25446
+9859
+9861
+Cap 1 ... flow: 3183 (0.017053 s)
+Cap 2 ... flow: 3538 (0.00966 s)
+Cap 4 ... flow: 3721 (0.018253 s)
+Cap 8 ... flow: 3731 (0.014602 s)
+Flow search took (seconds) 0.061123
+SUBG cut expansion 0.836364
+SUBG cut minside volume 95
+SUBG cut maxside volume 14831
 == End round 18 ==
-Cap 1 ... flow: 1029 (0.002171 s)
-Cap 2 ... flow: 1163 (0.002186 s)
-Cap 4 ... flow: 1188 (0.001743 s)
-Cap 8 ... flow: 1198 (0.001596 s)
-Flow search took (seconds) 0.008187
+H expansion: 7.83516, num cross: 29233
+H_single expansion: 7.16671, num cross: 26739
+9859
+9861
+Cap 1 ... flow: 3110 (0.027376 s)
+Cap 2 ... flow: 3634 (0.041608 s)
+Cap 4 ... flow: 3725 (0.024472 s)
+Cap 8 ... flow: 3731 (0.014599 s)
+Flow search took (seconds) 0.109601
+SUBG cut expansion 1.35484
+SUBG cut minside volume 66
+SUBG cut maxside volume 14860
 == End round 19 ==
-Cap 1 ... flow: 1116 (0.001848 s)
-Cap 2 ... flow: 1167 (0.001661 s)
-Cap 4 ... flow: 1192 (0.001675 s)
-Cap 8 ... flow: 1198 (0.00171 s)
-Flow search took (seconds) 0.007393
+H expansion: 8.26588, num cross: 30840
+H_single expansion: 7.55213, num cross: 28177
+9859
+9861
+Cap 1 ... flow: 3134 (0.028147 s)
+Cap 2 ... flow: 3487 (0.010962 s)
+Cap 4 ... flow: 3720 (0.021967 s)
+Cap 8 ... flow: 3731 (0.017214 s)
+Flow search took (seconds) 0.079872
+SUBG cut expansion 0.836364
+SUBG cut minside volume 95
+SUBG cut maxside volume 14831
 == End round 20 ==
-Cap 1 ... flow: 1109 (0.002184 s)
-Cap 2 ... flow: 1164 (0.001823 s)
-Cap 4 ... flow: 1190 (0.001898 s)
-Cap 8 ... flow: 1198 (0.001793 s)
-Flow search took (seconds) 0.008205
+H expansion: 8.81801, num cross: 32900
+H_single expansion: 8.00804, num cross: 29878
+9859
+9861
+Cap 1 ... flow: 3213 (0.013548 s)
+Cap 2 ... flow: 3578 (0.009997 s)
+Cap 4 ... flow: 3719 (0.015647 s)
+Cap 8 ... flow: 3731 (0.014084 s)
+Flow search took (seconds) 0.054784
+SUBG cut expansion 1.075
+SUBG cut minside volume 80
+SUBG cut maxside volume 14846
 == End round 21 ==
-Cap 1 ... flow: 1093 (0.003762 s)
-Cap 2 ... flow: 1150 (0.002943 s)
-Cap 4 ... flow: 1184 (0.004569 s)
-Cap 8 ... flow: 1198 (0.001783 s)
-Flow search took (seconds) 0.013706
+H expansion: 8.9614, num cross: 33435
+H_single expansion: 8.12972, num cross: 30332
+9859
+9861
+Cap 1 ... flow: 3075 (0.016161 s)
+Cap 2 ... flow: 3572 (0.008192 s)
+Cap 4 ... flow: 3719 (0.016899 s)
+Cap 8 ... flow: 3731 (0.014278 s)
+Flow search took (seconds) 0.056967
+SUBG cut expansion 0.75
+SUBG cut minside volume 99
+SUBG cut maxside volume 14827
 == End round 22 ==
-Cap 1 ... flow: 1104 (0.001841 s)
-Cap 2 ... flow: 1160 (0.001501 s)
-Cap 4 ... flow: 1190 (0.00148 s)
-Cap 8 ... flow: 1198 (0.001577 s)
-Flow search took (seconds) 0.006917
+H expansion: 9.75958, num cross: 36413
+H_single expansion: 8.8215, num cross: 32913
+9859
+9861
+Cap 1 ... flow: 3199 (0.014489 s)
+Cap 2 ... flow: 3620 (0.015758 s)
+Cap 4 ... flow: 3720 (0.04488 s)
+Cap 8 ... flow: 3731 (0.01583 s)
+Flow search took (seconds) 0.093313
+SUBG cut expansion 0.2
+SUBG cut minside volume 7519
+SUBG cut maxside volume 7407
 == End round 23 ==
-Cap 1 ... flow: 1097 (0.001868 s)
-Cap 2 ... flow: 1157 (0.001573 s)
-Cap 4 ... flow: 1190 (0.00144 s)
-Cap 8 ... flow: 1198 (0.001792 s)
-Flow search took (seconds) 0.007182
+H expansion: 10.2262, num cross: 38154
+H_single expansion: 9.2163, num cross: 34386
+9859
+9861
+Cap 1 ... flow: 3199 (0.035051 s)
+Cap 2 ... flow: 3584 (0.039185 s)
+Cap 4 ... flow: 3718 (0.040258 s)
+Cap 8 ... flow: 3731 (0.017953 s)
+Flow search took (seconds) 0.134736
+SUBG cut expansion 0.1875
+SUBG cut minside volume 7520
+SUBG cut maxside volume 7406
 == End round 24 ==
-The cut with highest capacity required was found on round0
+H Expansion target reached, this will be case 1 or 3. According to theory, this means we probably won't find a better cut. That is, assuming you set H_phi right. If was used together with G_phi target, this also certifies the input graph is a G_phi expander unless there was a very unbaanced cut somewhere, which we will proceed to look for.
+The best with highest expansion was found on round0
 Best cut sparsity: 
-Edge crossings (E) : 2
-cut size: (10 | 2386)
-diff: 2376 (0.991653 of total n vertices)
-Min side: 10
-E/min(|S|, |comp(S)|) = 0.2
+Edge crossings (E) : 38
+cut size: (11 | 2385)
+diff: 2374 (0.990818 of total n vertices)
+Min side: 11
+E/min(|S|, |comp(S)|) = 3.45455
+CASE3 Found goodenough but very unbalanced cut.
 Writing partition with 2396 nodes to file out/add20.ptn
 
 The given partition achieved the following:

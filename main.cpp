@@ -799,8 +799,7 @@ struct CutMatching {
     unique_ptr<RoundReport> sub_one_round() {
         unique_ptr<RoundReport> report = make_unique<RoundReport>();
 
-        double h_multi_out_sub = 0;
-        Bisectionp sub_bisection = cut_player(sgc.only_splits, sub_matchings, h_multi_out_sub);
+        Bisectionp sub_bisection = cut_player(sgc.only_splits, sub_matchings, report->multi_h_expansion);
         // Well ok, it's doing the first random thing well.
         // TODO test on rest...
 

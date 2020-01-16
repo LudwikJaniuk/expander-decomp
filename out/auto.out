@@ -1,128 +1,26 @@
 Reading graph from graphs/auto.graph
 Reading a graph with V 448695E 3314611
 Odd number of vertices, adding extra one.
-Cap 1 ... flow: 224348 (5.75531 s)
-Flow search took (seconds) 5.95864
+H expansion: 0, num cross: 0
+H_single expansion: 0, num cross: 0
+3763308
+3763310
+Cap 1 ... flow: 1657256 (137.292 s)
+Cap 2 ... flow: 1657306 (92.871 s)
+Flow search took (seconds) 231.687
+SUBG cut expansion 9.95808
+SUBG cut minside volume 3314725
+SUBG cut maxside volume 3314499
 == End round 0 ==
-Cap 1 ... flow: 224348 (5.34418 s)
-Flow search took (seconds) 5.54908
-== End round 1 ==
-Cap 1 ... flow: 224348 (7.00862 s)
-Flow search took (seconds) 7.21221
-== End round 2 ==
-Cap 1 ... flow: 224348 (5.91281 s)
-Flow search took (seconds) 6.11809
-== End round 3 ==
-Cap 1 ... flow: 224348 (12.2427 s)
-Flow search took (seconds) 12.4475
-== End round 4 ==
-Cap 1 ... flow: 224348 (11.4841 s)
-Flow search took (seconds) 11.6899
-== End round 5 ==
-Cap 1 ... flow: 224348 (10.5124 s)
-Flow search took (seconds) 10.7151
-== End round 6 ==
-Cap 1 ... flow: 224348 (10.7214 s)
-Flow search took (seconds) 10.9253
-== End round 7 ==
-Cap 1 ... flow: 223882 (84.5252 s)
-Cap 2 ... flow: 224348 (23.6761 s)
-Flow search took (seconds) 108.672
-== End round 8 ==
-Cap 1 ... flow: 224348 (20.0069 s)
-Flow search took (seconds) 20.2107
-== End round 9 ==
-Cap 1 ... flow: 218996 (72.9859 s)
-Cap 2 ... flow: 224348 (37.7597 s)
-Flow search took (seconds) 111.216
-== End round 10 ==
-Cap 1 ... flow: 215581 (28.9401 s)
-Cap 2 ... flow: 224348 (14.2024 s)
-Flow search took (seconds) 43.573
-== End round 11 ==
-Cap 1 ... flow: 208370 (44.4296 s)
-Cap 2 ... flow: 220495 (21.081 s)
-Cap 4 ... flow: 224348 (13.8967 s)
-Flow search took (seconds) 80.0225
-== End round 12 ==
-Cap 1 ... flow: 201780 (41.8337 s)
-Cap 2 ... flow: 219142 (88.744 s)
-Cap 4 ... flow: 224348 (36.4285 s)
-Flow search took (seconds) 167.686
-== End round 13 ==
-Cap 1 ... flow: 164870 (86.2889 s)
-Cap 2 ... flow: 192917 (56.5555 s)
-Cap 4 ... flow: 223516 (74.5197 s)
-Cap 8 ... flow: 224348 (18.4686 s)
-Flow search took (seconds) 236.721
-== End round 14 ==
-Cap 1 ... flow: 183769 (89.0182 s)
-Cap 2 ... flow: 204497 (86.5167 s)
-Cap 4 ... flow: 224348 (56.9663 s)
-Flow search took (seconds) 233.165
-== End round 15 ==
-Cap 1 ... flow: 144656 (89.7317 s)
-Cap 2 ... flow: 165995 (87.0013 s)
-Cap 4 ... flow: 199328 (94.3462 s)
-Cap 8 ... flow: 224348 (63.7283 s)
-Flow search took (seconds) 335.692
-== End round 16 ==
-Cap 1 ... flow: 145101 (93.2762 s)
-Cap 2 ... flow: 157710 (92.6895 s)
-Cap 4 ... flow: 176413 (103.294 s)
-Cap 8 ... flow: 204600 (98.0275 s)
-Cap 16 ... flow: 224348 (45.5467 s)
-Flow search took (seconds) 433.915
-== End round 17 ==
-Cap 1 ... flow: 167537 (88.6362 s)
-Cap 2 ... flow: 195868 (77.4668 s)
-Cap 4 ... flow: 213572 (39.7639 s)
-Cap 8 ... flow: 224348 (22.1237 s)
-Flow search took (seconds) 228.833
-== End round 18 ==
-Cap 1 ... flow: 134064 (94.5488 s)
-Cap 2 ... flow: 145807 (114.072 s)
-Cap 4 ... flow: 165858 (66.0031 s)
-Cap 8 ... flow: 197393 (94.9519 s)
-Cap 16 ... flow: 224348 (45.4587 s)
-Flow search took (seconds) 416.107
-== End round 19 ==
-Cap 1 ... flow: 153542 (104.014 s)
-Cap 2 ... flow: 176970 (92.3357 s)
-Cap 4 ... flow: 206824 (80.0693 s)
-Cap 8 ... flow: 224348 (32.4956 s)
-Flow search took (seconds) 309.74
-== End round 20 ==
-Cap 1 ... flow: 185542 (99.1532 s)
-Cap 2 ... flow: 211770 (71.1871 s)
-Cap 4 ... flow: 224348 (26.3751 s)
-Flow search took (seconds) 197.375
-== End round 21 ==
-Cap 1 ... flow: 198566 (116.819 s)
-Cap 2 ... flow: 224348 (42.3447 s)
-Flow search took (seconds) 159.597
-== End round 22 ==
-Cap 1 ... flow: 128343 (97.6822 s)
-Cap 2 ... flow: 150883 (104.803 s)
-Cap 4 ... flow: 184330 (66.02 s)
-Cap 8 ... flow: 218230 (58.9909 s)
-Cap 16 ... flow: 224348 (24.2478 s)
-Flow search took (seconds) 352.801
-== End round 23 ==
-Cap 1 ... flow: 88969 (88.3778 s)
-Cap 2 ... flow: 104868 (91.9752 s)
-Cap 4 ... flow: 129427 (99.7758 s)
-Cap 8 ... flow: 170778 (82.8168 s)
-Cap 16 ... flow: 224348 (59.6733 s)
-Flow search took (seconds) 423.693
-== End round 24 ==
-The cut with highest capacity required was found on round17
+CASE2 G Expansion target reached with a cut that is relatively balanced. Cut-matching game has found a balanced cut as good as you wanted it.
+The best with highest expansion was found on round0
 Best cut sparsity: 
-Edge crossings (E) : 6431
-cut size: (123922 | 324774)
-diff: 200852 (0.447635 of total n vertices)
-Min side: 123922
-E/min(|S|, |comp(S)|) = 0.0518955
+Edge crossings (E) : 1663
+cut size: (167 | 448529)
+diff: 448362 (0.999256 of total n vertices)
+Min side: 167
+E/min(|S|, |comp(S)|) = 9.95808
+CASE2 Goodenough balanced cut
 Writing partition with 448696 nodes to file out/auto.ptn
 
 The given partition achieved the following:

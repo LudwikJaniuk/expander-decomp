@@ -1,131 +1,44 @@
 Reading graph from graphs/bcsstk32.graph
 Reading a graph with V 44609E 985046
 Odd number of vertices, adding extra one.
-Cap 1 ... flow: 22305 (0.911638 s)
-Flow search took (seconds) 0.927139
+H expansion: 0, num cross: 0
+H_single expansion: 0, num cross: 0
+1029657
+1029659
+Cap 1 ... flow: 492039 (191.492 s)
+Cap 2 ... flow: 492523 (164.099 s)
+Flow search took (seconds) 355.934
+SUBG cut expansion 0.138528
+SUBG cut minside volume 1106519
+SUBG cut maxside volume 863575
 == End round 0 ==
-Cap 1 ... flow: 22305 (1.31623 s)
-Flow search took (seconds) 1.33219
+H expansion: 0, num cross: 0
+H_single expansion: 0, num cross: 0
+1029657
+1029659
+Cap 1 ... flow: 491393 (207.491 s)
+Cap 2 ... flow: 491976 (188.587 s)
+Cap 4 ... flow: 492523 (169.785 s)
+Flow search took (seconds) 566.214
+SUBG cut expansion 0.0990314
+SUBG cut minside volume 1114600
+SUBG cut maxside volume 855494
 == End round 1 ==
-Cap 1 ... flow: 22305 (1.09882 s)
-Flow search took (seconds) 1.11431
+H expansion: 0.334441, num cross: 164720
+H_single expansion: 0.334441, num cross: 164720
+1029657
+1029659
+Cap 1 ... flow: 492200 (47.2659 s)
+Cap 2 ... flow: 492523 (60.6029 s)
+Flow search took (seconds) 107.995
+SUBG cut expansion 0.175151
+SUBG cut minside volume 123810
+SUBG cut maxside volume 1846284
 == End round 2 ==
-Cap 1 ... flow: 22305 (1.55015 s)
-Flow search took (seconds) 1.5657
-== End round 3 ==
-Cap 1 ... flow: 22305 (0.788359 s)
-Flow search took (seconds) 0.804055
-== End round 4 ==
-Cap 1 ... flow: 22305 (1.2241 s)
-Flow search took (seconds) 1.23981
-== End round 5 ==
-Cap 1 ... flow: 22305 (1.86805 s)
-Flow search took (seconds) 1.88358
-== End round 6 ==
-Cap 1 ... flow: 22305 (2.03712 s)
-Flow search took (seconds) 2.05266
-== End round 7 ==
-Cap 1 ... flow: 22305 (1.46055 s)
-Flow search took (seconds) 1.47615
-== End round 8 ==
-Cap 1 ... flow: 21945 (3.64373 s)
-Cap 2 ... flow: 22305 (2.73327 s)
-Flow search took (seconds) 6.41248
-== End round 9 ==
-Cap 1 ... flow: 21471 (2.54931 s)
-Cap 2 ... flow: 22030 (3.11684 s)
-Cap 4 ... flow: 22305 (2.45489 s)
-Flow search took (seconds) 8.17441
-== End round 10 ==
-Cap 1 ... flow: 21804 (0.467436 s)
-Cap 2 ... flow: 22305 (0.590912 s)
-Flow search took (seconds) 1.09064
-== End round 11 ==
-Cap 1 ... flow: 21198 (0.906882 s)
-Cap 2 ... flow: 21796 (0.835587 s)
-Cap 4 ... flow: 22305 (0.592897 s)
-Flow search took (seconds) 2.38436
-== End round 12 ==
-Cap 1 ... flow: 17899 (2.34159 s)
-Cap 2 ... flow: 18455 (1.78066 s)
-Cap 4 ... flow: 19563 (2.35521 s)
-Cap 8 ... flow: 21779 (2.92616 s)
-Cap 16 ... flow: 22305 (2.13454 s)
-Flow search took (seconds) 11.6252
-== End round 13 ==
-Cap 1 ... flow: 13729 (1.15369 s)
-Cap 2 ... flow: 16956 (1.63539 s)
-Cap 4 ... flow: 18649 (2.11212 s)
-Cap 8 ... flow: 20865 (2.73837 s)
-Cap 16 ... flow: 22305 (2.46612 s)
-Flow search took (seconds) 10.1917
-== End round 14 ==
-Cap 1 ... flow: 21001 (0.599164 s)
-Cap 2 ... flow: 21555 (0.65906 s)
-Cap 4 ... flow: 22305 (0.789571 s)
-Flow search took (seconds) 2.09625
-== End round 15 ==
-Cap 1 ... flow: 20281 (0.402936 s)
-Cap 2 ... flow: 20837 (0.441179 s)
-Cap 4 ... flow: 21945 (0.511909 s)
-Cap 8 ... flow: 22305 (0.359643 s)
-Flow search took (seconds) 1.78091
-== End round 16 ==
-Cap 1 ... flow: 21232 (3.04631 s)
-Cap 2 ... flow: 21791 (3.38656 s)
-Cap 4 ... flow: 22305 (2.36882 s)
-Flow search took (seconds) 8.85496
-== End round 17 ==
-Cap 1 ... flow: 20476 (0.868382 s)
-Cap 2 ... flow: 21175 (0.852004 s)
-Cap 4 ... flow: 22283 (1.15785 s)
-Cap 8 ... flow: 22305 (0.696689 s)
-Flow search took (seconds) 3.64007
-== End round 18 ==
-Cap 1 ... flow: 20395 (1.35501 s)
-Cap 2 ... flow: 21639 (0.879289 s)
-Cap 4 ... flow: 22305 (0.695602 s)
-Flow search took (seconds) 2.97827
-== End round 19 ==
-Cap 1 ... flow: 18844 (0.541351 s)
-Cap 2 ... flow: 19399 (0.471161 s)
-Cap 4 ... flow: 20507 (0.469706 s)
-Cap 8 ... flow: 22305 (0.754178 s)
-Flow search took (seconds) 2.30141
-== End round 20 ==
-Cap 1 ... flow: 20709 (1.08492 s)
-Cap 2 ... flow: 21263 (0.901024 s)
-Cap 4 ... flow: 22305 (0.816147 s)
-Flow search took (seconds) 2.85092
-== End round 21 ==
-Cap 1 ... flow: 21795 (0.652928 s)
-Cap 2 ... flow: 22305 (0.617251 s)
-Flow search took (seconds) 1.30189
-== End round 22 ==
-Cap 1 ... flow: 18993 (1.69024 s)
-Cap 2 ... flow: 20578 (2.39249 s)
-Cap 4 ... flow: 21687 (2.96694 s)
-Cap 8 ... flow: 22305 (2.43685 s)
-Flow search took (seconds) 9.55608
-== End round 23 ==
-Cap 1 ... flow: 18679 (2.35152 s)
-Cap 2 ... flow: 19233 (1.95274 s)
-Cap 4 ... flow: 20341 (2.61844 s)
-Cap 8 ... flow: 22305 (2.9376 s)
-Flow search took (seconds) 9.93091
-== End round 24 ==
-The cut with highest capacity required was found on round13
-Best cut sparsity: 
-Edge crossings (E) : 554
-cut size: (6002 | 38608)
-diff: 32606 (0.730912 of total n vertices)
-Min side: 6002
-E/min(|S|, |comp(S)|) = 0.0923026
-Writing partition with 44610 nodes to file out/bcsstk32.ptn
-
-The given partition achieved the following:
-Edge crossings (E) : 4622
-cut size: (21290 | 23320)
-diff: 2030 (0.0455055 of total n vertices)
-Min side: 21290
-E/min(|S|, |comp(S)|) = 0.217097
+H expansion: 0.746191, num cross: 367516
+H_single expansion: 0.746191, num cross: 367516
+1029657
+1029659
+Cap 1 ... flow: 491267 (159.489 s)
+Cap 2 ... flow: 491969 (191.944 s)
+Cap 4 ... 
