@@ -5,21 +5,43 @@ H expansion: 0, num cross: 0
 H_single expansion: 0, num cross: 0
 1219045
 1219047
-Cap 1 ... flow: 536956 (49.6438 s)
-Cap 2 ... flow: 537197 (17.7841 s)
-Flow search took (seconds) 67.8852
+Cap 1 ... flow: 536956 (67.2614 s)
+Cap 2 ... flow: 537197 (21.6224 s)
+Flow search took (seconds) 89.5599
 SUBG cut expansion 0.534361
 SUBG cut minside volume 1122732
 SUBG cut maxside volume 1026058
 == End round 0 ==
+H expansion: 1.86151e-06, num cross: 1
+H_single expansion: 1.86151e-06, num cross: 1
+1219045
+1219047
+Cap 1 ... flow: 536776 (91.0653 s)
+Cap 2 ... flow: 537197 (34.2399 s)
+Flow search took (seconds) 125.699
+SUBG cut expansion 0.257463
+SUBG cut minside volume 517516
+SUBG cut maxside volume 1631274
+== End round 1 ==
+H expansion: 0.33401, num cross: 179429
+H_single expansion: 0.33401, num cross: 179429
+1219045
+1219047
+Cap 1 ... flow: 535300 (88.0654 s)
+Cap 2 ... flow: 537197 (23.1816 s)
+Flow search took (seconds) 111.559
+SUBG cut expansion 1.20134
+SUBG cut minside volume 310304
+SUBG cut maxside volume 1838486
+== End round 2 ==
 CASE2 G Expansion target reached with a cut that is relatively balanced. Cut-matching game has found a balanced cut as good as you wanted it.
-The best with highest expansion was found on round0
+The best with highest expansion was found on round2
 Best cut sparsity: 
-Edge crossings (E) : 3849
-cut size: (7203 | 137447)
-diff: 130244 (0.900408 of total n vertices)
-Min side: 7203
-E/min(|S|, |comp(S)|) = 0.534361
+Edge crossings (E) : 46504
+cut size: (38710 | 105940)
+diff: 67230 (0.464777 of total n vertices)
+Min side: 38710
+E/min(|S|, |comp(S)|) = 1.20134
 CASE2 Goodenough balanced cut
 Writing partition with 144650 nodes to file out/144.ptn
 

@@ -375,14 +375,6 @@ void print_end_round_message(int i) {
     l.debug() << "======================" << endl;
 }
 
-template <typename GG>
-void print_matching(GG& g, const Matchingp &m, decltype(cout)& stream) {
-    for (auto& e : *m) {
-        stream << "(" << g.id(e[0]) << ", " << g.id(e[1]) << "), ";
-    }
-    stream << endl;
-}
-
 void print_cut(const Bisection &out_cut, decltype(cout)& stream) {
     for (Node n : out_cut) {
         stream << G::id(n) << ", ";

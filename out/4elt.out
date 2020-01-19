@@ -4,10 +4,10 @@ H expansion: 0, num cross: 0
 H_single expansion: 0, num cross: 0
 61484
 61486
-Cap 1 ... flow: 21486 (1.33699 s)
-Cap 2 ... flow: 22840 (1.9459 s)
-Cap 4 ... flow: 22939 (0.84283 s)
-Flow search took (seconds) 4.1414
+Cap 1 ... flow: 21486 (1.2095 s)
+Cap 2 ... flow: 22840 (2.13976 s)
+Cap 4 ... flow: 22939 (0.936703 s)
+Flow search took (seconds) 4.30278
 SUBG cut expansion 0.0564284
 SUBG cut minside volume 59024
 SUBG cut maxside volume 32732
@@ -16,10 +16,10 @@ H expansion: 4.35939e-05, num cross: 1
 H_single expansion: 4.35939e-05, num cross: 1
 61484
 61486
-Cap 1 ... flow: 20412 (0.908373 s)
-Cap 2 ... flow: 22710 (1.61878 s)
-Cap 4 ... flow: 22939 (0.767131 s)
-Flow search took (seconds) 3.30552
+Cap 1 ... flow: 20412 (1.09007 s)
+Cap 2 ... flow: 22710 (1.97888 s)
+Cap 4 ... flow: 22939 (0.897607 s)
+Flow search took (seconds) 3.97876
 SUBG cut expansion 0.084022
 SUBG cut minside volume 64759
 SUBG cut maxside volume 26997
@@ -28,11 +28,11 @@ H expansion: 0.325733, num cross: 7472
 H_single expansion: 0.325733, num cross: 7472
 61484
 61486
-Cap 1 ... flow: 19623 (0.862363 s)
-Cap 2 ... flow: 22294 (0.878754 s)
-Cap 4 ... flow: 22848 (1.30667 s)
-Cap 8 ... flow: 22939 (0.395859 s)
-Flow search took (seconds) 3.45443
+Cap 1 ... flow: 19623 (1.08856 s)
+Cap 2 ... flow: 22294 (1.0896 s)
+Cap 4 ... flow: 22848 (1.44369 s)
+Cap 8 ... flow: 22939 (0.438079 s)
+Flow search took (seconds) 4.07119
 SUBG cut expansion 0.0280172
 SUBG cut minside volume 13685
 SUBG cut maxside volume 78071
@@ -41,11 +41,11 @@ H expansion: 0.709578, num cross: 16277
 H_single expansion: 0.709578, num cross: 16277
 61484
 61486
-Cap 1 ... flow: 18744 (0.918851 s)
-Cap 2 ... flow: 21570 (1.5145 s)
-Cap 4 ... flow: 22477 (3.17776 s)
-Cap 8 ... flow: 22939 (2.5708 s)
-Flow search took (seconds) 8.196
+Cap 1 ... flow: 18744 (1.05528 s)
+Cap 2 ... flow: 21570 (1.87511 s)
+Cap 4 ... flow: 22477 (3.9554 s)
+Cap 8 ... flow: 22939 (3.04731 s)
+Flow search took (seconds) 9.95031
 SUBG cut expansion 0.0313351
 SUBG cut minside volume 63071
 SUBG cut maxside volume 28685
@@ -54,11 +54,11 @@ H expansion: 1.11696, num cross: 25622
 H_single expansion: 1.10746, num cross: 25404
 61484
 61486
-Cap 1 ... flow: 18156 (1.13884 s)
-Cap 2 ... flow: 21326 (1.24001 s)
-Cap 4 ... flow: 22553 (1.29276 s)
-Cap 8 ... flow: 22939 (1.4622 s)
-Flow search took (seconds) 5.14436
+Cap 1 ... flow: 18156 (1.38302 s)
+Cap 2 ... flow: 21326 (1.5714 s)
+Cap 4 ... flow: 22553 (1.61703 s)
+Cap 8 ... flow: 22939 (1.78802 s)
+Flow search took (seconds) 6.37105
 SUBG cut expansion 0.0416237
 SUBG cut minside volume 14358
 SUBG cut maxside volume 77398
@@ -67,11 +67,11 @@ H expansion: 1.52069, num cross: 34883
 H_single expansion: 1.49217, num cross: 34229
 61484
 61486
-Cap 1 ... flow: 17441 (0.920958 s)
-Cap 2 ... flow: 20461 (1.2135 s)
-Cap 4 ... flow: 22262 (2.77958 s)
-Cap 8 ... flow: 22939 (2.62424 s)
-Flow search took (seconds) 7.55294
+Cap 1 ... flow: 17441 (1.07814 s)
+Cap 2 ... flow: 20461 (1.58247 s)
+Cap 4 ... flow: 22262 (3.49084 s)
+Cap 8 ... flow: 22939 (3.04126 s)
+Flow search took (seconds) 9.20851
 SUBG cut expansion 0.11477
 SUBG cut minside volume 54872
 SUBG cut maxside volume 36884
@@ -80,12 +80,12 @@ H expansion: 1.90095, num cross: 43606
 H_single expansion: 1.84624, num cross: 42351
 61484
 61486
-Cap 1 ... flow: 16788 (0.990662 s)
-Cap 2 ... flow: 19411 (1.31088 s)
-Cap 4 ... flow: 20744 (1.33047 s)
-Cap 8 ... flow: 21845 (2.48178 s)
-Cap 16 ... flow: 22939 (2.67439 s)
-Flow search took (seconds) 8.80244
+Cap 1 ... flow: 16788 (1.18074 s)
+Cap 2 ... flow: 19411 (1.51999 s)
+Cap 4 ... flow: 20744 (1.83101 s)
+Cap 8 ... flow: 21845 (3.42337 s)
+Cap 16 ... flow: 22939 (3.37681 s)
+Flow search took (seconds) 11.3467
 SUBG cut expansion 0.0347629
 SUBG cut minside volume 22219
 SUBG cut maxside volume 69537
@@ -94,12 +94,12 @@ H expansion: 2.3236, num cross: 53301
 H_single expansion: 2.22765, num cross: 51100
 61484
 61486
-Cap 1 ... flow: 16725 (1.15296 s)
-Cap 2 ... flow: 19686 (1.30452 s)
-Cap 4 ... flow: 21669 (1.77692 s)
-Cap 8 ... flow: 22880 (1.98608 s)
-Cap 16 ... flow: 22939 (0.635493 s)
-Flow search took (seconds) 6.87376
+Cap 1 ... flow: 16725 (1.3441 s)
+Cap 2 ... flow: 19686 (1.51997 s)
+Cap 4 ... flow: 21669 (1.89185 s)
+Cap 8 ... flow: 22880 (2.09394 s)
+Cap 16 ... flow: 22939 (0.686962 s)
+Flow search took (seconds) 7.55513
 SUBG cut expansion 0.176087
 SUBG cut minside volume 47184
 SUBG cut maxside volume 44572
@@ -108,12 +108,12 @@ H expansion: 2.70544, num cross: 62060
 H_single expansion: 2.5754, num cross: 59077
 61484
 61486
-Cap 1 ... flow: 15917 (1.10882 s)
-Cap 2 ... flow: 18383 (1.18679 s)
-Cap 4 ... flow: 20168 (1.78102 s)
-Cap 8 ... flow: 21733 (1.81263 s)
-Cap 16 ... flow: 22939 (1.11589 s)
-Flow search took (seconds) 7.01854
+Cap 1 ... flow: 15917 (1.26943 s)
+Cap 2 ... flow: 18383 (1.46843 s)
+Cap 4 ... flow: 20168 (2.37704 s)
+Cap 8 ... flow: 21733 (2.5766 s)
+Cap 16 ... flow: 22939 (1.36926 s)
+Flow search took (seconds) 9.07456
 SUBG cut expansion 0.0399019
 SUBG cut minside volume 18117
 SUBG cut maxside volume 73639
@@ -122,13 +122,13 @@ H expansion: 3.04647, num cross: 69883
 H_single expansion: 2.87118, num cross: 65862
 61484
 61486
-Cap 1 ... flow: 15059 (1.12149 s)
-Cap 2 ... flow: 16758 (1.15589 s)
-Cap 4 ... flow: 18228 (1.25249 s)
-Cap 8 ... flow: 19336 (1.52639 s)
-Cap 16 ... flow: 20858 (1.72815 s)
-Cap 32 ... flow: 22939 (2.4882 s)
-Flow search took (seconds) 9.28754
+Cap 1 ... flow: 15059 (1.32697 s)
+Cap 2 ... flow: 16758 (1.34907 s)
+Cap 4 ... flow: 18228 (1.49926 s)
+Cap 8 ... flow: 19336 (1.9155 s)
+Cap 16 ... flow: 20858 (2.59077 s)
+Cap 32 ... flow: 22939 (3.7071 s)
+Flow search took (seconds) 12.4051
 SUBG cut expansion 0.0197785
 SUBG cut minside volume 22348
 SUBG cut maxside volume 69408
@@ -137,13 +137,13 @@ H expansion: 3.55273, num cross: 81496
 H_single expansion: 3.31418, num cross: 76024
 61484
 61486
-Cap 1 ... flow: 15735 (1.05701 s)
-Cap 2 ... flow: 17561 (1.37357 s)
-Cap 4 ... flow: 18692 (1.79615 s)
-Cap 8 ... flow: 20012 (2.53544 s)
-Cap 16 ... flow: 21853 (3.65851 s)
-Cap 32 ... flow: 22939 (1.09456 s)
-Flow search took (seconds) 11.5304
+Cap 1 ... flow: 15735 (1.41428 s)
+Cap 2 ... flow: 17561 (1.90557 s)
+Cap 4 ... flow: 18692 (2.49808 s)
+Cap 8 ... flow: 20012 (3.78876 s)
+Cap 16 ... flow: 21853 (5.26966 s)
+Cap 32 ... flow: 22939 (1.61602 s)
+Flow search took (seconds) 16.5097
 SUBG cut expansion 0.027941
 SUBG cut minside volume 66301
 SUBG cut maxside volume 25455
@@ -152,14 +152,14 @@ H expansion: 3.62714, num cross: 83203
 H_single expansion: 3.37334, num cross: 77381
 61484
 61486
-Cap 1 ... flow: 13773 (0.99586 s)
-Cap 2 ... flow: 15242 (0.802166 s)
-Cap 4 ... flow: 16472 (0.903285 s)
-Cap 8 ... flow: 17810 (1.11179 s)
-Cap 16 ... flow: 19631 (1.10079 s)
-Cap 32 ... flow: 22497 (2.22584 s)
-Cap 64 ... flow: 22939 (1.1927 s)
-Flow search took (seconds) 8.34635
+Cap 1 ... flow: 13773 (1.36685 s)
+Cap 2 ... flow: 15242 (1.12406 s)
+Cap 4 ... flow: 16472 (1.28354 s)
+Cap 8 ... flow: 17810 (1.67937 s)
+Cap 16 ... flow: 19631 (1.72187 s)
+Cap 32 ... flow: 22497 (3.27837 s)
+Cap 64 ... flow: 22939 (1.72802 s)
+Flow search took (seconds) 12.2016
 SUBG cut expansion 0.0516648
 SUBG cut minside volume 7752
 SUBG cut maxside volume 84004
@@ -168,14 +168,14 @@ H expansion: 4.34143, num cross: 99588
 H_single expansion: 4.01953, num cross: 92204
 61484
 61486
-Cap 1 ... flow: 15137 (1.00224 s)
-Cap 2 ... flow: 16388 (1.02311 s)
-Cap 4 ... flow: 17551 (1.00168 s)
-Cap 8 ... flow: 18921 (1.15644 s)
-Cap 16 ... flow: 20460 (1.37012 s)
-Cap 32 ... flow: 22864 (1.8137 s)
-Cap 64 ... flow: 22939 (0.758515 s)
-Flow search took (seconds) 8.14098
+Cap 1 ... flow: 15137 (1.34472 s)
+Cap 2 ... flow: 16388 (1.4236 s)
+Cap 4 ... flow: 17551 (1.4365 s)
+Cap 8 ... flow: 18921 (1.73309 s)
+Cap 16 ... flow: 20460 (2.10611 s)
+Cap 32 ... flow: 22864 (2.60022 s)
+Cap 64 ... flow: 22939 (1.12163 s)
+Flow search took (seconds) 11.7835
 SUBG cut expansion 0.0455158
 SUBG cut minside volume 8775
 SUBG cut maxside volume 82981
@@ -184,14 +184,14 @@ H expansion: 4.37016, num cross: 100247
 H_single expansion: 4.03631, num cross: 92589
 61484
 61486
-Cap 1 ... flow: 13547 (1.29743 s)
-Cap 2 ... flow: 14757 (1.49201 s)
-Cap 4 ... flow: 15707 (1.78908 s)
-Cap 8 ... flow: 16832 (2.29705 s)
-Cap 16 ... flow: 18410 (3.6178 s)
-Cap 32 ... flow: 20821 (3.37886 s)
-Cap 64 ... flow: 22939 (1.51303 s)
-Flow search took (seconds) 15.4013
+Cap 1 ... flow: 13547 (1.75321 s)
+Cap 2 ... flow: 14757 (2.0885 s)
+Cap 4 ... flow: 15707 (2.58703 s)
+Cap 8 ... flow: 16832 (3.45377 s)
+Cap 16 ... flow: 18410 (5.16506 s)
+Cap 32 ... flow: 20821 (4.97142 s)
+Cap 64 ... flow: 22939 (2.24185 s)
+Flow search took (seconds) 22.2816
 SUBG cut expansion 0.0180841
 SUBG cut minside volume 22522
 SUBG cut maxside volume 69234
@@ -200,14 +200,14 @@ H expansion: 4.91381, num cross: 112718
 H_single expansion: 4.51877, num cross: 103656
 61484
 61486
-Cap 1 ... flow: 14080 (0.936376 s)
-Cap 2 ... flow: 15080 (0.899798 s)
-Cap 4 ... flow: 15844 (1.00044 s)
-Cap 8 ... flow: 17055 (1.4092 s)
-Cap 16 ... flow: 18725 (1.96992 s)
-Cap 32 ... flow: 21508 (2.58937 s)
-Cap 64 ... flow: 22939 (1.61186 s)
-Flow search took (seconds) 10.4316
+Cap 1 ... flow: 14080 (1.26219 s)
+Cap 2 ... flow: 15080 (1.27255 s)
+Cap 4 ... flow: 15844 (1.40277 s)
+Cap 8 ... flow: 17055 (2.15502 s)
+Cap 16 ... flow: 18725 (3.40595 s)
+Cap 32 ... flow: 21508 (4.26074 s)
+Cap 64 ... flow: 22939 (2.49323 s)
+Flow search took (seconds) 16.2711
 SUBG cut expansion 0.0287019
 SUBG cut minside volume 18072
 SUBG cut maxside volume 73684
@@ -216,13 +216,13 @@ H expansion: 5.74903, num cross: 131877
 H_single expansion: 5.27865, num cross: 121087
 61484
 61486
-Cap 1 ... flow: 15906 (0.912321 s)
-Cap 2 ... flow: 17203 (1.08962 s)
-Cap 4 ... flow: 18239 (1.15934 s)
-Cap 8 ... flow: 19625 (1.67106 s)
-Cap 16 ... flow: 21224 (1.94182 s)
-Cap 32 ... flow: 22939 (2.1123 s)
-Flow search took (seconds) 8.90008
+Cap 1 ... flow: 15906 (1.1979 s)
+Cap 2 ... flow: 17203 (1.38764 s)
+Cap 4 ... flow: 18239 (1.55553 s)
+Cap 8 ... flow: 19625 (2.39207 s)
+Cap 16 ... flow: 21224 (3.05229 s)
+Cap 32 ... flow: 22939 (2.9672 s)
+Flow search took (seconds) 12.5695
 SUBG cut expansion 0.025972
 SUBG cut minside volume 64450
 SUBG cut maxside volume 27306
@@ -231,14 +231,14 @@ H expansion: 5.78491, num cross: 132700
 H_single expansion: 5.30084, num cross: 121596
 61484
 61486
-Cap 1 ... flow: 14176 (0.97001 s)
-Cap 2 ... flow: 14924 (0.877715 s)
-Cap 4 ... flow: 15509 (1.042 s)
-Cap 8 ... flow: 16462 (1.37053 s)
-Cap 16 ... flow: 18203 (1.79726 s)
-Cap 32 ... flow: 21197 (3.15443 s)
-Cap 64 ... flow: 22939 (2.19144 s)
-Flow search took (seconds) 11.4182
+Cap 1 ... flow: 14176 (1.29776 s)
+Cap 2 ... flow: 14924 (1.22404 s)
+Cap 4 ... flow: 15509 (1.47767 s)
+Cap 8 ... flow: 16462 (2.09452 s)
+Cap 16 ... flow: 18203 (3.05043 s)
+Cap 32 ... flow: 21197 (5.22006 s)
+Cap 64 ... flow: 22939 (3.42384 s)
+Flow search took (seconds) 17.8067
 SUBG cut expansion 0.0298413
 SUBG cut minside volume 18578
 SUBG cut maxside volume 73178
@@ -247,13 +247,13 @@ H expansion: 6.81603, num cross: 156353
 H_single expansion: 6.21636, num cross: 142597
 61484
 61486
-Cap 1 ... flow: 16219 (0.944196 s)
-Cap 2 ... flow: 17226 (0.99505 s)
-Cap 4 ... flow: 18280 (1.24102 s)
-Cap 8 ... flow: 19466 (2.34274 s)
-Cap 16 ... flow: 21249 (3.31947 s)
-Cap 32 ... flow: 22939 (3.00309 s)
-Flow search took (seconds) 11.8587
+Cap 1 ... flow: 16219 (1.46081 s)
+Cap 2 ... flow: 17226 (1.65081 s)
+Cap 4 ... flow: 18280 (2.07831 s)
+Cap 8 ... flow: 19466 (4.20443 s)
+Cap 16 ... flow: 21249 (5.74495 s)
+Cap 32 ... flow: 22939 (4.56768 s)
+Flow search took (seconds) 19.7236
 SUBG cut expansion 0.0286269
 SUBG cut minside volume 22822
 SUBG cut maxside volume 68934
@@ -262,14 +262,14 @@ H expansion: 5.8088, num cross: 133248
 H_single expansion: 5.31749, num cross: 121978
 61484
 61486
-Cap 1 ... flow: 11931 (1.00804 s)
-Cap 2 ... flow: 12841 (0.988206 s)
-Cap 4 ... flow: 13696 (1.17528 s)
-Cap 8 ... flow: 14993 (1.59268 s)
-Cap 16 ... flow: 16919 (2.89656 s)
-Cap 32 ... flow: 20069 (3.93327 s)
-Cap 64 ... flow: 22939 (1.21229 s)
-Flow search took (seconds) 12.8253
+Cap 1 ... flow: 11931 (1.4399 s)
+Cap 2 ... flow: 12841 (1.46102 s)
+Cap 4 ... flow: 13696 (1.7477 s)
+Cap 8 ... flow: 14993 (2.45461 s)
+Cap 16 ... flow: 16919 (4.25523 s)
+Cap 32 ... flow: 20069 (4.11958 s)
+Cap 64 ... flow: 22939 (1.34231 s)
+Flow search took (seconds) 16.8433
 SUBG cut expansion 0.038304
 SUBG cut minside volume 60136
 SUBG cut maxside volume 31620
@@ -278,14 +278,14 @@ H expansion: 7.20088, num cross: 165181
 H_single expansion: 6.54453, num cross: 150125
 61484
 61486
-Cap 1 ... flow: 14489 (1.36008 s)
-Cap 2 ... flow: 15438 (1.37356 s)
-Cap 4 ... flow: 16230 (1.40721 s)
-Cap 8 ... flow: 17527 (2.17456 s)
-Cap 16 ... flow: 19591 (4.60648 s)
-Cap 32 ... flow: 22737 (3.67913 s)
-Cap 64 ... flow: 22939 (0.973107 s)
-Flow search took (seconds) 15.5923
+Cap 1 ... flow: 14489 (1.44995 s)
+Cap 2 ... flow: 15438 (1.48974 s)
+Cap 4 ... flow: 16230 (1.56827 s)
+Cap 8 ... flow: 17527 (2.53312 s)
+Cap 16 ... flow: 19591 (5.82136 s)
+Cap 32 ... flow: 22737 (4.45268 s)
+Cap 64 ... flow: 22939 (1.13937 s)
+Flow search took (seconds) 18.4741
 SUBG cut expansion 0.0276035
 SUBG cut minside volume 11756
 SUBG cut maxside volume 80000
@@ -294,14 +294,14 @@ H expansion: 7.40869, num cross: 169948
 H_single expansion: 6.71995, num cross: 154149
 61484
 61486
-Cap 1 ... flow: 13774 (1.31852 s)
-Cap 2 ... flow: 14725 (1.62129 s)
-Cap 4 ... flow: 15485 (1.93404 s)
-Cap 8 ... flow: 16487 (2.84024 s)
-Cap 16 ... flow: 18422 (3.8859 s)
-Cap 32 ... flow: 21492 (5.30866 s)
-Cap 64 ... flow: 22939 (1.74048 s)
-Flow search took (seconds) 18.669
+Cap 1 ... flow: 13774 (1.43903 s)
+Cap 2 ... flow: 14725 (1.88673 s)
+Cap 4 ... flow: 15485 (2.43854 s)
+Cap 8 ... flow: 16487 (3.36662 s)
+Cap 16 ... flow: 18422 (3.35024 s)
+Cap 32 ... flow: 21492 (5.72669 s)
+Cap 64 ... flow: 22939 (2.22883 s)
+Flow search took (seconds) 20.4583
 SUBG cut expansion 0.0219674
 SUBG cut minside volume 67064
 SUBG cut maxside volume 24692
@@ -310,13 +310,13 @@ H expansion: 8.44941, num cross: 193821
 H_single expansion: 7.63163, num cross: 175062
 61484
 61486
-Cap 1 ... flow: 15540 (1.042 s)
-Cap 2 ... flow: 16494 (1.61631 s)
-Cap 4 ... flow: 17263 (2.30961 s)
-Cap 8 ... flow: 18537 (2.79362 s)
-Cap 16 ... flow: 21038 (3.66525 s)
-Cap 32 ... flow: 22939 (1.76873 s)
-Flow search took (seconds) 13.2155
+Cap 1 ... flow: 15540 (1.3777 s)
+Cap 2 ... flow: 16494 (1.6514 s)
+Cap 4 ... flow: 17263 (2.24161 s)
+Cap 8 ... flow: 18537 (3.15538 s)
+Cap 16 ... flow: 21038 (5.63734 s)
+Cap 32 ... flow: 22939 (1.76299 s)
+Flow search took (seconds) 15.8436
 SUBG cut expansion 0.043417
 SUBG cut minside volume 66568
 SUBG cut maxside volume 25188
@@ -325,14 +325,14 @@ H expansion: 7.69249, num cross: 176458
 H_single expansion: 6.96726, num cross: 159822
 61484
 61486
-Cap 1 ... flow: 12675 (1.06191 s)
-Cap 2 ... flow: 13650 (1.01982 s)
-Cap 4 ... flow: 14360 (1.1035 s)
-Cap 8 ... flow: 15171 (1.30304 s)
-Cap 16 ... flow: 16713 (1.70965 s)
-Cap 32 ... flow: 19785 (2.6186 s)
-Cap 64 ... flow: 22939 (1.26629 s)
-Flow search took (seconds) 10.0987
+Cap 1 ... flow: 12675 (1.42447 s)
+Cap 2 ... flow: 13650 (1.45827 s)
+Cap 4 ... flow: 14360 (1.61089 s)
+Cap 8 ... flow: 15171 (1.91366 s)
+Cap 16 ... flow: 16713 (2.88211 s)
+Cap 32 ... flow: 19785 (3.91762 s)
+Cap 64 ... flow: 22939 (1.8886 s)
+Flow search took (seconds) 15.1168
 SUBG cut expansion 0.0263938
 SUBG cut minside volume 67596
 SUBG cut maxside volume 24160
@@ -341,13 +341,13 @@ H expansion: 9.82663, num cross: 225413
 H_single expansion: 8.81089, num cross: 202113
 61484
 61486
-Cap 1 ... flow: 17531 (0.683421 s)
-Cap 2 ... flow: 18990 (0.756142 s)
-Cap 4 ... flow: 19881 (0.957314 s)
-Cap 8 ... flow: 20960 (1.08527 s)
-Cap 16 ... flow: 22324 (1.79715 s)
-Cap 32 ... flow: 22939 (1.43321 s)
-Flow search took (seconds) 6.72511
+Cap 1 ... flow: 17531 (1.02497 s)
+Cap 2 ... flow: 18990 (1.0757 s)
+Cap 4 ... flow: 19881 (1.50683 s)
+Cap 8 ... flow: 20960 (1.61314 s)
+Cap 16 ... flow: 22324 (2.53695 s)
+Cap 32 ... flow: 22939 (2.12869 s)
+Flow search took (seconds) 9.903
 SUBG cut expansion 0.0427648
 SUBG cut minside volume 11884
 SUBG cut maxside volume 79872
@@ -356,15 +356,15 @@ H expansion: 5.45673, num cross: 125172
 H_single expansion: 4.98252, num cross: 114294
 61484
 61486
-Cap 1 ... flow: 6927 (1.14349 s)
-Cap 2 ... flow: 7429 (1.05476 s)
-Cap 4 ... flow: 7873 (1.2732 s)
-Cap 8 ... flow: 8699 (1.48185 s)
-Cap 16 ... flow: 10234 (2.17731 s)
-Cap 32 ... flow: 13036 (3.12719 s)
-Cap 64 ... flow: 18554 (3.03424 s)
-Cap 128 ... flow: 22939 (2.33332 s)
-Flow search took (seconds) 15.6441
+Cap 1 ... flow: 6927 (1.52917 s)
+Cap 2 ... flow: 7429 (1.52054 s)
+Cap 4 ... flow: 7873 (1.72336 s)
+Cap 8 ... flow: 8699 (2.07868 s)
+Cap 16 ... flow: 10234 (3.5678 s)
+Cap 32 ... flow: 13036 (4.9987 s)
+Cap 64 ... flow: 18554 (4.52035 s)
+Cap 128 ... flow: 22939 (2.15492 s)
+Flow search took (seconds) 22.1153
 SUBG cut expansion 0.0233479
 SUBG cut minside volume 21608
 SUBG cut maxside volume 70148
@@ -373,15 +373,15 @@ H expansion: 8.80644, num cross: 202011
 H_single expansion: 7.86787, num cross: 180481
 61484
 61486
-Cap 1 ... flow: 11888 (1.08474 s)
-Cap 2 ... flow: 12449 (1.06317 s)
-Cap 4 ... flow: 13074 (1.08179 s)
-Cap 8 ... flow: 14193 (1.37358 s)
-Cap 16 ... flow: 15411 (2.17383 s)
-Cap 32 ... flow: 17579 (3.2127 s)
-Cap 64 ... flow: 21855 (5.04214 s)
-Cap 128 ... flow: 22939 (2.14955 s)
-Flow search took (seconds) 17.2027
+Cap 1 ... flow: 11888 (1.28338 s)
+Cap 2 ... flow: 12449 (1.30473 s)
+Cap 4 ... flow: 13074 (1.52981 s)
+Cap 8 ... flow: 14193 (2.00204 s)
+Cap 16 ... flow: 15411 (2.86813 s)
+Cap 32 ... flow: 17579 (4.6916 s)
+Cap 64 ... flow: 21855 (6.71533 s)
+Cap 128 ... flow: 22939 (2.3858 s)
+Flow search took (seconds) 22.808
 SUBG cut expansion 0.0228701
 SUBG cut minside volume 62639
 SUBG cut maxside volume 29117
@@ -390,18 +390,702 @@ H expansion: 10.3767, num cross: 238030
 H_single expansion: 9.24635, num cross: 212102
 61484
 61486
-Cap 1 ... flow: 14901 (1.62309 s)
-Cap 2 ... flow: 15867 (1.83868 s)
-Cap 4 ... flow: 16609 (1.94215 s)
-Cap 8 ... flow: 17591 (3.13146 s)
-Cap 16 ... flow: 19143 (2.43018 s)
-Cap 32 ... flow: 21569 (4.29029 s)
-Cap 64 ... flow: 22939 (1.85628 s)
-Flow search took (seconds) 17.1322
+Cap 1 ... flow: 14901 (1.41921 s)
+Cap 2 ... flow: 15867 (1.59264 s)
+Cap 4 ... flow: 16609 (1.78088 s)
+Cap 8 ... flow: 17591 (2.76919 s)
+Cap 16 ... flow: 19143 (2.96014 s)
+Cap 32 ... flow: 21569 (4.79771 s)
+Cap 64 ... flow: 22939 (1.98339 s)
+Flow search took (seconds) 17.3241
 SUBG cut expansion 0.0252545
 SUBG cut minside volume 15070
 SUBG cut maxside volume 76686
 == End round 26 ==
+H expansion: 11.2017, num cross: 256955
+H_single expansion: 9.98522, num cross: 229051
+61484
+61486
+Cap 1 ... flow: 16068 (1.33517 s)
+Cap 2 ... flow: 17172 (1.54389 s)
+Cap 4 ... flow: 17716 (1.87607 s)
+Cap 8 ... flow: 18535 (3.3711 s)
+Cap 16 ... flow: 20076 (3.9892 s)
+Cap 32 ... flow: 22939 (5.71035 s)
+Flow search took (seconds) 17.8424
+SUBG cut expansion 0.026376
+SUBG cut minside volume 21910
+SUBG cut maxside volume 69846
+== End round 27 ==
+H expansion: 9.80409, num cross: 224896
+H_single expansion: 8.80527, num cross: 201984
+61484
+61486
+Cap 1 ... flow: 11773 (1.49573 s)
+Cap 2 ... flow: 12514 (1.49697 s)
+Cap 4 ... flow: 13378 (1.51437 s)
+Cap 8 ... flow: 14669 (1.66903 s)
+Cap 16 ... flow: 16732 (2.95909 s)
+Cap 32 ... flow: 19833 (3.43148 s)
+Cap 64 ... flow: 22939 (2.14381 s)
+Flow search took (seconds) 14.7288
+SUBG cut expansion 0.03838
+SUBG cut minside volume 13952
+SUBG cut maxside volume 77804
+== End round 28 ==
+H expansion: 9.76132, num cross: 223915
+H_single expansion: 8.75104, num cross: 200740
+61484
+61486
+Cap 1 ... flow: 11358 (1.76134 s)
+Cap 2 ... flow: 12039 (1.44442 s)
+Cap 4 ... flow: 12547 (1.6939 s)
+Cap 8 ... flow: 13306 (2.25892 s)
+Cap 16 ... flow: 14786 (3.6224 s)
+Cap 32 ... flow: 17608 (4.94243 s)
+Cap 64 ... flow: 22939 (7.00618 s)
+Flow search took (seconds) 22.751
+SUBG cut expansion 0.0235529
+SUBG cut minside volume 22170
+SUBG cut maxside volume 69586
+== End round 29 ==
+H expansion: 12.3468, num cross: 283224
+H_single expansion: 10.9505, num cross: 251193
+61484
+61486
+Cap 1 ... flow: 15315 (1.57845 s)
+Cap 2 ... flow: 16092 (1.54122 s)
+Cap 4 ... flow: 16751 (1.80493 s)
+Cap 8 ... flow: 17862 (3.42869 s)
+Cap 16 ... flow: 19787 (4.6389 s)
+Cap 32 ... flow: 22939 (6.02922 s)
+Flow search took (seconds) 19.0379
+SUBG cut expansion 0.029459
+SUBG cut minside volume 22086
+SUBG cut maxside volume 69670
+== End round 30 ==
+H expansion: 11.4487, num cross: 262621
+H_single expansion: 10.2159, num cross: 234343
+61484
+61486
+Cap 1 ... flow: 12457 (1.28002 s)
+Cap 2 ... flow: 13169 (1.30492 s)
+Cap 4 ... flow: 13772 (1.39619 s)
+Cap 8 ... flow: 14533 (1.91613 s)
+Cap 16 ... flow: 16015 (3.0173 s)
+Cap 32 ... flow: 18866 (3.34742 s)
+Cap 64 ... flow: 22939 (3.78214 s)
+Flow search took (seconds) 16.0641
+SUBG cut expansion 0.029063
+SUBG cut minside volume 17657
+SUBG cut maxside volume 74099
+== End round 31 ==
+H expansion: 12.7781, num cross: 293116
+H_single expansion: 11.3876, num cross: 261220
+61484
+61486
+Cap 1 ... flow: 14380 (1.64281 s)
+Cap 2 ... flow: 15404 (1.37824 s)
+Cap 4 ... flow: 16297 (1.58839 s)
+Cap 8 ... flow: 17480 (3.59317 s)
+Cap 16 ... flow: 18978 (4.35709 s)
+Cap 32 ... flow: 21746 (3.86816 s)
+Cap 64 ... flow: 22939 (1.36309 s)
+Flow search took (seconds) 17.8115
+SUBG cut expansion 0.0276261
+SUBG cut minside volume 64101
+SUBG cut maxside volume 27655
+== End round 32 ==
+H expansion: 12.709, num cross: 291531
+H_single expansion: 11.3113, num cross: 259469
+61484
+61486
+Cap 1 ... flow: 13190 (1.40302 s)
+Cap 2 ... flow: 13821 (1.39836 s)
+Cap 4 ... flow: 14506 (1.75341 s)
+Cap 8 ... flow: 15591 (2.04165 s)
+Cap 16 ... flow: 17447 (3.47853 s)
+Cap 32 ... flow: 20673 (5.26265 s)
+Cap 64 ... flow: 22939 (3.54464 s)
+Flow search took (seconds) 18.9057
+SUBG cut expansion 0.0288912
+SUBG cut minside volume 19492
+SUBG cut maxside volume 72264
+== End round 33 ==
+H expansion: 13.3454, num cross: 306130
+H_single expansion: 11.8732, num cross: 272360
+61484
+61486
+Cap 1 ... flow: 13628 (1.76555 s)
+Cap 2 ... flow: 14329 (1.74559 s)
+Cap 4 ... flow: 15119 (2.06744 s)
+Cap 8 ... flow: 16455 (2.90969 s)
+Cap 16 ... flow: 18578 (4.43215 s)
+Cap 32 ... flow: 22084 (6.48745 s)
+Cap 64 ... flow: 22939 (1.44034 s)
+Flow search took (seconds) 20.8711
+SUBG cut expansion 0.0405136
+SUBG cut minside volume 59058
+SUBG cut maxside volume 32698
+== End round 34 ==
+H expansion: 12.771, num cross: 292953
+H_single expansion: 11.4215, num cross: 261998
+61484
+61486
+Cap 1 ... flow: 12140 (1.52229 s)
+Cap 2 ... flow: 12811 (1.07731 s)
+Cap 4 ... flow: 13546 (1.19233 s)
+Cap 8 ... flow: 14622 (1.56533 s)
+Cap 16 ... flow: 16256 (1.67264 s)
+Cap 32 ... flow: 18764 (2.14095 s)
+Cap 64 ... flow: 22939 (2.63768 s)
+Flow search took (seconds) 11.8285
+SUBG cut expansion 0.0256065
+SUBG cut minside volume 17515
+SUBG cut maxside volume 74241
+== End round 35 ==
+H expansion: 13.7054, num cross: 314388
+H_single expansion: 12.177, num cross: 279329
+61484
+61486
+Cap 1 ... flow: 13296 (1.26202 s)
+Cap 2 ... flow: 14199 (0.975493 s)
+Cap 4 ... flow: 14995 (1.14983 s)
+Cap 8 ... flow: 15774 (1.66934 s)
+Cap 16 ... flow: 17022 (3.0617 s)
+Cap 32 ... flow: 19182 (4.35846 s)
+Cap 64 ... flow: 22939 (4.03139 s)
+Flow search took (seconds) 16.5264
+SUBG cut expansion 0.0228969
+SUBG cut minside volume 63128
+SUBG cut maxside volume 28628
+== End round 36 ==
+H expansion: 13.998, num cross: 321099
+H_single expansion: 12.4575, num cross: 285763
+61484
+61486
+Cap 1 ... flow: 12798 (1.36668 s)
+Cap 2 ... flow: 13641 (1.19812 s)
+Cap 4 ... flow: 14441 (1.60243 s)
+Cap 8 ... flow: 15654 (1.78937 s)
+Cap 16 ... flow: 17645 (2.26091 s)
+Cap 32 ... flow: 20914 (2.64 s)
+Cap 64 ... flow: 22939 (1.43709 s)
+Flow search took (seconds) 12.3113
+SUBG cut expansion 0.0297079
+SUBG cut minside volume 17879
+SUBG cut maxside volume 73877
+== End round 37 ==
+H expansion: 15.473, num cross: 354936
+H_single expansion: 13.6887, num cross: 314006
+61484
+61486
+Cap 1 ... flow: 14312 (1.1149 s)
+Cap 2 ... flow: 15242 (1.04286 s)
+Cap 4 ... flow: 16078 (1.37772 s)
+Cap 8 ... flow: 17536 (1.7446 s)
+Cap 16 ... flow: 19772 (2.6742 s)
+Cap 32 ... flow: 22939 (3.3946 s)
+Flow search took (seconds) 11.3643
+SUBG cut expansion 0.0355841
+SUBG cut minside volume 20255
+SUBG cut maxside volume 71501
+== End round 38 ==
+H expansion: 15.5405, num cross: 356483
+H_single expansion: 13.7372, num cross: 315118
+61484
+61486
+Cap 1 ... flow: 14033 (1.39137 s)
+Cap 2 ... flow: 14842 (1.30641 s)
+Cap 4 ... flow: 15385 (1.45737 s)
+Cap 8 ... flow: 16112 (1.64304 s)
+Cap 16 ... flow: 17504 (3.33817 s)
+Cap 32 ... flow: 20232 (3.54057 s)
+Cap 64 ... flow: 22939 (1.49495 s)
+Flow search took (seconds) 14.19
+SUBG cut expansion 0.0249483
+SUBG cut minside volume 65696
+SUBG cut maxside volume 26060
+== End round 39 ==
+H expansion: 13.9845, num cross: 320790
+H_single expansion: 12.503, num cross: 286807
+61484
+61486
+Cap 1 ... flow: 10916 (1.39298 s)
+Cap 2 ... flow: 11477 (1.49838 s)
+Cap 4 ... flow: 12207 (1.54578 s)
+Cap 8 ... flow: 13532 (1.96157 s)
+Cap 16 ... flow: 15784 (3.37106 s)
+Cap 32 ... flow: 19374 (3.18562 s)
+Cap 64 ... flow: 22939 (1.71518 s)
+Flow search took (seconds) 14.6928
+SUBG cut expansion 0.0351019
+SUBG cut minside volume 63927
+SUBG cut maxside volume 27829
+== End round 40 ==
+H expansion: 17.491, num cross: 401225
+H_single expansion: 15.3696, num cross: 352563
+61484
+61486
+Cap 1 ... flow: 15608 (1.18769 s)
+Cap 2 ... flow: 16614 (1.13648 s)
+Cap 4 ... flow: 17573 (1.09037 s)
+Cap 8 ... flow: 18806 (1.73659 s)
+Cap 16 ... flow: 20611 (1.82616 s)
+Cap 32 ... flow: 22939 (1.91646 s)
+Flow search took (seconds) 8.91083
+SUBG cut expansion 0.0448033
+SUBG cut minside volume 13018
+SUBG cut maxside volume 78738
+== End round 41 ==
+H expansion: 14.3124, num cross: 328312
+H_single expansion: 12.7629, num cross: 292769
+61484
+61486
+Cap 1 ... flow: 10840 (1.38333 s)
+Cap 2 ... flow: 11346 (1.18188 s)
+Cap 4 ... flow: 11898 (1.46715 s)
+Cap 8 ... flow: 12701 (1.6121 s)
+Cap 16 ... flow: 14118 (2.61064 s)
+Cap 32 ... flow: 16886 (2.85159 s)
+Cap 64 ... flow: 22282 (4.01248 s)
+Cap 128 ... flow: 22939 (0.843227 s)
+Flow search took (seconds) 15.9833
+SUBG cut expansion 0.023796
+SUBG cut minside volume 66426
+SUBG cut maxside volume 25330
+== End round 42 ==
+H expansion: 16.9541, num cross: 388909
+H_single expansion: 15.0007, num cross: 344102
+61484
+61486
+Cap 1 ... flow: 13760 (1.78176 s)
+Cap 2 ... flow: 14509 (1.80797 s)
+Cap 4 ... flow: 15226 (1.79097 s)
+Cap 8 ... flow: 15932 (1.96614 s)
+Cap 16 ... flow: 17230 (2.60138 s)
+Cap 32 ... flow: 19705 (4.84422 s)
+Cap 64 ... flow: 22939 (4.22186 s)
+Flow search took (seconds) 19.0378
+SUBG cut expansion 0.0250211
+SUBG cut minside volume 63185
+SUBG cut maxside volume 28571
+== End round 43 ==
+H expansion: 19.2637, num cross: 441890
+H_single expansion: 16.8943, num cross: 387538
+61484
+61486
+Cap 1 ... flow: 16495 (1.00346 s)
+Cap 2 ... flow: 17837 (1.23912 s)
+Cap 4 ... flow: 18769 (1.26681 s)
+Cap 8 ... flow: 19992 (1.77504 s)
+Cap 16 ... flow: 21634 (1.75742 s)
+Cap 32 ... flow: 22939 (1.07438 s)
+Flow search took (seconds) 8.13096
+SUBG cut expansion 0.0335535
+SUBG cut minside volume 17004
+SUBG cut maxside volume 74752
+== End round 44 ==
+H expansion: 18.3881, num cross: 421805
+H_single expansion: 16.2005, num cross: 371624
+61484
+61486
+Cap 1 ... flow: 14295 (1.24217 s)
+Cap 2 ... flow: 15099 (1.11775 s)
+Cap 4 ... flow: 15753 (1.4531 s)
+Cap 8 ... flow: 16908 (1.89827 s)
+Cap 16 ... flow: 19100 (3.10867 s)
+Cap 32 ... flow: 22919 (5.51925 s)
+Cap 64 ... flow: 22939 (1.55961 s)
+Flow search took (seconds) 15.9187
+SUBG cut expansion 0.0426423
+SUBG cut minside volume 15546
+SUBG cut maxside volume 76210
+== End round 45 ==
+H expansion: 16.6765, num cross: 382542
+H_single expansion: 14.7467, num cross: 338274
+61484
+61486
+Cap 1 ... flow: 11703 (2.2503 s)
+Cap 2 ... flow: 12446 (2.37012 s)
+Cap 4 ... flow: 13080 (2.09733 s)
+Cap 8 ... flow: 13774 (2.83125 s)
+Cap 16 ... flow: 14977 (3.73787 s)
+Cap 32 ... flow: 17225 (5.12281 s)
+Cap 64 ... flow: 21705 (10.1959 s)
+Cap 128 ... flow: 22939 (4.17545 s)
+Flow search took (seconds) 32.811
+SUBG cut expansion 0.0195228
+SUBG cut minside volume 67517
+SUBG cut maxside volume 24239
+== End round 46 ==
+H expansion: 19.3678, num cross: 444277
+H_single expansion: 16.9976, num cross: 389909
+61484
+61486
+Cap 1 ... flow: 14692 (2.14047 s)
+Cap 2 ... flow: 16030 (1.78537 s)
+Cap 4 ... flow: 17028 (3.0561 s)
+Cap 8 ... flow: 18204 (3.43827 s)
+Cap 16 ... flow: 19860 (3.28591 s)
+Cap 32 ... flow: 22266 (5.13201 s)
+Cap 64 ... flow: 22939 (1.60945 s)
+Flow search took (seconds) 20.4713
+SUBG cut expansion 0.0373665
+SUBG cut minside volume 11627
+SUBG cut maxside volume 80129
+== End round 47 ==
+H expansion: 18.8445, num cross: 432274
+H_single expansion: 16.6296, num cross: 381466
+61484
+61486
+Cap 1 ... flow: 12896 (2.52518 s)
+Cap 2 ... flow: 13802 (1.85734 s)
+Cap 4 ... flow: 14658 (2.08613 s)
+Cap 8 ... flow: 15752 (1.97661 s)
+Cap 16 ... flow: 17278 (3.43018 s)
+Cap 32 ... flow: 20046 (4.21328 s)
+Cap 64 ... flow: 22939 (2.51842 s)
+Flow search took (seconds) 18.6342
+SUBG cut expansion 0.0274168
+SUBG cut minside volume 18655
+SUBG cut maxside volume 73101
+== End round 48 ==
+H expansion: 18.1207, num cross: 415671
+H_single expansion: 15.9749, num cross: 366448
+61484
+61486
+Cap 1 ... flow: 11648 (2.02826 s)
+Cap 2 ... flow: 12224 (1.79503 s)
+Cap 4 ... flow: 12802 (2.14799 s)
+Cap 8 ... flow: 13665 (3.11802 s)
+Cap 16 ... flow: 15361 (3.21358 s)
+Cap 32 ... flow: 18401 (4.17179 s)
+Cap 64 ... flow: 22939 (4.04464 s)
+Flow search took (seconds) 20.5452
+SUBG cut expansion 0.0252184
+SUBG cut minside volume 66658
+SUBG cut maxside volume 25098
+== End round 49 ==
+H expansion: 20.2811, num cross: 465228
+H_single expansion: 17.747, num cross: 407099
+61484
+61486
+Cap 1 ... flow: 14004 (2.20625 s)
+Cap 2 ... flow: 14982 (2.04149 s)
+Cap 4 ... flow: 15742 (2.12945 s)
+Cap 8 ... flow: 16786 (3.08455 s)
+Cap 16 ... flow: 18559 (3.58253 s)
+Cap 32 ... flow: 21587 (5.85736 s)
+Cap 64 ... flow: 22939 (3.14044 s)
+Flow search took (seconds) 22.0665
+SUBG cut expansion 0.0337345
+SUBG cut minside volume 16214
+SUBG cut maxside volume 75542
+== End round 50 ==
+H expansion: 20.6241, num cross: 473097
+H_single expansion: 18.0879, num cross: 414918
+61484
+61486
+Cap 1 ... flow: 13900 (1.57183 s)
+Cap 2 ... flow: 14912 (1.49946 s)
+Cap 4 ... flow: 15539 (1.82375 s)
+Cap 8 ... flow: 16576 (2.38298 s)
+Cap 16 ... flow: 18372 (4.8232 s)
+Cap 32 ... flow: 20865 (6.87009 s)
+Cap 64 ... flow: 22939 (3.88189 s)
+Flow search took (seconds) 22.8804
+SUBG cut expansion 0.0229429
+SUBG cut minside volume 62840
+SUBG cut maxside volume 28916
+== End round 51 ==
+H expansion: 20.7241, num cross: 475390
+H_single expansion: 18.2166, num cross: 417870
+61484
+61486
+Cap 1 ... flow: 13356 (2.26038 s)
+Cap 2 ... flow: 14376 (2.51411 s)
+Cap 4 ... flow: 15437 (3.3114 s)
+Cap 8 ... flow: 16420 (3.91927 s)
+Cap 16 ... flow: 18062 (5.36019 s)
+Cap 32 ... flow: 20955 (6.50176 s)
+Cap 64 ... flow: 22939 (1.86454 s)
+Flow search took (seconds) 25.7645
+SUBG cut expansion 0.0336879
+SUBG cut minside volume 60684
+SUBG cut maxside volume 31072
+== End round 52 ==
+H expansion: 19.581, num cross: 449169
+H_single expansion: 17.231, num cross: 395261
+61484
+61486
+Cap 1 ... flow: 11622 (1.9345 s)
+Cap 2 ... flow: 12338 (1.86111 s)
+Cap 4 ... flow: 13118 (2.13625 s)
+Cap 8 ... flow: 14348 (2.50178 s)
+Cap 16 ... flow: 16375 (4.92909 s)
+Cap 32 ... flow: 19548 (10.1433 s)
+Cap 64 ... flow: 22939 (3.70271 s)
+Flow search took (seconds) 27.236
+SUBG cut expansion 0.0385726
+SUBG cut minside volume 57001
+SUBG cut maxside volume 34755
+== End round 53 ==
+H expansion: 23.6316, num cross: 542086
+H_single expansion: 20.5044, num cross: 470351
+61484
+61486
+Cap 1 ... flow: 16320 (1.63001 s)
+Cap 2 ... flow: 17487 (1.70652 s)
+Cap 4 ... flow: 18463 (2.01588 s)
+Cap 8 ... flow: 19468 (2.78749 s)
+Cap 16 ... flow: 21285 (6.75152 s)
+Cap 32 ... flow: 22939 (6.41858 s)
+Flow search took (seconds) 21.3286
+SUBG cut expansion 0.0315079
+SUBG cut minside volume 19723
+SUBG cut maxside volume 72033
+== End round 54 ==
+H expansion: 23.0077, num cross: 527773
+H_single expansion: 20.022, num cross: 459285
+61484
+61486
+Cap 1 ... flow: 14741 (1.70416 s)
+Cap 2 ... flow: 15703 (1.74597 s)
+Cap 4 ... flow: 16609 (2.73493 s)
+Cap 8 ... flow: 17524 (3.02086 s)
+Cap 16 ... flow: 19014 (5.01124 s)
+Cap 32 ... flow: 21600 (6.75571 s)
+Cap 64 ... flow: 22939 (2.23402 s)
+Flow search took (seconds) 23.2279
+SUBG cut expansion 0.0241425
+SUBG cut minside volume 17741
+SUBG cut maxside volume 74015
+== End round 55 ==
+H expansion: 23.2495, num cross: 533320
+H_single expansion: 20.3149, num cross: 466004
+61484
+61486
+Cap 1 ... flow: 14387 (1.5539 s)
+Cap 2 ... flow: 15608 (1.78841 s)
+Cap 4 ... flow: 16758 (2.05238 s)
+Cap 8 ... flow: 18247 (3.51995 s)
+Cap 16 ... flow: 20509 (9.57705 s)
+Cap 32 ... flow: 22939 (3.69525 s)
+Flow search took (seconds) 22.2071
+SUBG cut expansion 0.0664042
+SUBG cut minside volume 56916
+SUBG cut maxside volume 34840
+== End round 56 ==
+H expansion: 22.2238, num cross: 509791
+H_single expansion: 19.4784, num cross: 446814
+61484
+61486
+Cap 1 ... flow: 12736 (1.82632 s)
+Cap 2 ... flow: 13886 (1.65052 s)
+Cap 4 ... flow: 14906 (2.39174 s)
+Cap 8 ... flow: 16029 (3.36214 s)
+Cap 16 ... flow: 17645 (4.55467 s)
+Cap 32 ... flow: 20299 (8.36359 s)
+Cap 64 ... flow: 22939 (3.38797 s)
+Flow search took (seconds) 25.5607
+SUBG cut expansion 0.0210512
+SUBG cut minside volume 67990
+SUBG cut maxside volume 23766
+== End round 57 ==
+H expansion: 17.1558, num cross: 393536
+H_single expansion: 15.3515, num cross: 352147
+61484
+61486
+Cap 1 ... flow: 7444 (1.96463 s)
+Cap 2 ... flow: 7907 (1.94967 s)
+Cap 4 ... flow: 8591 (2.77422 s)
+Cap 8 ... flow: 9653 (3.67603 s)
+Cap 16 ... flow: 11398 (3.86392 s)
+Cap 32 ... flow: 14418 (5.82239 s)
+Cap 64 ... flow: 20082 (4.49527 s)
+Cap 128 ... flow: 22939 (1.63514 s)
+Flow search took (seconds) 26.2115
+SUBG cut expansion 0.0257717
+SUBG cut minside volume 65990
+SUBG cut maxside volume 25766
+== End round 58 ==
+H expansion: 22.8017, num cross: 523049
+H_single expansion: 19.7372, num cross: 452752
+61484
+61486
+Cap 1 ... flow: 12541 (1.65147 s)
+Cap 2 ... flow: 13204 (1.43147 s)
+Cap 4 ... flow: 13706 (1.82691 s)
+Cap 8 ... flow: 14471 (2.20006 s)
+Cap 16 ... flow: 15756 (3.83073 s)
+Cap 32 ... flow: 17985 (4.02876 s)
+Cap 64 ... flow: 22371 (5.1173 s)
+Cap 128 ... flow: 22939 (0.812629 s)
+Flow search took (seconds) 20.9216
+SUBG cut expansion 0.0181625
+SUBG cut minside volume 22270
+SUBG cut maxside volume 69486
+== End round 59 ==
+H expansion: 22.3904, num cross: 513614
+H_single expansion: 19.5917, num cross: 449414
+61484
+61486
+Cap 1 ... flow: 11937 (1.63544 s)
+Cap 2 ... flow: 12818 (1.44006 s)
+Cap 4 ... flow: 13404 (1.5716 s)
+Cap 8 ... flow: 14313 (1.91684 s)
+Cap 16 ... flow: 15768 (3.49737 s)
+Cap 32 ... flow: 18050 (2.81439 s)
+Cap 64 ... flow: 22299 (5.27564 s)
+Cap 128 ... flow: 22939 (0.738827 s)
+Flow search took (seconds) 18.9125
+SUBG cut expansion 0.0239553
+SUBG cut minside volume 16377
+SUBG cut maxside volume 75379
+== End round 60 ==
+H expansion: 26.1045, num cross: 598811
+H_single expansion: 22.5363, num cross: 516961
+61484
+61486
+Cap 1 ... flow: 15020 (1.54396 s)
+Cap 2 ... flow: 15890 (1.46135 s)
+Cap 4 ... flow: 16645 (1.9197 s)
+Cap 8 ... flow: 17713 (2.59456 s)
+Cap 16 ... flow: 19353 (5.0433 s)
+Cap 32 ... flow: 21986 (7.97606 s)
+Cap 64 ... flow: 22939 (1.78214 s)
+Flow search took (seconds) 22.3436
+SUBG cut expansion 0.0287397
+SUBG cut minside volume 62225
+SUBG cut maxside volume 29531
+== End round 61 ==
+H expansion: 27.3753, num cross: 627962
+H_single expansion: 23.5607, num cross: 540460
+61484
+61486
+Cap 1 ... flow: 15873 (1.14836 s)
+Cap 2 ... flow: 16908 (1.58504 s)
+Cap 4 ... flow: 17922 (1.65874 s)
+Cap 8 ... flow: 19182 (2.93493 s)
+Cap 16 ... flow: 21378 (4.54856 s)
+Cap 32 ... flow: 22939 (1.74172 s)
+Flow search took (seconds) 13.6351
+SUBG cut expansion 0.0394002
+SUBG cut minside volume 20131
+SUBG cut maxside volume 71625
+== End round 62 ==
+H expansion: 27.1163, num cross: 622021
+H_single expansion: 23.4293, num cross: 537444
+61484
+61486
+Cap 1 ... flow: 15504 (1.45558 s)
+Cap 2 ... flow: 16711 (1.5471 s)
+Cap 4 ... flow: 17678 (1.87953 s)
+Cap 8 ... flow: 18795 (2.80088 s)
+Cap 16 ... flow: 20410 (2.60739 s)
+Cap 32 ... flow: 22939 (4.80373 s)
+Flow search took (seconds) 15.1114
+SUBG cut expansion 0.039975
+SUBG cut minside volume 14201
+SUBG cut maxside volume 77555
+== End round 63 ==
+H expansion: 26.3312, num cross: 604012
+H_single expansion: 22.7596, num cross: 522083
+61484
+61486
+Cap 1 ... flow: 14056 (1.59573 s)
+Cap 2 ... flow: 15032 (1.47565 s)
+Cap 4 ... flow: 15914 (2.30874 s)
+Cap 8 ... flow: 17192 (3.39053 s)
+Cap 16 ... flow: 19120 (3.97454 s)
+Cap 32 ... flow: 22303 (8.67706 s)
+Cap 64 ... flow: 22939 (1.77935 s)
+Flow search took (seconds) 23.2258
+SUBG cut expansion 0.02563
+SUBG cut minside volume 66317
+SUBG cut maxside volume 25439
+== End round 64 ==
+H expansion: 26.3297, num cross: 603977
+H_single expansion: 22.794, num cross: 522871
+61484
+61486
+Cap 1 ... flow: 13524 (2.00576 s)
+Cap 2 ... flow: 14357 (2.17506 s)
+Cap 4 ... flow: 15119 (2.62933 s)
+Cap 8 ... flow: 16191 (3.21903 s)
+Cap 16 ... flow: 17972 (4.31012 s)
+Cap 32 ... flow: 21064 (5.69136 s)
+Cap 64 ... flow: 22939 (1.26042 s)
+Flow search took (seconds) 21.3137
+SUBG cut expansion 0.0237425
+SUBG cut minside volume 16777
+SUBG cut maxside volume 74979
+== End round 65 ==
+H expansion: 25.3003, num cross: 580364
+H_single expansion: 21.9402, num cross: 503287
+61484
+61486
+Cap 1 ... flow: 12027 (2.87013 s)
+Cap 2 ... flow: 12649 (1.80457 s)
+Cap 4 ... flow: 13295 (2.64464 s)
+Cap 8 ... flow: 14449 (3.58908 s)
+Cap 16 ... flow: 16412 (6.27139 s)
+Cap 32 ... flow: 19562 (4.82641 s)
+Cap 64 ... flow: 22939 (2.82738 s)
+Flow search took (seconds) 24.8641
+SUBG cut expansion 0.0302263
+SUBG cut minside volume 64356
+SUBG cut maxside volume 27400
+== End round 66 ==
+H expansion: 26.8727, num cross: 616433
+H_single expansion: 23.2477, num cross: 533279
+61484
+61486
+Cap 1 ... flow: 13017 (1.89797 s)
+Cap 2 ... flow: 13965 (1.56947 s)
+Cap 4 ... flow: 14878 (1.77744 s)
+Cap 8 ... flow: 16314 (2.44601 s)
+Cap 16 ... flow: 18057 (1.91633 s)
+Cap 32 ... flow: 20393 (2.33918 s)
+Cap 64 ... flow: 22939 (2.63908 s)
+Flow search took (seconds) 14.6139
+SUBG cut expansion 0.036466
+SUBG cut minside volume 12061
+SUBG cut maxside volume 79695
+== End round 67 ==
+H expansion: 25.4421, num cross: 583616
+H_single expansion: 21.9372, num cross: 503217
+61484
+61486
+Cap 1 ... flow: 11446 (2.04977 s)
+Cap 2 ... flow: 11899 (1.99904 s)
+Cap 4 ... flow: 12320 (2.22524 s)
+Cap 8 ... flow: 13110 (2.51448 s)
+Cap 16 ... flow: 14638 (4.2587 s)
+Cap 32 ... flow: 16951 (5.11228 s)
+Cap 64 ... flow: 21335 (8.47595 s)
+Cap 128 ... flow: 22939 (3.51609 s)
+Flow search took (seconds) 30.1776
+SUBG cut expansion 0.0187176
+SUBG cut minside volume 67979
+SUBG cut maxside volume 23777
+== End round 68 ==
+H expansion: 30.6182, num cross: 702351
+H_single expansion: 26.1387, num cross: 599596
+61484
+61486
+Cap 1 ... flow: 16506 (1.42401 s)
+Cap 2 ... flow: 17433 (1.58601 s)
+Cap 4 ... flow: 18126 (2.34567 s)
+Cap 8 ... flow: 19242 (2.03588 s)
+Cap 16 ... flow: 20728 (2.56052 s)
+Cap 32 ... flow: 22939 (4.83148 s)
+Flow search took (seconds) 14.8032
+SUBG cut expansion 0.037522
+SUBG cut minside volume 11729
+SUBG cut maxside volume 80027
+== End round 69 ==
 H Expansion target reached, this will be case 1 or 3. According to theory, this means we probably won't find a better cut. That is, assuming you set H_phi right. If was used together with G_phi target, this also certifies the input graph is a G_phi expander unless there was a very unbaanced cut somewhere, which we will proceed to look for.
 The best with highest expansion was found on round7
 Best cut sparsity: 

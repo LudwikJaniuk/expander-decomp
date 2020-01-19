@@ -5,9 +5,9 @@ H expansion: 0, num cross: 0
 H_single expansion: 0, num cross: 0
 3763308
 3763310
-Cap 1 ... flow: 1657256 (137.292 s)
-Cap 2 ... flow: 1657306 (92.871 s)
-Flow search took (seconds) 231.687
+Cap 1 ... flow: 1657256 (159.987 s)
+Cap 2 ... flow: 1657306 (106.33 s)
+Flow search took (seconds) 268.401
 SUBG cut expansion 9.95808
 SUBG cut minside volume 3314725
 SUBG cut maxside volume 3314499

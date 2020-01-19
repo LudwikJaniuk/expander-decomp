@@ -11,7 +11,7 @@
 #./cmake-build-debug/a.out -f graphs/4elt.graph -p partitions/5/4elt.2.ptn -r 5 -s -S -o out/4elt.ptn > out/4elt.out; echo 4elt;
 
 for NAME in 144 3elt 4elt 598a add20 add32 auto bcsstk29 bcsstk30 bcsstk31 bcsstk32 bcsstk33 brack2 crack cs4 cti data fe_4elt2 fe_body fe_ocean fe_pwt fe_rotor fe_sphere fe_tooth finan512 m14b memplus t60k uk vibrobox wave whitaker3 wing wing_nodal; do 
-	./cmake-build-debug/a.out -f graphs/$NAME.graph -p partitions/5/$NAME.2.ptn -r 0 --H_phi=30 --G_phi=0.80 --vol 0.4 -s -o out/$NAME.ptn > out/$NAME.out; 
+	./cmake-build-debug/a.out -f graphs/$NAME.graph -p partitions/5/$NAME.2.ptn -r 0 --H_phi=10 --G_phi=0.40 --vol 0.1 -s -o out/$NAME.ptn > out/$NAME.out; 
 	echo $NAME; 
 done;
 #) do; ./cmake-build-debug/a.out -f graphs/$NAME.graph -p partitions/5/$NAME.2.ptn -r 5 -s -S -o out/$NAME.ptn > out/$NAME.out; echo $NAME; done;
