@@ -124,13 +124,18 @@ struct SubdividedGraphContext {
     origContext(gc),
     nf(sub_g),
     ef(sub_g),
+    n_ref(gc.g, INVALID),
     n_cross_ref(sub_g, INVALID),
+    origs(sub_g, false),
     only_splits(sub_g, nf, ef) {} ;
+
     GraphContext& origContext;
     G sub_g;
     NodeMapb nf;
     EdgeMapb ef;
     NodeMap<Node> n_cross_ref;
+    NodeMap<Node> n_ref;
+    NodeMap<bool> origs;
     SubGraph<G> only_splits;
     vector<Node> split_vertices;
 };
@@ -176,11 +181,13 @@ public:
             if (any_in_cut(g, cut, e)) cut_volume += 1;
         }
 
+        cout << "Createing but with " << num_vertices << "veertx" << endl;
         assert(cut.size() <= num_vertices);
         size_t other_size = num_vertices - cut.size();
         min_side = min(cut.size(), other_size);
         max_side = max(cut.size(), other_size);
         is_min_side = cut.size() == min_side;
+        cout << "Createing cut with " << min_side << "min, " << max_side << "max"  << endl;
     }
 
     static bool is_crossing(const G &g, const Bisection &c, const Edge &e) {
@@ -260,23 +267,20 @@ static void parse_chaco_format(const string &filename, ListGraph &g, vector<Node
 
     for (size_t i = 0; i < n_verts; i++) {
         getline(file, line);
-        ss.clear();
-        ss << line;
+        istringstream iss(line);
+        vector<string> tokens{istream_iterator<string>{iss},
+                              istream_iterator<string>{}};
         Node u = nodes[i];
-        size_t v_name;
-        while (ss >> v_name) {
+        for(string& str : tokens) {
+            size_t v_name = stoi(str);
+            cout << "edge to: " << v_name << "..." ;
+            assert(v_name != 0);
             Node v = nodes[v_name - 1];
             if (findEdge(g, u, v) == INVALID) {
+                cout  << "adding" << endl;
                 g.addEdge(u, v);
             }
         }
-    }
-
-    if (n_verts % 2 != 0) {
-        l.progress() << "Odd number of vertices, adding extra one." << endl;
-        Node n = g.addNode();
-        g.addEdge(nodes[0], n);
-        nodes.push_back(n);
     }
 }
 
@@ -356,6 +360,7 @@ void initGraph(GraphContext &gc, InputConfiguration config) {
     }
 
     gc.num_edges = countEdges(gc.g);
+    cout << "gc.num_edges: " << gc.num_edges << endl;
 }
 
 // For some reason lemon returns arbitrary values for flow, the difference is correct tho
@@ -399,8 +404,12 @@ void print_graph(G& g, decltype(cout)& stream) {
 
 // Actually copies the graph.
 void createSubdividedGraph(SubdividedGraphContext& sgc) {
-    graphCopy(sgc.origContext.g, sgc.sub_g).nodeCrossRef(sgc.n_cross_ref).run();
+    graphCopy(sgc.origContext.g, sgc.sub_g).nodeRef(sgc.n_ref).nodeCrossRef(sgc.n_cross_ref).run();
     G& g = sgc.sub_g;
+    for (NodeIt n(g); n != INVALID; ++n) {
+        sgc.origs[n] = true;
+    }
+
 
     vector<Edge> edges;
     for (EdgeIt e(g); e != INVALID; ++e) {
@@ -417,6 +426,7 @@ void createSubdividedGraph(SubdividedGraphContext& sgc) {
         g.erase(e);
 
         Node s = g.addNode();
+        sgc.origs[s] = false;
         sgc.only_splits.enable(s);
         g.addEdge(u, s);
         g.addEdge(s, v);
@@ -443,11 +453,15 @@ struct CutMatching {
     sgc{gc},
     random_engine(random_engine_)
     {
-        assert(gc.nodes.size() % 2 == 0);
+        //assert(gc.nodes.size() % 2 == 0);
         assert(gc.nodes.size() > 0);
         assert(connected(gc.g));
 
+        cout << "got graph: " << endl;
+        print_graph(gc.g, cout);
         createSubdividedGraph(sgc);
+        cout << "subdivided into: " << endl;
+        print_graph(sgc.sub_g, cout);
     };
 
     // During the matching step a lot of local setup is actually made, so it makes sense to group it
@@ -614,6 +628,7 @@ struct CutMatching {
         decompose_paths_fast(mg, p, paths);
     }
 
+    // TODO this is totally wrong for edge version
     template <typename GG>
     void make_sink_source(GG& g, MatchingContext &mg, const set<Node> &cut) const {
         mg.s = g.addNode();
@@ -704,28 +719,6 @@ struct CutMatching {
 // Maybe: make the binsearch an actual binsearch
 // TODO Let listedgeset just be 2-arrays of nodes. Lemon is getting in the way too much.
 // But also what is assigned in MtchResult?
-    MatchResult matching_player(const set<Node> &bisection, Matching& m_out) {
-        MatchingContext mg(gc.g);
-        make_sink_source(mg.g, mg, bisection);
-
-        unique_ptr<FlowAlgo> p;
-        MatchResult mr = bin_search_flows(mg, p, gc.nodes.size()/2);
-
-        decompose_paths(mg, p, m_out);
-
-        // Now how do we extract the cut?
-        // In this version, in one run of the matching the cut is strictly decided. We just need
-        // to decide which one of them.
-        // Only when we change to edge will the cut need to be explicitly extracted.
-        // Rn the important thing is to save cuts between rounds so I can choose the best.
-
-        return mr;
-    }
-
-    // returns capacity that was required
-// Maybe: make the binsearch an actual binsearch
-// TODO Let listedgeset just be 2-arrays of nodes. Lemon is getting in the way too much.
-// But also what is assigned in MtchResult?
     MatchResult sub_matching_player(const set<Node> &bisection, vector<array<Node, 2>>& m_out) {
         MatchingContext mg(sgc.sub_g);
         make_sink_source(sgc.only_splits, mg, bisection);
@@ -749,66 +742,65 @@ struct CutMatching {
         return mr;
     }
 
-    long volume_treshold() {
-        return config.volume_treshold_factor * gc.num_edges;
-    }
-
     long sub_volume_treshold() {
         return config.volume_treshold_factor * sgc.origContext.nodes.size();
     }
 
-    /*
-    // Ok lets attack from here
-    // Theres a lot of risk for problems with "is this a cut in the orig graph or in the splits?
-    unique_ptr<RoundReport> one_round() {
-        unique_ptr<RoundReport> report = make_unique<RoundReport>();
-
-        // So this needs to be a bisection of splitnodes, I feel this could be very opaque.
-        // We'd need a subgraph that is just the splitnodes
-        Bisectionp bisection = cut_player(gc.g, matchings, report->multi_h_expansion);
-
-        // Matching on splitnodes, but we need to also save the actual cut...
-        Matchingp matchingp(new Matching());
-        MatchResult mr = matching_player(*bisection, *matchingp);
-        matchings.push_back(move(matchingp));
-
-        //c.cuts.push_back(move(mr.cut_from_flow));
-        report->index = past_rounds.size();
-        report->capacity_required_for_full_flow = mr.capacity;
-        report->cut = move(mr.cut_from_flow);
-        auto cs = CutStats<G>(gc.g, gc.nodes.size(), *report->cut);
-        report->g_expansion = cs.expansion();
-        l.progress() << "G cut expansion " << report->g_expansion << endl;
-        report->volume = cs.minside_volume();
-        l.progress() << "G cut minside volume " << cs.minside_volume() << endl;
-        l.progress() << "G cut maxside volume " << cs.maxside_volume() << endl;
-        report->relatively_balanced = report->volume > volume_treshold();
-        return move(report);
-    }
-*/
     // Ok lets attack from here
     // Theres a lot of risk for problems with "is this a cut in the orig graph or in the splits?
     unique_ptr<RoundReport> sub_one_round() {
         unique_ptr<RoundReport> report = make_unique<RoundReport>();
 
         Bisectionp sub_bisection = cut_player(sgc.only_splits, sub_matchings, report->multi_h_expansion);
-        // Well ok, it's doing the first random thing well.
-        // TODO test on rest...
+
+
+
 
         Matchingp smatchingp(new Matching());
         MatchResult smr = sub_matching_player(*sub_bisection, *smatchingp);
         sub_matchings.push_back(move(smatchingp));
 
-        // TODO ocmputation of cut at the end is_ wrong...
         //c.cuts.push_back(move(mr.cut_from_flow));
         report->index = sub_past_rounds.size();
         report->capacity_required_for_full_flow = smr.capacity;
         report->cut = make_unique<Cut>();
+
+
+        /*
+        cout << "cff size " << smr.cut_from_flow->size() << endl;
+        cout << "ff Has 0? " << smr.cut_from_flow->count(sgc.n_ref[gc.nodes[0]]) << endl;
+        cout << "it is " << sgc.sub_g.id(sgc.n_ref[gc.nodes[0]]) << endl;
+         */
+
         for(auto& n : *(smr.cut_from_flow)) {
-            if(sgc.n_cross_ref[n] != INVALID) {
+           /*
+            if(sgc.sub_g.id(n) == sgc.sub_g.id(sgc.n_ref[gc.nodes[0]])) {
+                cout << "exists" << endl;
+            }
+            if(sgc.n_cross_ref[n] == gc.nodes[0]) {
+                cout << "imporster exists" << endl;
+                cout << sgc.sub_g.id(n) << endl;
+                cout << "mapepd: " << sgc.origContext.g.id(sgc.n_cross_ref[n]) << endl;
+                cout << "mapepd: " << sgc.origContext.g.id(gc.nodes[0]) << endl;
+                cout << "orig: " << sgc.origs[n] << endl;
+            }
+            */
+            //if(sgc.n_cross_ref[n] != INVALID) {
+            if(sgc.origs[n]) {
+                /*
+                if(sgc.sub_g.id(n) == sgc.sub_g.id(sgc.n_ref[gc.nodes[0]])) {
+                    cout << "added" << endl;
+                }
+                if(sgc.n_cross_ref[n] == gc.nodes[0]) {
+                    cout << "imporster added" << endl;
+                    cout << sgc.sub_g.id(n) << endl;
+                }
+                 */
                 report->cut->insert(sgc.n_cross_ref[n]);
             }
         }
+        cout << "INVALID: " << gc.g.id((Node)INVALID) << endl;
+
         auto cs = CutStats<G>(sgc.origContext.g, sgc.origContext.nodes.size(), *report->cut);
         report->g_expansion = cs.expansion();
         l.progress() << "SUBG cut expansion " << report->g_expansion << endl;
@@ -816,42 +808,10 @@ struct CutMatching {
         l.progress() << "SUBG cut minside volume " << cs.minside_volume() << endl;
         l.progress() << "SUBG cut maxside volume " << cs.maxside_volume() << endl;
         report->relatively_balanced = report->volume > sub_volume_treshold();
+        cout << "Has 0? " << report->cut->count(gc.nodes[0]) << endl;
+        cout << "double Has 0? " << report->cut->count(sgc.n_cross_ref[sgc.n_ref[gc.nodes[0]]]) << endl;
         return move(report);
-        // Thing is, the cut is not a "materialized cut" in the subdiv graph. But the stats we want are the implied
-        // cut on the orig graph.
     }
-
-    /*
-    // Stopping condition
-    bool should_stop() {
-        int i = past_rounds.size();
-        if(i == 0) return false;
-        if(i >= config.max_rounds && config.max_rounds != 0) return true;
-
-        const auto& last_round = past_rounds[past_rounds.size() - 1];
-        if(config.use_H_phi_target && last_round->multi_h_expansion >= config.H_phi_target) {
-            cout << "H Expansion target reached, this will be case 1 or 3. According to theory, this means we probably won't find a better cut. That is, assuming you set H_phi right. "
-                    "If was used together with G_phi target, this also certifies the input graph is a G_phi expander unless there was a very unbaanced cut somewhere, which we will proceed to look for." << endl;
-            reached_H_target = true;
-            return true;
-        }
-
-        if(config.use_G_phi_target)
-        if(last_round->g_expansion >= config.G_phi_target) {
-            if(config.use_volume_treshold && last_round->relatively_balanced) {
-                cout << "CASE2 G Expansion target reached with a cut that is relatively balanced. Cut-matching game has found a balanced cut as good as you wanted it."
-                     << endl;
-                return true;
-            }
-
-            if(!config.use_volume_treshold) {
-                cout << "G Expansion target reached. Cut-matching game has found a cut as good as you wanted it. Whether it is balanced or not is up to you."
-                     << endl;
-                return true;
-            }
-        }
-    }
-     */
 
     // Stopping condition
     bool sub_should_stop() {
