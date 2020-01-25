@@ -663,9 +663,12 @@ struct CutMatching {
         typename GG::template NodeMap<double> probs(g);
         vector<Node> all_nodes;
 
-        uniform_int_distribution<int> uniform_dist(0, 1);
+        // Previous bug: would assign 1/"running total". But should just be 1/num verts.
         for (typename GG::NodeIt n(g); n != INVALID; ++n) {
             all_nodes.push_back(n);
+        }
+        uniform_int_distribution<int> uniform_dist(0, 1);
+        for (typename GG::NodeIt n(g); n != INVALID; ++n) {
             probs[n] = uniform_dist(random_engine)
                        ? 1.0 / all_nodes.size()
                        : -1.0 / all_nodes.size();
