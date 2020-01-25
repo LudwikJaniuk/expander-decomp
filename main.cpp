@@ -145,7 +145,7 @@ struct RoundReport {
     size_t index;
     size_t capacity_required_for_full_flow;
     double multi_h_expansion;
-    double g_expansion;
+    double g_conductance;
     long volume;
     bool relatively_balanced;
     Cutp cut;
@@ -223,8 +223,16 @@ public:
     }
 
     double expansion() {
+        cout << "Crossing: " << crossing_edges;
+        cout << "min_side: " << min_side;
         return min_side == 0 ? 0 : crossing_edges * 1. / min_side;
     }
+
+    double conductance() {
+        return min_side == 0 ? 0 : crossing_edges * 1. / minside_volume();
+    }
+
+
 
     void print() {
         cout << "Edge crossings (E) : " << crossing_edges << endl;
@@ -756,9 +764,6 @@ struct CutMatching {
 
         Bisectionp sub_bisection = cut_player(sgc.only_splits, sub_matchings, report->multi_h_expansion);
 
-
-
-
         Matchingp smatchingp(new Matching());
         MatchResult smr = sub_matching_player(*sub_bisection, *smatchingp);
         sub_matchings.push_back(move(smatchingp));
@@ -805,8 +810,11 @@ struct CutMatching {
         cout << "INVALID: " << gc.g.id((Node)INVALID) << endl;
 
         auto cs = CutStats<G>(sgc.origContext.g, sgc.origContext.nodes.size(), *report->cut);
-        report->g_expansion = cs.expansion();
-        l.progress() << "SUBG cut expansion " << report->g_expansion << endl;
+        report->g_conductance = cs.conductance();
+        if(report->g_conductance == 1) {
+            cout << "LYING" << endl;
+        }
+        l.progress() << "SUBG cut conductance: " << report->g_conductance << endl;
         report->volume = cs.minside_volume();
         l.progress() << "SUBG cut minside volume " << cs.minside_volume() << endl;
         l.progress() << "SUBG cut maxside volume " << cs.maxside_volume() << endl;
@@ -831,10 +839,11 @@ struct CutMatching {
         }
 
         if(config.use_G_phi_target)
-            if(last_round->g_expansion >= config.G_phi_target) {
+            if(last_round->g_conductance >= config.G_phi_target) {
                 if(config.use_volume_treshold && last_round->relatively_balanced) {
                     cout << "CASE2 G Expansion target reached with a cut that is relatively balanced. Cut-matching game has found a balanced cut as good as you wanted it."
                          << endl;
+                    cout << "Claimed g conductance: " << last_round->g_conductance << endl;
                     return true;
                 }
 
@@ -958,9 +967,9 @@ int main(int argc, char **argv) {
     cm.run();
 
     assert(!cm.sub_past_rounds.empty());
-    // Best by expnansion
+    // Best by conductance
     auto& best_round = *max_element(cm.sub_past_rounds.begin(), cm.sub_past_rounds.end(), [](auto &a, auto &b) {
-        return a->g_expansion < b->g_expansion;
+        return a->g_conductance < b->g_conductance;
     });
 
     cout << "The best with highest expansion was found on round" << best_round->index << endl;
@@ -970,7 +979,7 @@ int main(int argc, char **argv) {
 
     if(config.use_H_phi_target && config.use_G_phi_target && config.use_volume_treshold) {
         if(cm.reached_H_target) {
-            if(best_round->g_expansion < config.G_phi_target) {
+            if(best_round->g_conductance < config.G_phi_target) {
                 cout << "CASE1 NO Goodenough cut, G certified expander." << endl;
             } else {
                 cout << "CASE3 Found goodenough but very unbalanced cut." << endl;
