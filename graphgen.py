@@ -43,8 +43,8 @@ write_graph(nx.barbell_graph(10, 1), f)
 #f = open("barbell10-10.graph", "w+")
 #write_graph(nx.barbell_graph(10, 1), f)
 #
-#f = open("barbell100-100.graph", "w+")
-#write_graph(nx.barbell_graph(100, 1), f)
+f = open("barbell100-10-100.graph", "w+")
+write_graph(nx.barbell_graph(100, 10), f)
 #
 #f = open("barbell1000-1000.graph", "w+")
 #write_graph(nx.barbell_graph(1000, 1), f)

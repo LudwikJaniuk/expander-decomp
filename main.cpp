@@ -1,7 +1,10 @@
 // Authored by Ludvig Janiuk 2019 as part of individual project at KTH.
+
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "cert-msc32-c"
 #pragma ide diagnostic ignored "cppcoreguidelines-slicing"
+
+#define LOW_CONDUCTANCE 1
 
 #include <iostream>
 #include <ostream>
@@ -228,7 +231,11 @@ public:
     }
 
     double conductance() {
+#ifdef LOW_CONDUCTANCE
+        return min_side == 0 ? 999 : crossing_edges * 1. / minside_volume();
+#else
         return min_side == 0 ? 0 : crossing_edges * 1. / minside_volume();
+#endif
     }
 
 
@@ -677,12 +684,17 @@ struct CutMatching {
         for (typename GG::NodeIt n(g); n != INVALID; ++n) {
             all_nodes.push_back(n);
         }
+        size_t deb_n_nodes = countNodes(g);
+        size_t deb_assigned = 0;
         uniform_int_distribution<int> uniform_dist(0, 1);
         for (typename GG::NodeIt n(g); n != INVALID; ++n) {
             probs[n] = uniform_dist(random_engine)
                        ? 1.0 / all_nodes.size()
                        : -1.0 / all_nodes.size();
+            deb_assigned++;
         }
+
+        cout << "DEB: " << deb_n_nodes << " but assigned " << deb_assigned << endl;
 
         size_t num_vertices = all_nodes.size();
 
@@ -704,6 +716,11 @@ struct CutMatching {
                 }
             }
         }
+
+        // I need to shuffle before sorting to avoid dependency on original order
+        // Sort is probably stable and we have many equalis
+
+        shuffle(all_nodes.begin(), all_nodes.end(), random_engine);
 
         sort(all_nodes.begin(), all_nodes.end(), [&](Node a, Node b) {
             return probs[a] < probs[b];
@@ -841,7 +858,11 @@ struct CutMatching {
         }
 
         if(config.use_G_phi_target)
+#ifdef LOW_CONDUCTANCE
+            if(last_round->g_conductance <= config.G_phi_target) {
+#else
             if(last_round->g_conductance >= config.G_phi_target) {
+#endif
                 if(config.use_volume_treshold && last_round->relatively_balanced) {
                     cout << "CASE2 G Expansion target reached with a cut that is relatively balanced. Cut-matching game has found a balanced cut as good as you wanted it."
                          << endl;
@@ -970,18 +991,30 @@ int main(int argc, char **argv) {
 
     assert(!cm.sub_past_rounds.empty());
     // Best by conductance
+#ifdef LOW_CONDUCTANCE
+    auto& best_round = *min_element(cm.sub_past_rounds.begin(), cm.sub_past_rounds.end(), [](auto &a, auto &b) {
+#else
     auto& best_round = *max_element(cm.sub_past_rounds.begin(), cm.sub_past_rounds.end(), [](auto &a, auto &b) {
+#endif
         return a->g_conductance < b->g_conductance;
     });
 
-    cout << "The best with highest expansion was found on round" << best_round->index << endl;
-    cout << "Best cut sparsity: " << endl;
+    for(int i = 0; i < cm.sub_past_rounds.size(); i++) {
+        cout << "R" << i << " cond " << cm.sub_past_rounds[i]->g_conductance << endl;
+    }
+
+    cout << "The best with best expansion was found on round" << best_round->index << endl;
     auto &best_cut = best_round->cut;
     CutStats<G>(gc.g, gc.nodes.size(), *best_cut).print();
 
     if(config.use_H_phi_target && config.use_G_phi_target && config.use_volume_treshold) {
         if(cm.reached_H_target) {
+
+#ifdef LOW_CONDUCTANCE
+            if(best_round->g_conductance > config.G_phi_target) {
+#else
             if(best_round->g_conductance < config.G_phi_target) {
+#endif
                 cout << "CASE1 NO Goodenough cut, G certified expander." << endl;
             } else {
                 cout << "CASE3 Found goodenough but very unbalanced cut." << endl;
