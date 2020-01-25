@@ -178,7 +178,8 @@ public:
         for (EdgeIt e(g); e != INVALID; ++e) {
             ++num_edges;
             if (is_crossing(g, cut, e)) crossing_edges += 1;
-            if (any_in_cut(g, cut, e)) cut_volume += 1;
+            if (cut.count(g.u(e))) cut_volume += 1;
+            if (cut.count(g.v(e))) cut_volume += 1;
         }
 
         cout << "Createing but with " << num_vertices << "veertx" << endl;
@@ -223,8 +224,6 @@ public:
     }
 
     double expansion() {
-        cout << "Crossing: " << crossing_edges;
-        cout << "min_side: " << min_side;
         return min_side == 0 ? 0 : crossing_edges * 1. / min_side;
     }
 
@@ -239,7 +238,10 @@ public:
         cout << "cut size: (" << min_side << " | " << max_side << ")" << endl
              << "diff: " << diff() << " (" << imbalance() << " of total n vertices)" << endl;
         cout << "Min side: " << min_side << endl;
-        cout << "E/min(|S|, |comp(S)|) = " << expansion() << endl;
+        cout << "expansion: " << expansion() << endl;
+        cout << "conductance: " << expansion() << endl;
+        cout << "cut volume: " << cut_volume << endl;
+        cout << "noncut volume: " << noncut_volume() << endl;
     }
 };
 // Reads the file filename,
