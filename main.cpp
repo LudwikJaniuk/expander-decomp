@@ -147,7 +147,7 @@ struct SubdividedGraphContext {
 struct RoundReport {
     size_t index;
     size_t capacity_required_for_full_flow;
-    double multi_h_expansion;
+    double multi_h_conductance;
     double g_conductance;
     long volume;
     bool relatively_balanced;
@@ -675,7 +675,7 @@ struct CutMatching {
 // Actually Actually, sure it gets H but it just needs the matchings...
 // TODO Ok so can we just call this with split_only and matchings of those?
     template<typename GG, typename M>
-    Bisectionp cut_player(const GG &g, const vector<unique_ptr<M>> &given_matchings, double &h_multi_exp_out) {
+    Bisectionp cut_player(const GG &g, const vector<unique_ptr<M>> &given_matchings, double &h_multi_cond_out) {
         l.debug() << "Running Cut player" << endl;
         typename GG::template NodeMap<double> probs(g);
         vector<Node> all_nodes;
@@ -738,9 +738,11 @@ struct CutMatching {
         // Ok it assigns h_outs, but actually also returns Bisectionp
         auto hcs = CutStats<decltype(H)>(H, num_vertices, *b);
         l.progress() << "H expansion: " << hcs.expansion() << ", num cross: " << hcs.crossing_edges << endl;
-        h_multi_exp_out = hcs.expansion();
+        l.progress() << "H conductance: " << hcs.conductance() << ", num cross: " << hcs.crossing_edges << endl;
+        h_multi_cond_out = hcs.conductance();
         auto hscs = CutStats<decltype(H_single)>(H_single, num_vertices, *b);
         l.progress() << "H_single expansion: " << hscs.expansion() << ", num cross: " << hscs.crossing_edges << endl;
+        l.progress() << "H_single conductance: " << hscs.conductance() << ", num cross: " << hscs.crossing_edges << endl;
 
         return b;
     }
@@ -781,7 +783,7 @@ struct CutMatching {
     unique_ptr<RoundReport> sub_one_round() {
         unique_ptr<RoundReport> report = make_unique<RoundReport>();
 
-        Bisectionp sub_bisection = cut_player(sgc.only_splits, sub_matchings, report->multi_h_expansion);
+        Bisectionp sub_bisection = cut_player(sgc.only_splits, sub_matchings, report->multi_h_conductance);
 
         Matchingp smatchingp(new Matching());
         MatchResult smr = sub_matching_player(*sub_bisection, *smatchingp);
@@ -850,8 +852,8 @@ struct CutMatching {
         if(i >= config.max_rounds && config.max_rounds != 0) return true;
 
         const auto& last_round = sub_past_rounds[sub_past_rounds.size() - 1];
-        if(config.use_H_phi_target && last_round->multi_h_expansion >= config.H_phi_target) {
-            cout << "H Expansion target reached, this will be case 1 or 3. According to theory, this means we probably won't find a better cut. That is, assuming you set H_phi right. "
+        if(config.use_H_phi_target && last_round->multi_h_conductance >= config.H_phi_target) {
+            cout << "H Conductance target reached, this will be case 1 or 3. According to theory, this means we probably won't find a better cut. That is, assuming you set H_phi right. "
                     "If was used together with G_phi target, this also certifies the input graph is a G_phi expander unless there was a very unbaanced cut somewhere, which we will proceed to look for." << endl;
             reached_H_target = true;
             return true;
