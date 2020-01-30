@@ -543,8 +543,14 @@ struct CutMatching {
     ) {
         out_path[0] = u_orig;
         Node u = u_orig;
+        int i = 0;
         while (true) {
-            auto &tup = flow_children[u].back();
+            cout << i << " " << flush;
+            i++;
+
+            auto& vv = flow_children[u];
+            assert(vv.size() > 0);
+            auto &tup = vv.back();
             Node v = get<0>(tup);
             --get<1>(tup);
 
@@ -584,6 +590,15 @@ struct CutMatching {
         for (IncEdgeIt e(mg.g, mg.s); e != INVALID; ++e) {
             assert(mg.g.u(e) == mg.s || mg.g.v(e) == mg.s);
             Node u = mg.g.u(e) == mg.s ? mg.g.v(e) : mg.g.u(e);
+            long e_flow = flow(alp, f, mg.s, u);
+            cout << e_flow << endl;
+
+
+            // This approach would not produce a matching in the end...
+            //if(e_flow == 0) {
+            //    cout << "SKIPPING" << endl;
+            //    continue;
+           // }
 
             out_paths.push_back(array<Node, 2>());
             extract_path_fast(mg.g, f, flow_children, u, mg.t, out_paths[out_paths.size() - 1]);
