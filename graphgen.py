@@ -62,7 +62,7 @@ def write_graph(G, f):
 #    f = open(f"complete{i}.graph", "w+")
 #    write_graph(nx.complete_graph(i), f)
 
-for i in [4, 8, 16, 32]:
+for i in [2]:
     f = open(f"expander{i**2}.graph", "w+")
     write_graph(nx.margulis_gabber_galil_graph(i), f)
 

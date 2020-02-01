@@ -182,6 +182,8 @@ public:
             ++num_edges;
             if (is_crossing(g, cut, e)) crossing_edges += 1;
             if (cut.count(g.u(e))) cut_volume += 1;
+            // If it's a self loop, if only contributes once, but if not, it contributes twice
+            if (g.u(e) == g.v(e)) continue;
             if (cut.count(g.v(e))) cut_volume += 1;
         }
 
@@ -446,7 +448,8 @@ void createSubdividedGraph(SubdividedGraphContext& sgc) {
         sgc.origs[s] = false;
         sgc.only_splits.enable(s);
         g.addEdge(u, s);
-        g.addEdge(s, v);
+        // Trying not to have this become a multigraph
+        if(u != v) g.addEdge(s, v);
 
         sgc.split_vertices.push_back(s);
     }
@@ -580,6 +583,8 @@ struct CutMatching {
             Node u = mg.g.u(e);
             Node v = mg.g.v(e);
             long e_flow = flow(alp, f, u, v);
+
+            cout << "FLOW " << mg.g.id(u) << " -> " << mg.g.id(v) << " : " << e_flow << endl;
             if (e_flow > 0) {
                 flow_children[u].push_back(tuple(v, e_flow));
             } else if (e_flow < 0) {
