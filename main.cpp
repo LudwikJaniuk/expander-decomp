@@ -187,13 +187,11 @@ public:
             if (cut.count(g.v(e))) cut_volume += 1;
         }
 
-        cout << "Createing but with " << num_vertices << "veertx" << endl;
         assert(cut.size() <= num_vertices);
         size_t other_size = num_vertices - cut.size();
         min_side = min(cut.size(), other_size);
         max_side = max(cut.size(), other_size);
         is_min_side = cut.size() == min_side;
-        cout << "Createing cut with " << min_side << "min, " << max_side << "max"  << endl;
     }
 
     static bool is_crossing(const G &g, const Bisection &c, const Edge &e) {
@@ -243,14 +241,14 @@ public:
 
 
     void print() {
-        cout << "Edge crossings (E) : " << crossing_edges << endl;
-        cout << "cut size: (" << min_side << " | " << max_side << ")" << endl
+        l.progress() << "Edge crossings (E) : " << crossing_edges << endl;
+        l.progress() << "cut size: (" << min_side << " | " << max_side << ")" << endl
              << "diff: " << diff() << " (" << imbalance() << " of total n vertices)" << endl;
-        cout << "Min side: " << min_side << endl;
-        cout << "expansion: " << expansion() << endl;
-        cout << "conductance: " << expansion() << endl;
-        cout << "cut volume: " << cut_volume << endl;
-        cout << "noncut volume: " << noncut_volume() << endl;
+        l.progress() << "Min side: " << min_side << endl;
+        l.progress() << "expansion: " << expansion() << endl;
+        l.progress() << "conductance: " << expansion() << endl;
+        l.progress() << "cut volume: " << cut_volume << endl;
+        l.progress() << "noncut volume: " << noncut_volume() << endl;
     }
 };
 // Reads the file filename,
@@ -292,11 +290,11 @@ static void parse_chaco_format(const string &filename, ListGraph &g, vector<Node
         Node u = nodes[i];
         for(string& str : tokens) {
             size_t v_name = stoi(str);
-            cout << "edge to: " << v_name << "..." ;
+            l.debug() << "edge to: " << v_name << "..." ;
             assert(v_name != 0);
             Node v = nodes[v_name - 1];
             if (findEdge(g, u, v) == INVALID) {
-                cout  << "adding" << endl;
+                l.debug()  << "adding" << endl;
                 g.addEdge(u, v);
             }
         }
@@ -338,11 +336,11 @@ void write_cut(const vector<Node> &nodes, const Cut &cut, string file_name) {
     ofstream file;
     file.open(file_name);
     if (!file) {
-        cout << "Cannot open file " << file_name << endl;
+        l.progress() << "Cannot open file " << file_name << endl;
         return;
     }
 
-    cout << "Writing partition with "
+    l.debug() << "Writing partition with "
          << nodes.size()
          << " nodes to file "
          << file_name
@@ -379,7 +377,7 @@ void initGraph(GraphContext &gc, InputConfiguration config) {
     }
 
     gc.num_edges = countEdges(gc.g);
-    cout << "gc.num_edges: " << gc.num_edges << endl;
+    l.debug() << "gc.num_edges: " << gc.num_edges << endl;
 }
 
 // For some reason lemon returns arbitrary values for flow, the difference is correct tho
@@ -477,11 +475,11 @@ struct CutMatching {
         assert(gc.nodes.size() > 0);
         assert(connected(gc.g));
 
-        cout << "got graph: " << endl;
-        print_graph(gc.g, cout);
+        l.debug() << "got graph: " << endl;
+        print_graph(gc.g, l.debug());
         createSubdividedGraph(sgc);
-        cout << "subdivided into: " << endl;
-        print_graph(sgc.sub_g, cout);
+        l.debug() << "subdivided into: " << endl;
+        print_graph(sgc.sub_g, l.debug());
     };
 
     // During the matching step a lot of local setup is actually made, so it makes sense to group it
@@ -546,10 +544,7 @@ struct CutMatching {
     ) {
         out_path[0] = u_orig;
         Node u = u_orig;
-        int i = 0;
         while (true) {
-            cout << i << " " << flush;
-            i++;
 
             auto& vv = flow_children[u];
             assert(vv.size() > 0);
@@ -584,7 +579,7 @@ struct CutMatching {
             Node v = mg.g.v(e);
             long e_flow = flow(alp, f, u, v);
 
-            cout << "FLOW " << mg.g.id(u) << " -> " << mg.g.id(v) << " : " << e_flow << endl;
+            l.debug() << "FLOW " << mg.g.id(u) << " -> " << mg.g.id(v) << " : " << e_flow << endl;
             if (e_flow > 0) {
                 flow_children[u].push_back(tuple(v, e_flow));
             } else if (e_flow < 0) {
@@ -595,9 +590,6 @@ struct CutMatching {
         for (IncEdgeIt e(mg.g, mg.s); e != INVALID; ++e) {
             assert(mg.g.u(e) == mg.s || mg.g.v(e) == mg.s);
             Node u = mg.g.u(e) == mg.s ? mg.g.v(e) : mg.g.u(e);
-            long e_flow = flow(alp, f, mg.s, u);
-            cout << e_flow << endl;
-
 
             // This approach would not produce a matching in the end...
             //if(e_flow == 0) {
@@ -714,7 +706,7 @@ struct CutMatching {
             deb_assigned++;
         }
 
-        cout << "DEB: " << deb_n_nodes << " but assigned " << deb_assigned << endl;
+        //cout << "DEB: " << deb_n_nodes << " but assigned " << deb_assigned << endl;
 
         size_t num_vertices = all_nodes.size();
 
@@ -777,8 +769,8 @@ struct CutMatching {
         // TODO so have s, t been created on the big greaph?
         Node s = mg.s;
         int id = sgc.sub_g.id(s);
-        cout << id << endl;
-        cout << countNodes(sgc.sub_g) << endl;
+        //cout << id << endl;
+        //cout << countNodes(sgc.sub_g) << endl;
 
         unique_ptr<FlowAlgo> p;
         MatchResult mr = bin_search_flows(mg, p, sgc.split_vertices.size()/2);
@@ -848,7 +840,6 @@ struct CutMatching {
                 report->cut->insert(sgc.n_cross_ref[n]);
             }
         }
-        cout << "INVALID: " << gc.g.id((Node)INVALID) << endl;
 
         auto cs = CutStats<G>(sgc.origContext.g, sgc.origContext.nodes.size(), *report->cut);
         report->g_conductance = cs.conductance();
@@ -860,8 +851,6 @@ struct CutMatching {
         l.progress() << "SUBG cut minside volume " << cs.minside_volume() << endl;
         l.progress() << "SUBG cut maxside volume " << cs.maxside_volume() << endl;
         report->relatively_balanced = report->volume > sub_volume_treshold();
-        cout << "Has 0? " << report->cut->count(gc.nodes[0]) << endl;
-        cout << "double Has 0? " << report->cut->count(sgc.n_cross_ref[sgc.n_ref[gc.nodes[0]]]) << endl;
         return move(report);
     }
 
@@ -873,7 +862,7 @@ struct CutMatching {
 
         const auto& last_round = sub_past_rounds[sub_past_rounds.size() - 1];
         if(config.use_H_phi_target && last_round->multi_h_conductance >= config.H_phi_target) {
-            cout << "H Conductance target reached, this will be case 1 or 3. According to theory, this means we probably won't find a better cut. That is, assuming you set H_phi right. "
+            l.progress() << "H Conductance target reached, this will be case 1 or 3. According to theory, this means we probably won't find a better cut. That is, assuming you set H_phi right. "
                     "If was used together with G_phi target, this also certifies the input graph is a G_phi expander unless there was a very unbaanced cut somewhere, which we will proceed to look for." << endl;
             reached_H_target = true;
             return true;
@@ -886,14 +875,14 @@ struct CutMatching {
             if(last_round->g_conductance >= config.G_phi_target) {
 #endif
                 if(config.use_volume_treshold && last_round->relatively_balanced) {
-                    cout << "CASE2 G Expansion target reached with a cut that is relatively balanced. Cut-matching game has found a balanced cut as good as you wanted it."
+                    l.progress() << "CASE2 G Expansion target reached with a cut that is relatively balanced. Cut-matching game has found a balanced cut as good as you wanted it."
                          << endl;
-                    cout << "Claimed g conductance: " << last_round->g_conductance << endl;
+                    l.progress() << "Claimed g conductance: " << last_round->g_conductance << endl;
                     return true;
                 }
 
                 if(!config.use_volume_treshold) {
-                    cout << "G Expansion target reached. Cut-matching game has found a cut as good as you wanted it. Whether it is balanced or not is up to you."
+                    l.progress() << "G Expansion target reached. Cut-matching game has found a cut as good as you wanted it. Whether it is balanced or not is up to you."
                          << endl;
                     return true;
                 }
@@ -1022,10 +1011,10 @@ int main(int argc, char **argv) {
     });
 
     for(int i = 0; i < cm.sub_past_rounds.size(); i++) {
-        cout << "R" << i << " cond " << cm.sub_past_rounds[i]->g_conductance << endl;
+        l.progress() << "R" << i << " cond " << cm.sub_past_rounds[i]->g_conductance << endl;
     }
 
-    cout << "The best with best expansion was found on round" << best_round->index << endl;
+    l.progress() << "The best with best expansion was found on round" << best_round->index << endl;
     auto &best_cut = best_round->cut;
     CutStats<G>(gc.g, gc.nodes.size(), *best_cut).print();
 
@@ -1037,12 +1026,12 @@ int main(int argc, char **argv) {
 #else
             if(best_round->g_conductance < config.G_phi_target) {
 #endif
-                cout << "CASE1 NO Goodenough cut, G certified expander." << endl;
+                l.progress() << "CASE1 NO Goodenough cut, G certified expander." << endl;
             } else {
-                cout << "CASE3 Found goodenough but very unbalanced cut." << endl;
+                l.progress() << "CASE3 Found goodenough but very unbalanced cut." << endl;
             }
         } else {
-            cout << "CASE2 Goodenough balanced cut" << endl;
+            l.progress() << "CASE2 Goodenough balanced cut" << endl;
         }
 
     }
@@ -1053,7 +1042,7 @@ int main(int argc, char **argv) {
         Cut reference_cut;
         read_partition_file(config.partition_file, gc.nodes, reference_cut);
 
-        cout << endl
+        l.progress() << endl
              << "The given partition achieved the following:"
              << endl;
         CutStats<G>(gc.g, gc.nodes.size(), reference_cut).print();

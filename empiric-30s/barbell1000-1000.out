@@ -1,0 +1,8 @@
+time -o final/barbell1000-1000.out.time timeout 30s cmake-build-debug/a.out -f graphs/barbell1000-1000.graph -r 0 -s --H_phi=0.4 --G_phi=0.0005 --vol 0.1 -o final/barbell1000-1000.ptn >> final/barbell1000-1000.outReading graph from graphs/barbell1000-1000.graph
+Reading a graph with V 2000E 999001
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 499240 (16.5396 s)
+Cap 2 ... 

@@ -1,0 +1,32 @@
+time -o final/wing.out.time timeout 30s cmake-build-debug/a.out -f graphs/wing.graph -r 0 -s --H_phi=0.4 --G_phi=1.6120711890637092e-05 --vol 0.1 -o final/wing.ptn >> final/wing.outReading graph from graphs/wing.graph
+Reading a graph with V 62032E 121544
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 53930 (5.5727 s)
+Cap 2 ... flow: 60769 (2.85351 s)
+Cap 4 ... flow: 60772 (1.80865 s)
+Flow search took (seconds) 10.2562
+SUBG cut conductance: 0.205479
+SUBG cut minside volume 73
+SUBG cut maxside volume 243015
+== End round 0 ==
+H expansion: 0.250181, num cross: 15204
+H conductance: 0.250181, num cross: 15204
+H_single expansion: 0.250181, num cross: 15204
+H_single conductance: 0.250181, num cross: 15204
+Cap 1 ... flow: 51309 (6.24349 s)
+Cap 2 ... flow: 60745 (2.73918 s)
+Cap 4 ... flow: 60772 (1.24155 s)
+Flow search took (seconds) 10.2446
+SUBG cut conductance: 0.0649282
+SUBG cut minside volume 7593
+SUBG cut maxside volume 235495
+== End round 1 ==
+H expansion: 0.539163, num cross: 32766
+H conductance: 0.269581, num cross: 32766
+H_single expansion: 0.528204, num cross: 32100
+H_single conductance: 0.269979, num cross: 32100
+Cap 1 ... flow: 48077 (6.70568 s)
+Cap 2 ... 

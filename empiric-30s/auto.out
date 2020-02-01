@@ -1,0 +1,7 @@
+time -o final/auto.out.time timeout 30s cmake-build-debug/a.out -f graphs/auto.graph -r 0 -s --H_phi=0.4 --G_phi=2.228685409910964e-06 --vol 0.1 -o final/auto.ptn >> final/auto.outReading graph from graphs/auto.graph
+Reading a graph with V 448695E 3314611
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... 

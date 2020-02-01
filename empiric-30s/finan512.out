@@ -1,0 +1,9 @@
+time -o final/finan512.out.time timeout 30s cmake-build-debug/a.out -f graphs/finan512.graph -r 0 -s --H_phi=0.4 --G_phi=1.3377568493150684e-05 --vol 0.1 -o final/finan512.ptn >> final/finan512.outReading graph from graphs/finan512.graph
+Reading a graph with V 74752E 261120
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 127830 (8.16258 s)
+Cap 2 ... flow: 130256 (10.1151 s)
+Cap 4 ... 

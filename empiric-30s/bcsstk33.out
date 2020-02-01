@@ -1,0 +1,52 @@
+time -o final/bcsstk33.out.time timeout 30s cmake-build-debug/a.out -f graphs/bcsstk33.graph -r 0 -s --H_phi=0.4 --G_phi=0.00011444266422522316 --vol 0.1 -o final/bcsstk33.ptn >> final/bcsstk33.outReading graph from graphs/bcsstk33.graph
+Reading a graph with V 8738E 291583
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 145791 (5.03217 s)
+Flow search took (seconds) 5.04602
+SUBG cut conductance: 999
+SUBG cut minside volume 0
+SUBG cut maxside volume 583166
+== End round 0 ==
+H expansion: 0.249844, num cross: 36425
+H conductance: 0.249844, num cross: 36425
+H_single expansion: 0.249844, num cross: 36425
+H_single conductance: 0.249844, num cross: 36425
+Cap 1 ... flow: 145791 (5.15965 s)
+Flow search took (seconds) 5.17366
+SUBG cut conductance: 999
+SUBG cut minside volume 0
+SUBG cut maxside volume 583166
+== End round 1 ==
+H expansion: 0.549451, num cross: 80105
+H conductance: 0.274726, num cross: 80105
+H_single expansion: 0.546255, num cross: 79639
+H_single conductance: 0.274944, num cross: 79639
+Cap 1 ... flow: 145791 (5.00952 s)
+Flow search took (seconds) 5.02373
+SUBG cut conductance: 999
+SUBG cut minside volume 0
+SUBG cut maxside volume 583166
+== End round 2 ==
+H expansion: 0.892456, num cross: 130112
+H conductance: 0.297486, num cross: 130112
+H_single expansion: 0.885192, num cross: 129053
+H_single conductance: 0.298842, num cross: 129053
+Cap 1 ... flow: 145791 (5.13189 s)
+Flow search took (seconds) 5.14616
+SUBG cut conductance: 999
+SUBG cut minside volume 0
+SUBG cut maxside volume 583166
+== End round 3 ==
+H expansion: 1.27051, num cross: 185229
+H conductance: 0.317629, num cross: 185229
+H_single expansion: 1.25532, num cross: 183014
+H_single conductance: 0.320176, num cross: 183014
+Cap 1 ... flow: 145791 (5.53543 s)
+Flow search took (seconds) 5.54968
+SUBG cut conductance: 999
+SUBG cut minside volume 0
+SUBG cut maxside volume 583166
+== End round 4 ==

@@ -1,0 +1,7 @@
+time -o final/wave.out.time timeout 30s cmake-build-debug/a.out -f graphs/wave.graph -r 0 -s --H_phi=0.4 --G_phi=6.397256856260036e-06 --vol 0.1 -o final/wave.ptn >> final/wave.outReading graph from graphs/wave.graph
+Reading a graph with V 156317E 1059331
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... 

@@ -1,0 +1,17 @@
+time -o final/598a.out.time timeout 30s cmake-build-debug/a.out -f graphs/598a.graph -r 0 -s --H_phi=0.4 --G_phi=9.011363329158069e-06 --vol 0.1 -o final/598a.ptn >> final/598a.outReading graph from graphs/598a.graph
+Reading a graph with V 110971E 741934
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 370967 (20.8196 s)
+Flow search took (seconds) 20.8756
+SUBG cut conductance: 999
+SUBG cut minside volume 0
+SUBG cut maxside volume 1483868
+== End round 0 ==
+H expansion: 0.249178, num cross: 92437
+H conductance: 0.249178, num cross: 92437
+H_single expansion: 0.249178, num cross: 92437
+H_single conductance: 0.249178, num cross: 92437
+Cap 1 ... 

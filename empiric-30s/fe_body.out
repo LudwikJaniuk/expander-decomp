@@ -1,0 +1,2 @@
+time -o final/fe_body.out.time timeout 30s cmake-build-debug/a.out -f graphs/fe_body.graph -r 0 -s --H_phi=0.4 --G_phi=2.2179342160711513e-05 --vol 0.1 -o final/fe_body.ptn >> final/fe_body.outReading graph from graphs/fe_body.graph
+Reading a graph with V 45087E 163734

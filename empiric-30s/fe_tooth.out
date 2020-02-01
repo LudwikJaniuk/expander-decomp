@@ -1,0 +1,18 @@
+time -o final/fe_tooth.out.time timeout 30s cmake-build-debug/a.out -f graphs/fe_tooth.graph -r 0 -s --H_phi=0.4 --G_phi=1.2798198013719669e-05 --vol 0.1 -o final/fe_tooth.ptn >> final/fe_tooth.outReading graph from graphs/fe_tooth.graph
+Reading a graph with V 78136E 452591
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 226240 (8.8021 s)
+Cap 2 ... flow: 226295 (6.46992 s)
+Flow search took (seconds) 15.3154
+SUBG cut conductance: 0.122725
+SUBG cut minside volume 11921
+SUBG cut maxside volume 893261
+== End round 0 ==
+H expansion: 0.24879, num cross: 56300
+H conductance: 0.248791, num cross: 56300
+H_single expansion: 0.24879, num cross: 56300
+H_single conductance: 0.248791, num cross: 56300
+Cap 1 ... 

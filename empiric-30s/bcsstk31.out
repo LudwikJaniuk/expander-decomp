@@ -1,0 +1,2 @@
+time -o final/bcsstk31.out.time timeout 30s cmake-build-debug/a.out -f graphs/bcsstk31.graph -r 0 -s --H_phi=0.4 --G_phi=2.809935933460717e-05 --vol 0.1 -o final/bcsstk31.ptn >> final/bcsstk31.outReading graph from graphs/bcsstk31.graph
+Reading a graph with V 35588E 572914

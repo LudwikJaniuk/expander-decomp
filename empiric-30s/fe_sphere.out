@@ -1,0 +1,94 @@
+time -o final/fe_sphere.out.time timeout 30s cmake-build-debug/a.out -f graphs/fe_sphere.graph -r 0 -s --H_phi=0.4 --G_phi=6.102770657878677e-05 --vol 0.1 -o final/fe_sphere.ptn >> final/fe_sphere.outReading graph from graphs/fe_sphere.graph
+Reading a graph with V 16386E 49152
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 23197 (1.00054 s)
+Cap 2 ... flow: 24576 (0.832484 s)
+Flow search took (seconds) 1.84118
+SUBG cut conductance: 0.142234
+SUBG cut minside volume 42620
+SUBG cut maxside volume 55684
+== End round 0 ==
+H expansion: 0.24707, num cross: 6072
+H conductance: 0.24707, num cross: 6072
+H_single expansion: 0.24707, num cross: 6072
+H_single conductance: 0.24707, num cross: 6072
+Cap 1 ... flow: 22455 (0.961007 s)
+Cap 2 ... flow: 24576 (1.13047 s)
+Flow search took (seconds) 2.09928
+SUBG cut conductance: 0.143194
+SUBG cut minside volume 44108
+SUBG cut maxside volume 54196
+== End round 1 ==
+H expansion: 0.537923, num cross: 13220
+H conductance: 0.268962, num cross: 13220
+H_single expansion: 0.53064, num cross: 13041
+H_single conductance: 0.26907, num cross: 13041
+Cap 1 ... flow: 21555 (0.999446 s)
+Cap 2 ... flow: 24212 (1.00127 s)
+Cap 4 ... flow: 24576 (1.00379 s)
+Flow search took (seconds) 3.01263
+SUBG cut conductance: 0.0204217
+SUBG cut minside volume 30164
+SUBG cut maxside volume 68140
+== End round 2 ==
+H expansion: 0.852051, num cross: 20940
+H conductance: 0.284017, num cross: 20940
+H_single expansion: 0.836589, num cross: 20560
+H_single conductance: 0.286862, num cross: 20560
+Cap 1 ... flow: 20379 (1.00558 s)
+Cap 2 ... flow: 23607 (1.42893 s)
+Cap 4 ... flow: 24576 (1.44518 s)
+Flow search took (seconds) 3.88978
+SUBG cut conductance: 0.0269884
+SUBG cut minside volume 44760
+SUBG cut maxside volume 53544
+== End round 3 ==
+H expansion: 1.20296, num cross: 29564
+H conductance: 0.300741, num cross: 29564
+H_single expansion: 1.17122, num cross: 28784
+H_single conductance: 0.304277, num cross: 28784
+Cap 1 ... flow: 19567 (0.959158 s)
+Cap 2 ... flow: 22979 (1.16886 s)
+Cap 4 ... flow: 24401 (3.19852 s)
+Cap 8 ... flow: 24576 (1.38651 s)
+Flow search took (seconds) 6.72977
+SUBG cut conductance: 0.0217476
+SUBG cut minside volume 15358
+SUBG cut maxside volume 82946
+== End round 4 ==
+H expansion: 1.55013, num cross: 38096
+H conductance: 0.310026, num cross: 38096
+H_single expansion: 1.49719, num cross: 36795
+H_single conductance: 0.314721, num cross: 36795
+Cap 1 ... flow: 18574 (1.06013 s)
+Cap 2 ... flow: 22100 (0.971412 s)
+Cap 4 ... flow: 24401 (0.68353 s)
+Cap 8 ... flow: 24576 (0.555714 s)
+Flow search took (seconds) 3.2788
+SUBG cut conductance: 0.0401208
+SUBG cut minside volume 4636
+SUBG cut maxside volume 93668
+== End round 5 ==
+H expansion: 1.90145, num cross: 46730
+H conductance: 0.316908, num cross: 46730
+H_single expansion: 1.8186, num cross: 44694
+H_single conductance: 0.322151, num cross: 44694
+Cap 1 ... flow: 17677 (1.30252 s)
+Cap 2 ... flow: 21313 (1.45268 s)
+Cap 4 ... flow: 23830 (1.33667 s)
+Cap 8 ... flow: 24576 (1.05978 s)
+Flow search took (seconds) 5.16126
+SUBG cut conductance: 0.0206782
+SUBG cut minside volume 31434
+SUBG cut maxside volume 66870
+== End round 6 ==
+H expansion: 2.28662, num cross: 56196
+H conductance: 0.32666, num cross: 56196
+H_single expansion: 2.16715, num cross: 53260
+H_single conductance: 0.331112, num cross: 53260
+Cap 1 ... flow: 17372 (1.26635 s)
+Cap 2 ... flow: 20596 (1.34614 s)
+Cap 4 ... 

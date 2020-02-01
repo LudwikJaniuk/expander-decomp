@@ -1,0 +1,123 @@
+time -o final/complete10.out.time timeout 30s cmake-build-debug/a.out -f graphs/complete10.graph -r 0 -s --H_phi=0.4 --G_phi=0.1 --vol 0.1 -o final/complete10.ptn >> final/complete10.outReading graph from graphs/complete10.graph
+Reading a graph with V 10E 45
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 22 (2.2e-05 s)
+Flow search took (seconds) 3.6e-05
+SUBG cut conductance: 999
+SUBG cut minside volume 0
+SUBG cut maxside volume 90
+== End round 0 ==
+H expansion: 0.227273, num cross: 5
+H conductance: 0.238095, num cross: 5
+H_single expansion: 0.227273, num cross: 5
+H_single conductance: 0.238095, num cross: 5
+Cap 1 ... flow: 22 (1.7e-05 s)
+Flow search took (seconds) 2.6e-05
+SUBG cut conductance: 999
+SUBG cut minside volume 0
+SUBG cut maxside volume 90
+== End round 1 ==
+H expansion: 0.363636, num cross: 8
+H conductance: 0.181818, num cross: 8
+H_single expansion: 0.363636, num cross: 8
+H_single conductance: 0.181818, num cross: 8
+Cap 1 ... flow: 22 (1.8e-05 s)
+Flow search took (seconds) 2.7e-05
+SUBG cut conductance: 999
+SUBG cut minside volume 0
+SUBG cut maxside volume 90
+== End round 2 ==
+H expansion: 0.590909, num cross: 13
+H conductance: 0.206349, num cross: 13
+H_single expansion: 0.590909, num cross: 13
+H_single conductance: 0.206349, num cross: 13
+Cap 1 ... flow: 22 (1.9e-05 s)
+Flow search took (seconds) 2.8e-05
+SUBG cut conductance: 999
+SUBG cut minside volume 0
+SUBG cut maxside volume 90
+== End round 3 ==
+H expansion: 1.09091, num cross: 24
+H conductance: 0.27907, num cross: 24
+H_single expansion: 1.04545, num cross: 23
+H_single conductance: 0.283951, num cross: 23
+Cap 1 ... flow: 22 (1.7e-05 s)
+Flow search took (seconds) 2.6e-05
+SUBG cut conductance: 999
+SUBG cut minside volume 0
+SUBG cut maxside volume 90
+== End round 4 ==
+H expansion: 1.36364, num cross: 30
+H conductance: 0.283019, num cross: 30
+H_single expansion: 1.36364, num cross: 30
+H_single conductance: 0.306122, num cross: 30
+Cap 1 ... flow: 22 (2e-05 s)
+Flow search took (seconds) 2.9e-05
+SUBG cut conductance: 999
+SUBG cut minside volume 0
+SUBG cut maxside volume 90
+== End round 5 ==
+H expansion: 2.09091, num cross: 46
+H conductance: 0.359375, num cross: 46
+H_single expansion: 1.90909, num cross: 42
+H_single conductance: 0.375, num cross: 42
+Cap 1 ... flow: 22 (1.9e-05 s)
+Flow search took (seconds) 2.8e-05
+SUBG cut conductance: 999
+SUBG cut minside volume 0
+SUBG cut maxside volume 90
+== End round 6 ==
+H expansion: 2.04545, num cross: 45
+H conductance: 0.298013, num cross: 45
+H_single expansion: 1.90909, num cross: 42
+H_single conductance: 0.328125, num cross: 42
+Cap 1 ... flow: 22 (1.9e-05 s)
+Flow search took (seconds) 2.8e-05
+SUBG cut conductance: 999
+SUBG cut minside volume 0
+SUBG cut maxside volume 90
+== End round 7 ==
+H expansion: 3, num cross: 66
+H conductance: 0.383721, num cross: 66
+H_single expansion: 2.59091, num cross: 57
+H_single conductance: 0.410072, num cross: 57
+Cap 1 ... flow: 22 (1.9e-05 s)
+Flow search took (seconds) 2.8e-05
+SUBG cut conductance: 999
+SUBG cut minside volume 0
+SUBG cut maxside volume 90
+== End round 8 ==
+H expansion: 4.22727, num cross: 93
+H conductance: 0.481865, num cross: 93
+H_single expansion: 3.63636, num cross: 80
+H_single conductance: 0.519481, num cross: 80
+Cap 1 ... flow: 22 (1.6e-05 s)
+Flow search took (seconds) 2.6e-05
+SUBG cut conductance: 999
+SUBG cut minside volume 0
+SUBG cut maxside volume 90
+== End round 9 ==
+H Conductance target reached, this will be case 1 or 3. According to theory, this means we probably won't find a better cut. That is, assuming you set H_phi right. If was used together with G_phi target, this also certifies the input graph is a G_phi expander unless there was a very unbaanced cut somewhere, which we will proceed to look for.
+R0 cond 999
+R1 cond 999
+R2 cond 999
+R3 cond 999
+R4 cond 999
+R5 cond 999
+R6 cond 999
+R7 cond 999
+R8 cond 999
+R9 cond 999
+The best with best expansion was found on round0
+Edge crossings (E) : 0
+cut size: (0 | 10)
+diff: 10 (1 of total n vertices)
+Min side: 0
+expansion: 0
+conductance: 0
+cut volume: 0
+noncut volume: 90
+CASE1 NO Goodenough cut, G certified expander.

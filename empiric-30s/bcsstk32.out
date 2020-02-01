@@ -1,0 +1,7 @@
+time -o final/bcsstk32.out.time timeout 30s cmake-build-debug/a.out -f graphs/bcsstk32.graph -r 0 -s --H_phi=0.4 --G_phi=2.241700105359905e-05 --vol 0.1 -o final/bcsstk32.ptn >> final/bcsstk32.outReading graph from graphs/bcsstk32.graph
+Reading a graph with V 44609E 985046
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... 

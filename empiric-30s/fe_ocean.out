@@ -1,0 +1,7 @@
+time -o final/fe_ocean.out.time timeout 30s cmake-build-debug/a.out -f graphs/fe_ocean.graph -r 0 -s --H_phi=0.4 --G_phi=6.971701862141567e-06 --vol 0.1 -o final/fe_ocean.ptn >> final/fe_ocean.outReading graph from graphs/fe_ocean.graph
+Reading a graph with V 143437E 409593
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... 

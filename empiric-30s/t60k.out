@@ -1,0 +1,22 @@
+time -o final/t60k.out.time timeout 30s cmake-build-debug/a.out -f graphs/t60k.graph -r 0 -s --H_phi=0.4 --G_phi=1.6665277893508874e-05 --vol 0.1 -o final/t60k.ptn >> final/t60k.outReading graph from graphs/t60k.graph
+Reading a graph with V 60005E 89440
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 36107 (2.75272 s)
+Cap 2 ... flow: 43442 (3.40096 s)
+Cap 4 ... flow: 44719 (6.20919 s)
+Cap 8 ... flow: 44720 (5.40589 s)
+Flow search took (seconds) 17.8066
+SUBG cut conductance: 0.0233281
+SUBG cut minside volume 1286
+SUBG cut maxside volume 177594
+== End round 0 ==
+H expansion: 0.249776, num cross: 11170
+H conductance: 0.249776, num cross: 11170
+H_single expansion: 0.249776, num cross: 11170
+H_single conductance: 0.249776, num cross: 11170
+Cap 1 ... flow: 34126 (3.5446 s)
+Cap 2 ... flow: 42261 (3.98639 s)
+Cap 4 ... 

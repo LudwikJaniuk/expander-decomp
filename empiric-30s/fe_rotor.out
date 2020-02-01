@@ -1,0 +1,8 @@
+time -o final/fe_rotor.out.time timeout 30s cmake-build-debug/a.out -f graphs/fe_rotor.graph -r 0 -s --H_phi=0.4 --G_phi=1.003844725297891e-05 --vol 0.1 -o final/fe_rotor.ptn >> final/fe_rotor.outReading graph from graphs/fe_rotor.graph
+Reading a graph with V 99617E 662431
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 331212 (24.9253 s)
+Cap 2 ... 

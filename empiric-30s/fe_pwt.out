@@ -1,0 +1,2 @@
+time -o final/fe_pwt.out.time timeout 30s cmake-build-debug/a.out -f graphs/fe_pwt.graph -r 0 -s --H_phi=0.4 --G_phi=2.7383006106410362e-05 --vol 0.1 -o final/fe_pwt.ptn >> final/fe_pwt.outReading graph from graphs/fe_pwt.graph
+Reading a graph with V 36519E 144794

@@ -1,0 +1,7 @@
+time -o final/m14b.out.time timeout 30s cmake-build-debug/a.out -f graphs/m14b.graph -r 0 -s --H_phi=0.4 --G_phi=4.6562521826182106e-06 --vol 0.1 -o final/m14b.ptn >> final/m14b.outReading graph from graphs/m14b.graph
+Reading a graph with V 214765E 1679018
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... 
