@@ -4,8 +4,6 @@
 #pragma ide diagnostic ignored "cert-msc32-c"
 #pragma ide diagnostic ignored "cppcoreguidelines-slicing"
 
-#define LOW_CONDUCTANCE 1
-
 #include <iostream>
 #include <ostream>
 #include <algorithm>
@@ -244,11 +242,7 @@ public:
     }
 
     double conductance() {
-#ifdef LOW_CONDUCTANCE
         return min_side == 0 ? 999 : crossing_edges * 1. / minside_volume();
-#else
-        return min_side == 0 ? 0 : crossing_edges * 1. / minside_volume();
-#endif
     }
 
 
@@ -892,11 +886,7 @@ struct CutMatching {
         }
 
         if(config.use_G_phi_target)
-#ifdef LOW_CONDUCTANCE
             if(last_round->g_conductance <= config.G_phi_target) {
-#else
-            if(last_round->g_conductance >= config.G_phi_target) {
-#endif
                 if(config.use_volume_treshold && last_round->relatively_balanced) {
                     l.progress() << "CASE2 G Expansion target reached with a cut that is relatively balanced. Cut-matching game has found a balanced cut as good as you wanted it."
                          << endl;
@@ -1025,11 +1015,7 @@ int main(int argc, char **argv) {
 
     assert(!cm.sub_past_rounds.empty());
     // Best by conductance
-#ifdef LOW_CONDUCTANCE
     auto& best_round = *min_element(cm.sub_past_rounds.begin(), cm.sub_past_rounds.end(), [](auto &a, auto &b) {
-#else
-    auto& best_round = *max_element(cm.sub_past_rounds.begin(), cm.sub_past_rounds.end(), [](auto &a, auto &b) {
-#endif
         return a->g_conductance < b->g_conductance;
     });
 
@@ -1044,11 +1030,7 @@ int main(int argc, char **argv) {
     if(config.use_H_phi_target && config.use_G_phi_target && config.use_volume_treshold) {
         if(cm.reached_H_target) {
 
-#ifdef LOW_CONDUCTANCE
             if(best_round->g_conductance > config.G_phi_target) {
-#else
-            if(best_round->g_conductance < config.G_phi_target) {
-#endif
                 l.progress() << "CASE1 NO Goodenough cut, G certified expander." << endl;
             } else {
                 l.progress() << "CASE3 Found goodenough but very unbalanced cut." << endl;
