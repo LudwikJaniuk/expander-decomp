@@ -1,11 +1,11 @@
-time -o final/complete10-hphi-0.1.out.time timeout 15m cmake-build-debug/a.out -f graphs/complete10.graph -r 0 -s --H_phi=0.1 --G_phi=0.1 --vol 0.1 -o final/complete10-hphi-0.1.ptn >> final/complete10-hphi-0.1.outReading graph from graphs/complete10.graph
+time -o final/complete10-hphi-0.1.out.time timeout 15m cmake-build-debug/a.out -f graphs/complete10.graph -r 0 -s --H_phi=0.1 --G_phi=0.31622776601683794 --vol 0.1 -o final/complete10-hphi-0.1.ptn >> final/complete10-hphi-0.1.outReading graph from graphs/complete10.graph
 Reading a graph with V 10E 45
 H expansion: 0, num cross: 0
 H conductance: -nan, num cross: 0
 H_single expansion: 0, num cross: 0
 H_single conductance: -nan, num cross: 0
-Cap 1 ... flow: 22 (2.2e-05 s)
-Flow search took (seconds) 3.3e-05
+Cap 1 ... flow: 22 (3.1e-05 s)
+Flow search took (seconds) 4.5e-05
 SUBG cut conductance: 999
 SUBG cut minside volume 0
 SUBG cut maxside volume 90
@@ -14,8 +14,8 @@ H expansion: 0.227273, num cross: 5
 H conductance: 0.238095, num cross: 5
 H_single expansion: 0.227273, num cross: 5
 H_single conductance: 0.238095, num cross: 5
-Cap 1 ... flow: 22 (1.6e-05 s)
-Flow search took (seconds) 2.5e-05
+Cap 1 ... flow: 22 (2.3e-05 s)
+Flow search took (seconds) 3.4e-05
 SUBG cut conductance: 999
 SUBG cut minside volume 0
 SUBG cut maxside volume 90

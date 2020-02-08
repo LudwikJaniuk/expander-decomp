@@ -1,12 +1,12 @@
-time -o final/expander64-hphi-0.1.out.time timeout 15m cmake-build-debug/a.out -f graphs/expander64.graph -r 0 -s --H_phi=0.1 --G_phi=0.015625 --vol 0.1 -o final/expander64-hphi-0.1.ptn >> final/expander64-hphi-0.1.outReading graph from graphs/expander64.graph
+time -o final/expander64-hphi-0.1.out.time timeout 15m cmake-build-debug/a.out -f graphs/expander64.graph -r 0 -s --H_phi=0.1 --G_phi=0.125 --vol 0.1 -o final/expander64-hphi-0.1.ptn >> final/expander64-hphi-0.1.outReading graph from graphs/expander64.graph
 Reading a graph with V 64E 256
 H expansion: 0, num cross: 0
 H conductance: -nan, num cross: 0
 H_single expansion: 0, num cross: 0
 H_single conductance: -nan, num cross: 0
-Cap 1 ... flow: 115 (0.000126 s)
-Cap 2 ... flow: 118 (0.000108 s)
-Flow search took (seconds) 0.000272
+Cap 1 ... flow: 115 (0.000423 s)
+Cap 2 ... flow: 118 (0.000411 s)
+Flow search took (seconds) 0.000968
 SUBG cut conductance: 0.652174
 SUBG cut minside volume 23
 SUBG cut maxside volume 449
@@ -15,9 +15,9 @@ H expansion: 0.254237, num cross: 30
 H conductance: 0.254237, num cross: 30
 H_single expansion: 0.254237, num cross: 30
 H_single conductance: 0.254237, num cross: 30
-Cap 1 ... flow: 117 (0.000129 s)
-Cap 2 ... flow: 118 (0.000115 s)
-Flow search took (seconds) 0.000277
+Cap 1 ... flow: 117 (0.000457 s)
+Cap 2 ... flow: 118 (0.000411 s)
+Flow search took (seconds) 0.000979
 SUBG cut conductance: 0.833333
 SUBG cut minside volume 6
 SUBG cut maxside volume 466

@@ -1,11 +1,11 @@
-time -o final/bcsstk33-hphi-0.1.out.time timeout 15m cmake-build-debug/a.out -f graphs/bcsstk33.graph -r 0 -s --H_phi=0.1 --G_phi=0.00011444266422522316 --vol 0.1 -o final/bcsstk33-hphi-0.1.ptn >> final/bcsstk33-hphi-0.1.outReading graph from graphs/bcsstk33.graph
+time -o final/bcsstk33-hphi-0.1.out.time timeout 15m cmake-build-debug/a.out -f graphs/bcsstk33.graph -r 0 -s --H_phi=0.1 --G_phi=0.010697787819228009 --vol 0.1 -o final/bcsstk33-hphi-0.1.ptn >> final/bcsstk33-hphi-0.1.outReading graph from graphs/bcsstk33.graph
 Reading a graph with V 8738E 291583
 H expansion: 0, num cross: 0
 H conductance: -nan, num cross: 0
 H_single expansion: 0, num cross: 0
 H_single conductance: -nan, num cross: 0
-Cap 1 ... flow: 145791 (5.03321 s)
-Flow search took (seconds) 5.04727
+Cap 1 ... flow: 145791 (4.89572 s)
+Flow search took (seconds) 4.9104
 SUBG cut conductance: 999
 SUBG cut minside volume 0
 SUBG cut maxside volume 583166
@@ -14,8 +14,8 @@ H expansion: 0.249844, num cross: 36425
 H conductance: 0.249844, num cross: 36425
 H_single expansion: 0.249844, num cross: 36425
 H_single conductance: 0.249844, num cross: 36425
-Cap 1 ... flow: 145791 (5.13546 s)
-Flow search took (seconds) 5.14959
+Cap 1 ... flow: 145791 (5.00211 s)
+Flow search took (seconds) 5.01726
 SUBG cut conductance: 999
 SUBG cut minside volume 0
 SUBG cut maxside volume 583166

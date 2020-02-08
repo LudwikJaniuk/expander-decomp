@@ -1,0 +1,40 @@
+time -o final/finan512-hphi-0.1.out.time timeout 15m cmake-build-debug/a.out -f graphs/finan512.graph -r 0 -s --H_phi=0.1 --G_phi=1.3377568493150684e-05 --vol 0.1 -o final/finan512-hphi-0.1.ptn >> final/finan512-hphi-0.1.outReading graph from graphs/finan512.graph
+Reading a graph with V 74752E 261120
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 127830 (8.03321 s)
+Cap 2 ... flow: 130256 (9.84903 s)
+Cap 4 ... flow: 130560 (18.6548 s)
+Flow search took (seconds) 36.6238
+SUBG cut conductance: 0.00189271
+SUBG cut minside volume 98272
+SUBG cut maxside volume 423968
+== End round 0 ==
+H expansion: 0.25072, num cross: 32734
+H conductance: 0.25072, num cross: 32734
+H_single expansion: 0.25072, num cross: 32734
+H_single conductance: 0.25072, num cross: 32734
+Cap 1 ... flow: 125710 (10.7906 s)
+Cap 2 ... flow: 130078 (6.94835 s)
+Cap 4 ... flow: 130428 (10.3987 s)
+Cap 8 ... flow: 130560 (5.94587 s)
+Flow search took (seconds) 34.1477
+SUBG cut conductance: 0.000709207
+SUBG cut minside volume 228424
+SUBG cut maxside volume 293816
+== End round 1 ==
+H Conductance target reached, this will be case 1 or 3. According to theory, this means we probably won't find a better cut. That is, assuming you set H_phi right. If was used together with G_phi target, this also certifies the input graph is a G_phi expander unless there was a very unbaanced cut somewhere, which we will proceed to look for.
+R0 cond 0.00189271
+R1 cond 0.000709207
+The best with best expansion was found on round1
+Edge crossings (E) : 162
+cut size: (32695 | 42057)
+diff: 9362 (0.125241 of total n vertices)
+Min side: 32695
+expansion: 0.00495489
+conductance: 0.00495489
+cut volume: 228424
+noncut volume: 293816
+CASE1 NO Goodenough cut, G certified expander.

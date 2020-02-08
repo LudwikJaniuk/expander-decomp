@@ -1,12 +1,12 @@
-time -o final/fe_sphere-hphi-0.1.out.time timeout 15m cmake-build-debug/a.out -f graphs/fe_sphere.graph -r 0 -s --H_phi=0.1 --G_phi=6.102770657878677e-05 --vol 0.1 -o final/fe_sphere-hphi-0.1.ptn >> final/fe_sphere-hphi-0.1.outReading graph from graphs/fe_sphere.graph
+time -o final/fe_sphere-hphi-0.1.out.time timeout 15m cmake-build-debug/a.out -f graphs/fe_sphere.graph -r 0 -s --H_phi=0.1 --G_phi=0.007812023206493102 --vol 0.1 -o final/fe_sphere-hphi-0.1.ptn >> final/fe_sphere-hphi-0.1.outReading graph from graphs/fe_sphere.graph
 Reading a graph with V 16386E 49152
 H expansion: 0, num cross: 0
 H conductance: -nan, num cross: 0
 H_single expansion: 0, num cross: 0
 H_single conductance: -nan, num cross: 0
-Cap 1 ... flow: 23197 (0.974215 s)
-Cap 2 ... flow: 24576 (0.801425 s)
-Flow search took (seconds) 1.78334
+Cap 1 ... flow: 23197 (1.00883 s)
+Cap 2 ... flow: 24576 (0.839105 s)
+Flow search took (seconds) 1.85593
 SUBG cut conductance: 0.142234
 SUBG cut minside volume 42620
 SUBG cut maxside volume 55684
@@ -15,9 +15,9 @@ H expansion: 0.24707, num cross: 6072
 H conductance: 0.24707, num cross: 6072
 H_single expansion: 0.24707, num cross: 6072
 H_single conductance: 0.24707, num cross: 6072
-Cap 1 ... flow: 22455 (0.913727 s)
-Cap 2 ... flow: 24576 (1.07613 s)
-Flow search took (seconds) 1.9972
+Cap 1 ... flow: 22455 (0.958166 s)
+Cap 2 ... flow: 24576 (1.13521 s)
+Flow search took (seconds) 2.10127
 SUBG cut conductance: 0.143194
 SUBG cut minside volume 44108
 SUBG cut maxside volume 54196

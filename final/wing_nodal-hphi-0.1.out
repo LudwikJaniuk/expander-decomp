@@ -1,12 +1,12 @@
-time -o final/wing_nodal-hphi-0.1.out.time timeout 15m cmake-build-debug/a.out -f graphs/wing_nodal.graph -r 0 -s --H_phi=0.1 --G_phi=9.143275121148396e-05 --vol 0.1 -o final/wing_nodal-hphi-0.1.ptn >> final/wing_nodal-hphi-0.1.outReading graph from graphs/wing_nodal.graph
+time -o final/wing_nodal-hphi-0.1.out.time timeout 15m cmake-build-debug/a.out -f graphs/wing_nodal.graph -r 0 -s --H_phi=0.1 --G_phi=0.009562047438257351 --vol 0.1 -o final/wing_nodal-hphi-0.1.ptn >> final/wing_nodal-hphi-0.1.outReading graph from graphs/wing_nodal.graph
 Reading a graph with V 10937E 75488
 H expansion: 0, num cross: 0
 H conductance: -nan, num cross: 0
 H_single expansion: 0, num cross: 0
 H_single conductance: -nan, num cross: 0
-Cap 1 ... flow: 37743 (0.332232 s)
-Cap 2 ... flow: 37744 (0.193988 s)
-Flow search took (seconds) 0.548281
+Cap 1 ... flow: 37743 (0.335461 s)
+Cap 2 ... flow: 37744 (0.185237 s)
+Flow search took (seconds) 0.541748
 SUBG cut conductance: 0.952381
 SUBG cut minside volume 42
 SUBG cut maxside volume 150934
@@ -15,8 +15,8 @@ H expansion: 0.247139, num cross: 9328
 H conductance: 0.247139, num cross: 9328
 H_single expansion: 0.247139, num cross: 9328
 H_single conductance: 0.247139, num cross: 9328
-Cap 1 ... flow: 37744 (0.385627 s)
-Flow search took (seconds) 0.390109
+Cap 1 ... flow: 37744 (0.379436 s)
+Flow search took (seconds) 0.383594
 SUBG cut conductance: 999
 SUBG cut minside volume 0
 SUBG cut maxside volume 150976

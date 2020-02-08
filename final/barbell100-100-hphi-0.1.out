@@ -1,17 +1,17 @@
-time -o final/barbell100-100-hphi-0.1.out.time timeout 15m cmake-build-debug/a.out -f graphs/barbell100-100.graph -r 0 -s --H_phi=0.1 --G_phi=0.005 --vol 0.1 -o final/barbell100-100-hphi-0.1.ptn >> final/barbell100-100-hphi-0.1.outReading graph from graphs/barbell100-100.graph
+time -o final/barbell100-100-hphi-0.1.out.time timeout 15m cmake-build-debug/a.out -f graphs/barbell100-100.graph -r 0 -s --H_phi=0.1 --G_phi=0.07071067811865475 --vol 0.1 -o final/barbell100-100-hphi-0.1.ptn >> final/barbell100-100-hphi-0.1.outReading graph from graphs/barbell100-100.graph
 Reading a graph with V 200E 9901
 H expansion: 0, num cross: 0
 H conductance: -nan, num cross: 0
 H_single expansion: 0, num cross: 0
 H_single conductance: -nan, num cross: 0
-Cap 1 ... flow: 4910 (0.010847 s)
-Cap 2 ... flow: 4911 (0.011121 s)
-Cap 4 ... flow: 4913 (0.008832 s)
-Cap 8 ... flow: 4917 (0.008599 s)
-Cap 16 ... flow: 4925 (0.009191 s)
-Cap 32 ... flow: 4941 (0.009095 s)
-Cap 64 ... flow: 4950 (0.008309 s)
-Flow search took (seconds) 0.068866
+Cap 1 ... flow: 4910 (0.037672 s)
+Cap 2 ... flow: 4911 (0.030695 s)
+Cap 4 ... flow: 4913 (0.01341 s)
+Cap 8 ... flow: 4917 (0.011294 s)
+Cap 16 ... flow: 4925 (0.01071 s)
+Cap 32 ... flow: 4941 (0.010325 s)
+Cap 64 ... flow: 4950 (0.009749 s)
+Flow search took (seconds) 0.129038
 SUBG cut conductance: 0.000101
 SUBG cut minside volume 9901
 SUBG cut maxside volume 9901

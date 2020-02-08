@@ -1,12 +1,12 @@
-time -o final/expander1024-hphi-0.1.out.time timeout 15m cmake-build-debug/a.out -f graphs/expander1024.graph -r 0 -s --H_phi=0.1 --G_phi=0.0009765625 --vol 0.1 -o final/expander1024-hphi-0.1.ptn >> final/expander1024-hphi-0.1.outReading graph from graphs/expander1024.graph
+time -o final/expander1024-hphi-0.1.out.time timeout 15m cmake-build-debug/a.out -f graphs/expander1024.graph -r 0 -s --H_phi=0.1 --G_phi=0.03125 --vol 0.1 -o final/expander1024-hphi-0.1.ptn >> final/expander1024-hphi-0.1.outReading graph from graphs/expander1024.graph
 Reading a graph with V 1024E 4096
 H expansion: 0, num cross: 0
 H conductance: -nan, num cross: 0
 H_single expansion: 0, num cross: 0
 H_single conductance: -nan, num cross: 0
-Cap 1 ... flow: 2012 (0.003597 s)
-Cap 2 ... flow: 2014 (0.00441 s)
-Flow search took (seconds) 0.008388
+Cap 1 ... flow: 2012 (0.003887 s)
+Cap 2 ... flow: 2014 (0.004314 s)
+Flow search took (seconds) 0.008548
 SUBG cut conductance: 0.761905
 SUBG cut minside volume 21
 SUBG cut maxside volume 8035
@@ -15,9 +15,9 @@ H expansion: 0.246276, num cross: 496
 H conductance: 0.246276, num cross: 496
 H_single expansion: 0.246276, num cross: 496
 H_single conductance: 0.246276, num cross: 496
-Cap 1 ... flow: 2007 (0.011162 s)
-Cap 2 ... flow: 2014 (0.002769 s)
-Flow search took (seconds) 0.014477
+Cap 1 ... flow: 2007 (0.012412 s)
+Cap 2 ... flow: 2014 (0.003424 s)
+Flow search took (seconds) 0.016546
 SUBG cut conductance: 0.541732
 SUBG cut minside volume 635
 SUBG cut maxside volume 7421

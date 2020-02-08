@@ -80,7 +80,7 @@ def analyze(graph):
     print_file = "final/" + graph+".out"
     part_file = "final/" + graph+".ptn"
 
-    for h_phi in [0.1, 0.4]:
+    for h_phi in [0.1, 0.55]:
         print_file = "final/" + graph+f"-hphi-{h_phi}.out"
         part_file = "final/" + graph+f"-hphi-{h_phi}.ptn"
         #run_cut_matching(graph_file, part_file, print_file, g_phi, h_phi)

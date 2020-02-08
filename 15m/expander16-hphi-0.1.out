@@ -1,0 +1,37 @@
+time -o final/expander16-hphi-0.1.out.time timeout 15m cmake-build-debug/a.out -f graphs/expander16.graph -r 0 -s --H_phi=0.1 --G_phi=0.0625 --vol 0.1 -o final/expander16-hphi-0.1.ptn >> final/expander16-hphi-0.1.outReading graph from graphs/expander16.graph
+Reading a graph with V 16E 64
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 23 (4.2e-05 s)
+Cap 2 ... flow: 26 (3.2e-05 s)
+Flow search took (seconds) 9.6e-05
+SUBG cut conductance: 0.535714
+SUBG cut minside volume 28
+SUBG cut maxside volume 76
+== End round 0 ==
+H expansion: 0.230769, num cross: 6
+H conductance: 0.230769, num cross: 6
+H_single expansion: 0.230769, num cross: 6
+H_single conductance: 0.230769, num cross: 6
+Cap 1 ... flow: 23 (4.8e-05 s)
+Cap 2 ... flow: 26 (3.1e-05 s)
+Flow search took (seconds) 9.9e-05
+SUBG cut conductance: 0.325
+SUBG cut minside volume 40
+SUBG cut maxside volume 64
+== End round 1 ==
+H Conductance target reached, this will be case 1 or 3. According to theory, this means we probably won't find a better cut. That is, assuming you set H_phi right. If was used together with G_phi target, this also certifies the input graph is a G_phi expander unless there was a very unbaanced cut somewhere, which we will proceed to look for.
+R0 cond 0.535714
+R1 cond 0.325
+The best with best expansion was found on round1
+Edge crossings (E) : 13
+cut size: (5 | 11)
+diff: 6 (0.375 of total n vertices)
+Min side: 5
+expansion: 2.6
+conductance: 2.6
+cut volume: 64
+noncut volume: 40
+CASE1 NO Goodenough cut, G certified expander.

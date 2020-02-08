@@ -1,12 +1,12 @@
-time -o final/brack2-hphi-0.1.out.time timeout 15m cmake-build-debug/a.out -f graphs/brack2.graph -r 0 -s --H_phi=0.1 --G_phi=1.5966534144433266e-05 --vol 0.1 -o final/brack2-hphi-0.1.ptn >> final/brack2-hphi-0.1.outReading graph from graphs/brack2.graph
+time -o final/brack2-hphi-0.1.out.time timeout 15m cmake-build-debug/a.out -f graphs/brack2.graph -r 0 -s --H_phi=0.1 --G_phi=0.003995814578334844 --vol 0.1 -o final/brack2-hphi-0.1.ptn >> final/brack2-hphi-0.1.outReading graph from graphs/brack2.graph
 Reading a graph with V 62631E 366559
 H expansion: 0, num cross: 0
 H conductance: -nan, num cross: 0
 H_single expansion: 0, num cross: 0
 H_single conductance: -nan, num cross: 0
-Cap 1 ... flow: 183183 (11.5979 s)
-Cap 2 ... flow: 183279 (5.35852 s)
-Flow search took (seconds) 17.0423
+Cap 1 ... flow: 183183 (11.6257 s)
+Cap 2 ... flow: 183279 (5.23361 s)
+Flow search took (seconds) 16.9497
 SUBG cut conductance: 0.0164756
 SUBG cut minside volume 237745
 SUBG cut maxside volume 495373
@@ -15,9 +15,9 @@ H expansion: 0.250471, num cross: 45906
 H conductance: 0.250472, num cross: 45906
 H_single expansion: 0.250471, num cross: 45906
 H_single conductance: 0.250472, num cross: 45906
-Cap 1 ... flow: 182661 (14.9383 s)
-Cap 2 ... flow: 183279 (10.0703 s)
-Flow search took (seconds) 25.1001
+Cap 1 ... flow: 182661 (14.6863 s)
+Cap 2 ... flow: 183279 (9.95824 s)
+Flow search took (seconds) 24.7395
 SUBG cut conductance: 0.0583626
 SUBG cut minside volume 156213
 SUBG cut maxside volume 576905

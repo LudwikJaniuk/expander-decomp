@@ -1,0 +1,34 @@
+time -o final/barbell1000-1000-hphi-0.55.out.time timeout 15m cmake-build-debug/a.out -f graphs/barbell1000-1000.graph -r 0 -s --H_phi=0.55 --G_phi=0.022360679774997897 --vol 0.1 -o final/barbell1000-1000-hphi-0.55.ptn >> final/barbell1000-1000-hphi-0.55.outReading graph from graphs/barbell1000-1000.graph
+Reading a graph with V 2000E 999001
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 499240 (13.8955 s)
+Cap 2 ... flow: 499241 (22.6651 s)
+Cap 4 ... flow: 499243 (21.8115 s)
+Cap 8 ... flow: 499247 (17.425 s)
+Cap 16 ... flow: 499255 (21.3918 s)
+Cap 32 ... flow: 499271 (26.0328 s)
+Cap 64 ... flow: 499303 (26.1416 s)
+Cap 128 ... flow: 499367 (24.7525 s)
+Cap 256 ... flow: 499495 (19.802 s)
+Cap 512 ... flow: 499500 (15.7758 s)
+Flow search took (seconds) 210.498
+SUBG cut conductance: 1.001e-06
+SUBG cut minside volume 999001
+SUBG cut maxside volume 999001
+== End round 0 ==
+CASE2 G Expansion target reached with a cut that is relatively balanced. Cut-matching game has found a balanced cut as good as you wanted it.
+Claimed g conductance: 1.001e-06
+R0 cond 1.001e-06
+The best with best expansion was found on round0
+Edge crossings (E) : 1
+cut size: (1000 | 1000)
+diff: 0 (0 of total n vertices)
+Min side: 1000
+expansion: 0.001
+conductance: 0.001
+cut volume: 999001
+noncut volume: 999001
+CASE2 Goodenough balanced cut

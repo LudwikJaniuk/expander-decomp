@@ -1,36 +1,22 @@
-time -o final/uk-hphi-0.1.out.time timeout 15m cmake-build-debug/a.out -f graphs/uk.graph -r 0 -s --H_phi=0.1 --G_phi=0.00020729684908789387 --vol 0.1 -o final/uk-hphi-0.1.ptn >> final/uk-hphi-0.1.outReading graph from graphs/uk.graph
+time -o final/uk-hphi-0.1.out.time timeout 15m cmake-build-debug/a.out -f graphs/uk.graph -r 0 -s --H_phi=0.1 --G_phi=0.01439780709302267 --vol 0.1 -o final/uk-hphi-0.1.ptn >> final/uk-hphi-0.1.outReading graph from graphs/uk.graph
 Reading a graph with V 4824E 6837
 H expansion: 0, num cross: 0
 H conductance: -nan, num cross: 0
 H_single expansion: 0, num cross: 0
 H_single conductance: -nan, num cross: 0
-Cap 1 ... flow: 2737 (0.031134 s)
-Cap 2 ... flow: 3239 (0.047572 s)
-Cap 4 ... flow: 3382 (0.043237 s)
-Cap 8 ... flow: 3402 (0.037639 s)
-Cap 16 ... flow: 3418 (0.050225 s)
-Flow search took (seconds) 0.211315
+Cap 1 ... flow: 2737 (0.034554 s)
+Cap 2 ... flow: 3239 (0.058085 s)
+Cap 4 ... flow: 3382 (0.054114 s)
+Cap 8 ... flow: 3402 (0.046401 s)
+Cap 16 ... flow: 3418 (0.060375 s)
+Flow search took (seconds) 0.255433
 SUBG cut conductance: 0.00183891
 SUBG cut minside volume 2719
 SUBG cut maxside volume 10955
 == End round 0 ==
-H expansion: 0.250439, num cross: 856
-H conductance: 0.250439, num cross: 856
-H_single expansion: 0.250439, num cross: 856
-H_single conductance: 0.250439, num cross: 856
-Cap 1 ... flow: 2589 (0.028358 s)
-Cap 2 ... flow: 3154 (0.053745 s)
-Cap 4 ... flow: 3350 (0.078172 s)
-Cap 8 ... flow: 3391 (0.131533 s)
-Cap 16 ... flow: 3418 (0.107351 s)
-Flow search took (seconds) 0.40132
-SUBG cut conductance: 0.00470219
-SUBG cut minside volume 1276
-SUBG cut maxside volume 12398
-== End round 1 ==
-H Conductance target reached, this will be case 1 or 3. According to theory, this means we probably won't find a better cut. That is, assuming you set H_phi right. If was used together with G_phi target, this also certifies the input graph is a G_phi expander unless there was a very unbaanced cut somewhere, which we will proceed to look for.
+CASE2 G Expansion target reached with a cut that is relatively balanced. Cut-matching game has found a balanced cut as good as you wanted it.
+Claimed g conductance: 0.00183891
 R0 cond 0.00183891
-R1 cond 0.00470219
 The best with best expansion was found on round0
 Edge crossings (E) : 5
 cut size: (997 | 3827)
@@ -40,4 +26,4 @@ expansion: 0.00501505
 conductance: 0.00501505
 cut volume: 2719
 noncut volume: 10955
-CASE1 NO Goodenough cut, G certified expander.
+CASE2 Goodenough balanced cut

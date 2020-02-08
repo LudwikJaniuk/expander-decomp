@@ -1,11 +1,11 @@
-time -o final/complete1000-hphi-0.1.out.time timeout 15m cmake-build-debug/a.out -f graphs/complete1000.graph -r 0 -s --H_phi=0.1 --G_phi=0.001 --vol 0.1 -o final/complete1000-hphi-0.1.ptn >> final/complete1000-hphi-0.1.outReading graph from graphs/complete1000.graph
+time -o final/complete1000-hphi-0.1.out.time timeout 15m cmake-build-debug/a.out -f graphs/complete1000.graph -r 0 -s --H_phi=0.1 --G_phi=0.03162277660168379 --vol 0.1 -o final/complete1000-hphi-0.1.ptn >> final/complete1000-hphi-0.1.outReading graph from graphs/complete1000.graph
 Reading a graph with V 1000E 499500
 H expansion: 0, num cross: 0
 H conductance: -nan, num cross: 0
 H_single expansion: 0, num cross: 0
 H_single conductance: -nan, num cross: 0
-Cap 1 ... flow: 249750 (1.09606 s)
-Flow search took (seconds) 1.12502
+Cap 1 ... flow: 249750 (1.40606 s)
+Flow search took (seconds) 1.44033
 SUBG cut conductance: 999
 SUBG cut minside volume 0
 SUBG cut maxside volume 999000
@@ -14,8 +14,8 @@ H expansion: 0.250138, num cross: 62472
 H conductance: 0.250138, num cross: 62472
 H_single expansion: 0.250138, num cross: 62472
 H_single conductance: 0.250138, num cross: 62472
-Cap 1 ... flow: 249750 (1.21214 s)
-Flow search took (seconds) 1.24111
+Cap 1 ... flow: 249750 (1.53549 s)
+Flow search took (seconds) 1.5702
 SUBG cut conductance: 999
 SUBG cut minside volume 0
 SUBG cut maxside volume 999000

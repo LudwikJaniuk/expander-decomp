@@ -1,3 +1,4 @@
+import math
 import subprocess
 
 def num_nodes_in_graph_file(name):
@@ -24,13 +25,13 @@ def run_cut_matching(graph_file, out_partition_file, print_file, g_phi, h_phi):
 def analyze(graph):
     graph_file = "graphs/" + graph + ".graph"
     n_nodes = num_nodes_in_graph_file(graph_file)
-    g_phi = 1.0/n_nodes
+    g_phi = 1.0/math.sqrt(n_nodes)
     print_file = "final/" + graph+".out"
     part_file = "final/" + graph+".ptn"
 
     print(f"Graph {graph} reading from {graph_file}, has {n_nodes} so g_phi = {g_phi}. {print_file}")
 
-    for h_phi in [0.1, 0.4]:
+    for h_phi in [0.1, 0.55]:
         print(f"Running on h_phi {h_phi}")
         print_file = "final/" + graph+f"-hphi-{h_phi}.out"
         part_file = "final/" + graph+f"-hphi-{h_phi}.ptn"

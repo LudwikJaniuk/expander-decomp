@@ -27,17 +27,19 @@
 #include "cxxopts.hpp"
 #include "preliminaries.h"
 
-// TODO now
-// Clean the code much more, to be able to do the stopping and edge version
-// Basically get unnecessary stuff out of the algo
 
-// TODO OK how do we do edge version...
-// Whats the plan for hte edge version? Lets describe it in text
-// 1. At the start of the algo, we need to make the subdivision graph.
-// 2. And we need the set of subivided vertices. we could store it in the context to start with.
-// 3. Then cut player needs to do the cut on those instead, can this be cone in an opaque way?
-// 4. The matching player has to push flow differently and compile the cut differently. This will be a big difference.
-
+// To write this with support for multi, need to:
+// 1. Parse multi (perhaps map with multiplicities) (map multiplicities and more-volumes of nodes)
+//      seems eash.
+// 2. Make sure subdiv happens well with multi
+//      Need to copy over the map and set vlaues for coped edges. And copied verts. Selfloops.
+// 3. IS cut_player random walk thing affected? I think not...
+// 4. capacities must be set correct with flow
+//      Yes indeed, scaled
+//      But that means path decomp should be unaffected
+// 5. computations of conductance and volume must still be correct
+//      Lucky we have cutstats.
+// 6. does multi affect matchings? We don
 
 using namespace lemon;
 using namespace std;
@@ -116,8 +118,18 @@ struct Logger {
 
 struct GraphContext {
     G g;
+    // Used to implement multigraph.
+    EdgeMap<size_t> multiplicity;
+    // Saving self loops like this
+    NodeMap<size_t> num_self_loops;
     vector<Node> nodes;
     long num_edges;
+
+    GraphContext() :
+        g(),
+        multiplicity(g),
+        num_self_loops(g)
+    {}
 };
 
 // I'd say implementing our own adaptor is more effort, we can just do the snapshot thing
@@ -178,6 +190,7 @@ public:
     }
 
     void initialize(const G &g, size_t num_vertices, const Cut &cut) {
+        // TODO All here will have to be rethought. Just hope there's nothing outside it.
         for (EdgeIt e(g); e != INVALID; ++e) {
             ++num_edges;
             if (is_crossing(g, cut, e)) crossing_edges += 1;
@@ -240,15 +253,15 @@ public:
 
 
 
-    void print() {
-        l.progress() << "Edge crossings (E) : " << crossing_edges << endl;
-        l.progress() << "cut size: (" << min_side << " | " << max_side << ")" << endl
-             << "diff: " << diff() << " (" << imbalance() << " of total n vertices)" << endl;
-        l.progress() << "Min side: " << min_side << endl;
-        l.progress() << "expansion: " << expansion() << endl;
-        l.progress() << "conductance: " << expansion() << endl;
-        l.progress() << "cut volume: " << cut_volume << endl;
-        l.progress() << "noncut volume: " << noncut_volume() << endl;
+    void print(string prefix="") {
+        l.progress() << prefix << "Edge crossings (E) : " << crossing_edges << endl;
+        l.progress() << prefix << "cut size: (" << min_side << " | " << max_side << ")" << endl
+             << "diff: " << diff() << " (factor " << imbalance() << " of total n vertices)" << endl;
+        l.progress() << prefix << "Min side: " << min_side << endl;
+        l.progress() << prefix << "expansion: " << expansion() << endl;
+        l.progress() << prefix << "conductance: " << conductance() << endl;
+        l.progress() << prefix << prefix << "cut volume: " << cut_volume << endl;
+        l.progress() << prefix << "noncut volume: " << noncut_volume() << endl;
     }
 };
 // Reads the file filename,
@@ -275,7 +288,7 @@ static void parse_chaco_format(const string &filename, ListGraph &g, vector<Node
     ss >> n_verts >> n_edges;
     l.progress() << "Reading a graph with V " << n_verts << "E " << n_edges << endl;
     g.reserveNode(n_verts);
-    g.reserveNode(n_edges);
+    g.reserveEdge(n_edges);
 
     for (size_t i = 0; i < n_verts; i++) {
         Node n = g.addNode();
@@ -293,6 +306,8 @@ static void parse_chaco_format(const string &filename, ListGraph &g, vector<Node
             l.debug() << "edge to: " << v_name << "..." ;
             assert(v_name != 0);
             Node v = nodes[v_name - 1];
+            // TODO So here we would just remove the thing, and see at the end that the numbers match
+            // TODO Actually no. We would maintain a map that counts the multiplicity
             if (findEdge(g, u, v) == INVALID) {
                 l.debug()  << "adding" << endl;
                 g.addEdge(u, v);
@@ -427,6 +442,11 @@ void createSubdividedGraph(SubdividedGraphContext& sgc) {
         sgc.origs[n] = true;
     }
 
+    // Too bad we do a copy cuz then we kinda need to copy the map too?
+    // TODO either copy the edge map, or need to add an edge crossref. Does that exist?
+    // Yes it does! http://lemon.cs.elte.hu/pub/doc/latest/a00177.html#a49664d231463c080f54ebd3299cd1121
+    // Except we're deleting the edges. So maybe lets copy the map instead, cleaner code and faster.
+    // THe right engineering decision.
 
     vector<Edge> edges;
     for (EdgeIt e(g); e != INVALID; ++e) {
@@ -566,6 +586,8 @@ struct CutMatching {
         }
     }
 
+    // TODO This will be different with multi
+    // OTOH if we're going maps, then it won't.
     void decompose_paths_fast(const MatchingContext &mg, const unique_ptr<FlowAlgo> &f, Paths &out_paths) {
         f->startSecondPhase();
         EdgeMapi subtr(mg.g, 0);
@@ -622,6 +644,7 @@ struct CutMatching {
     MatchResult bin_search_flows(MatchingContext &mg, unique_ptr<FlowAlgo> &p, size_t flow_target) const {
         auto start = now();
         size_t cap = 1;
+        // TODO will need to set capacities scaled by multiplicity
         //for (; cap < mg.gc.nodes.size(); cap *= 2) {
         for (; cap < flow_target*2; cap *= 2) {
             l.progress() << "Cap " << cap << " ... " << flush;
@@ -1016,7 +1039,7 @@ int main(int argc, char **argv) {
 
     l.progress() << "The best with best expansion was found on round" << best_round->index << endl;
     auto &best_cut = best_round->cut;
-    CutStats<G>(gc.g, gc.nodes.size(), *best_cut).print();
+    CutStats<G>(gc.g, gc.nodes.size(), *best_cut).print("final_");
 
     if(config.use_H_phi_target && config.use_G_phi_target && config.use_volume_treshold) {
         if(cm.reached_H_target) {

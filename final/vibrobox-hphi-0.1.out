@@ -1,11 +1,11 @@
-time -o final/vibrobox-hphi-0.1.out.time timeout 15m cmake-build-debug/a.out -f graphs/vibrobox.graph -r 0 -s --H_phi=0.1 --G_phi=8.111615833874107e-05 --vol 0.1 -o final/vibrobox-hphi-0.1.ptn >> final/vibrobox-hphi-0.1.outReading graph from graphs/vibrobox.graph
+time -o final/vibrobox-hphi-0.1.out.time timeout 15m cmake-build-debug/a.out -f graphs/vibrobox.graph -r 0 -s --H_phi=0.1 --G_phi=0.00900645092912525 --vol 0.1 -o final/vibrobox-hphi-0.1.ptn >> final/vibrobox-hphi-0.1.outReading graph from graphs/vibrobox.graph
 Reading a graph with V 12328E 165250
 H expansion: 0, num cross: 0
 H conductance: -nan, num cross: 0
 H_single expansion: 0, num cross: 0
 H_single conductance: -nan, num cross: 0
-Cap 1 ... flow: 82625 (0.490729 s)
-Flow search took (seconds) 0.49931
+Cap 1 ... flow: 82625 (0.495248 s)
+Flow search took (seconds) 0.503337
 SUBG cut conductance: 999
 SUBG cut minside volume 0
 SUBG cut maxside volume 330500
@@ -14,9 +14,9 @@ H expansion: 0.248871, num cross: 20563
 H conductance: 0.248871, num cross: 20563
 H_single expansion: 0.248871, num cross: 20563
 H_single conductance: 0.248871, num cross: 20563
-Cap 1 ... flow: 82622 (0.532883 s)
-Cap 2 ... flow: 82625 (0.473903 s)
-Flow search took (seconds) 1.02265
+Cap 1 ... flow: 82622 (0.544118 s)
+Cap 2 ... flow: 82625 (0.482594 s)
+Flow search took (seconds) 1.04205
 SUBG cut conductance: 0.736842
 SUBG cut minside volume 114
 SUBG cut maxside volume 330386

@@ -1,11 +1,11 @@
-time -o final/144-hphi-0.1.out.time timeout 15m cmake-build-debug/a.out -f graphs/144.graph -r 0 -s --H_phi=0.1 --G_phi=6.913286645604187e-06 --vol 0.1 -o final/144-hphi-0.1.ptn >> final/144-hphi-0.1.outReading graph from graphs/144.graph
+time -o final/144-hphi-0.1.out.time timeout 15m cmake-build-debug/a.out -f graphs/144.graph -r 0 -s --H_phi=0.1 --G_phi=0.0026293129607568946 --vol 0.1 -o final/144-hphi-0.1.ptn >> final/144-hphi-0.1.outReading graph from graphs/144.graph
 Reading a graph with V 144649E 1074393
 H expansion: 0, num cross: 0
 H conductance: -nan, num cross: 0
 H_single expansion: 0, num cross: 0
 H_single conductance: -nan, num cross: 0
-Cap 1 ... flow: 537196 (24.0396 s)
-Flow search took (seconds) 24.1194
+Cap 1 ... flow: 537196 (22.9937 s)
+Flow search took (seconds) 23.0801
 SUBG cut conductance: 999
 SUBG cut minside volume 0
 SUBG cut maxside volume 2148786
@@ -14,9 +14,9 @@ H expansion: 0.249412, num cross: 133983
 H conductance: 0.249412, num cross: 133983
 H_single expansion: 0.249412, num cross: 133983
 H_single conductance: 0.249412, num cross: 133983
-Cap 1 ... flow: 537195 (38.0791 s)
-Cap 2 ... flow: 537196 (19.2381 s)
-Flow search took (seconds) 57.4691
+Cap 1 ... flow: 537195 (37.0534 s)
+Cap 2 ... flow: 537196 (18.0868 s)
+Flow search took (seconds) 55.3082
 SUBG cut conductance: 0.806452
 SUBG cut minside volume 31
 SUBG cut maxside volume 2148755

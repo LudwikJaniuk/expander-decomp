@@ -1,11 +1,11 @@
-time -o final/expander256-hphi-0.1.out.time timeout 15m cmake-build-debug/a.out -f graphs/expander256.graph -r 0 -s --H_phi=0.1 --G_phi=0.00390625 --vol 0.1 -o final/expander256-hphi-0.1.ptn >> final/expander256-hphi-0.1.outReading graph from graphs/expander256.graph
+time -o final/expander256-hphi-0.1.out.time timeout 15m cmake-build-debug/a.out -f graphs/expander256.graph -r 0 -s --H_phi=0.1 --G_phi=0.0625 --vol 0.1 -o final/expander256-hphi-0.1.ptn >> final/expander256-hphi-0.1.outReading graph from graphs/expander256.graph
 Reading a graph with V 256E 1024
 H expansion: 0, num cross: 0
 H conductance: -nan, num cross: 0
 H_single expansion: 0, num cross: 0
 H_single conductance: -nan, num cross: 0
-Cap 1 ... flow: 494 (0.000702 s)
-Flow search took (seconds) 0.000747
+Cap 1 ... flow: 494 (0.00302 s)
+Flow search took (seconds) 0.00322
 SUBG cut conductance: 999
 SUBG cut minside volume 0
 SUBG cut maxside volume 1976
@@ -14,9 +14,9 @@ H expansion: 0.263158, num cross: 130
 H conductance: 0.263158, num cross: 130
 H_single expansion: 0.263158, num cross: 130
 H_single conductance: 0.263158, num cross: 130
-Cap 1 ... flow: 473 (0.001546 s)
-Cap 2 ... flow: 494 (0.000533 s)
-Flow search took (seconds) 0.002214
+Cap 1 ... flow: 473 (0.006532 s)
+Cap 2 ... flow: 494 (0.002463 s)
+Flow search took (seconds) 0.009621
 SUBG cut conductance: 0.392226
 SUBG cut minside volume 566
 SUBG cut maxside volume 1410
