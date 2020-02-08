@@ -25,20 +25,23 @@
 #include "cxxopts.hpp"
 #include "preliminaries.h"
 
-#define MULTIGRAPH 1
+#define MULTIGRAPH 0
+#define REAL_MULTI 1
 
 // To write this with support for multi, need to:
 // 1. Parse multi (perhaps map with multiplicities) (map multiplicities and more-volumes of nodes)
 //      seems eash.
-// DONE
 // 2. Make sure subdiv happens well with multi
 //      Need to copy over the map and set vlaues for coped edges. And copied verts. Selfloops.
+// DONE
 // 3. IS cut_player random walk thing affected? I think not...
+// Done, didsnt require anything
 // 4. capacities must be set correct with flow
 //      Yes indeed, scaled
 //      But that means path decomp should be unaffected
 // 5. computations of conductance and volume must still be correct
 //      Lucky we have cutstats.
+// Should be done...
 // 6. does multi affect matchings? We don
 
 using namespace lemon;
@@ -203,9 +206,16 @@ private:
     size_t min_side = 0;
     size_t cut_volume = 0;
     size_t max_side = 0;
+#if !REAL_MULTI
     size_t num_edges = 0;
     long degreesum() { return num_edges*2;}
     long noncut_volume () { return degreesum() - cut_volume;}
+#else
+    size_t cut_size = 0;
+    size_t othersize = 0;
+    size_t non_cut_volume = 0;
+    long noncut_volume () { return non_cut_volume; }
+#endif
 
 public:
     CutStats(const G &g, size_t num_vertices, const Cut &cut) {
@@ -213,14 +223,21 @@ public:
     }
 
     void initialize(const G &g, size_t num_vertices, const Cut &cut) {
-        // TODO All here will have to be rethought. Just hope there's nothing outside it.
         for (EdgeIt e(g); e != INVALID; ++e) {
+#if !REAL_MULTI
             ++num_edges;
+#endif
             if (is_crossing(g, cut, e)) crossing_edges += 1;
             if (cut.count(g.u(e))) cut_volume += 1;
+#if REAL_MULTI
+            else non_cut_volume += 1;
+#endif
             // If it's a self loop, if only contributes once, but if not, it contributes twice
             if (g.u(e) == g.v(e)) continue;
             if (cut.count(g.v(e))) cut_volume += 1;
+#if REAL_MULTI
+            else non_cut_volume += 1;
+#endif
         }
 
         assert(cut.size() <= num_vertices);
@@ -228,6 +245,11 @@ public:
         min_side = min(cut.size(), other_size);
         max_side = max(cut.size(), other_size);
         is_min_side = cut.size() == min_side;
+
+#if REAL_MULTI
+        cut_size = cut.size();
+        othersize = other_size;
+#endif
     }
 
     static bool is_crossing(const G &g, const Bisection &c, const Edge &e) {
@@ -266,21 +288,40 @@ public:
         return min_side == 0 ? 0 : crossing_edges * 1. / min_side;
     }
 
-    double conductance() {
+#if REAL_MULTI
+    long min_volume() {
+        return min(cut_volume, non_cut_volume);
+    }
+#endif
+
+double conductance() {
+#if REAL_MULTI
+        return min_side == 0 ? 999 : crossing_edges * 1. / min_volume();
+#else
+        // TODO But this is probably wrong in all cases...
         return min_side == 0 ? 999 : crossing_edges * 1. / minside_volume();
+#endif
     }
 
 
 
     void print(string prefix="") {
         l.progress() << prefix << "Edge crossings (E) : " << crossing_edges << endl;
+#if REAL_MULTI
+        l.progress() << prefix << "cut size: (" << cut_size << " | " << othersize << ")" << endl
+             << "diff: " << diff() << " (factor " << imbalance() << " of total n vertices)" << endl;
+        l.progress() << prefix << "cut volumes: (" << cut_volume << " | " << non_cut_volume << ")" << endl;
+#else
         l.progress() << prefix << "cut size: (" << min_side << " | " << max_side << ")" << endl
              << "diff: " << diff() << " (factor " << imbalance() << " of total n vertices)" << endl;
         l.progress() << prefix << "Min side: " << min_side << endl;
+#endif
         l.progress() << prefix << "expansion: " << expansion() << endl;
         l.progress() << prefix << "conductance: " << conductance() << endl;
+#if !REAL_MULTI
         l.progress() << prefix << prefix << "cut volume: " << cut_volume << endl;
         l.progress() << prefix << "noncut volume: " << noncut_volume() << endl;
+#endif
     }
 };
 // Reads the file filename,
@@ -337,6 +378,11 @@ static void parse_chaco_format
             assert(v_name != 0);
 
             Node v = nodes[v_name - 1];
+
+#if REAL_MULTI
+            g.addEdge(u, v);
+#else // REAL_MULTI
+
             // TODO So here we would just remove the thing, and see at the end that the numbers match
             // TODO Actually no. We would maintain a map that counts the multiplicity
 
@@ -361,8 +407,15 @@ static void parse_chaco_format
 #if MULTIGRAPH
             multiplicity[found_edge] = multiplicity[found_edge]+1;
 #endif
+#endif // REAL_MULTI
+
         }
+
     }
+    cout << countEdges(g) << endl;
+    cout << countNodes(g) << endl;
+    assert(countEdges(g) == n_edges);
+    assert(countNodes(g) == n_verts);
 
 #if MULTIGRAPH
     // Count for assert
@@ -559,6 +612,7 @@ void createSubdividedGraph(SubdividedGraphContext& sgc) {
         sgc.multiplicity[e2] = edge_multiplicity;
         // Trying not to have this become a multigraph
 #else
+        // This behavior is correct with real_multi assuming (1)
         g.addEdge(u, s);
         // Trying not to have this become a multigraph
         if(u != v) g.addEdge(s, v);
@@ -827,6 +881,7 @@ struct CutMatching {
 
         size_t num_vertices = all_nodes.size();
 
+        // Unclear whether H conductance should be computed with its multigraphness in mind, so we're creating both.
         ListEdgeSet H(g);
         ListEdgeSet H_single(g);
         for (const unique_ptr<M> &m : given_matchings) {
