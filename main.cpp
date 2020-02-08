@@ -25,6 +25,7 @@
 #include "cxxopts.hpp"
 #include "preliminaries.h"
 
+#define MULTIGRAPH 1
 
 // To write this with support for multi, need to:
 // 1. Parse multi (perhaps map with multiplicities) (map multiplicities and more-volumes of nodes)
@@ -116,18 +117,21 @@ struct Logger {
 
 struct GraphContext {
     G g;
+    vector<Node> nodes;
+    long num_edges;
+
+#if MULTIGRAPH
     // Used to implement multigraph.
     EdgeMap<size_t> multiplicity;
     // Saving self loops like this
     NodeMap<size_t> num_self_loops;
-    vector<Node> nodes;
-    long num_edges;
 
     GraphContext() :
         g(),
-        multiplicity(g),
-        num_self_loops(g)
+        multiplicity(g, 1),
+        num_self_loops(g, 0)
     {}
+#endif
 };
 
 // I'd say implementing our own adaptor is more effort, we can just do the snapshot thing
@@ -263,7 +267,15 @@ public:
 // In the process fills nodes with each node created at the index of (its id in the file minus one)
 // And sets each node's original_ids id to be (its id in the file minus one).
 // Of course original_ids must be initialized onto the graph g already earlier.
-static void parse_chaco_format(const string &filename, ListGraph &g, vector<Node> &nodes) {
+static void parse_chaco_format
+        ( const string &filename
+        , ListGraph &g
+        , vector<Node> &nodes
+#if MULTIGRAPH
+        , EdgeMap<size_t>& multiplicity
+        , NodeMap<size_t>& num_self_loops
+#endif
+) {
     assert(nodes.empty());
     l.progress() << "Reading graph from " << filename << endl;
     ifstream file;
@@ -281,12 +293,15 @@ static void parse_chaco_format(const string &filename, ListGraph &g, vector<Node
     int n_verts, n_edges;
     ss >> n_verts >> n_edges;
     l.progress() << "Reading a graph with V " << n_verts << "E " << n_edges << endl;
-    g.reserveNode(n_verts);
-    g.reserveEdge(n_edges);
+    //g.reserveNode(n_verts);
+    //g.reserveEdge(n_edges);
 
     for (size_t i = 0; i < n_verts; i++) {
         Node n = g.addNode();
         nodes.push_back(n);
+#if MULTIGRAPH
+        num_self_loops[n] = 0;
+#endif
     }
 
     for (size_t i = 0; i < n_verts; i++) {
@@ -297,17 +312,52 @@ static void parse_chaco_format(const string &filename, ListGraph &g, vector<Node
         Node u = nodes[i];
         for(string& str : tokens) {
             size_t v_name = stoi(str);
-            l.debug() << "edge to: " << v_name << "..." ;
+            l.debug() << "edge from " << i << " to: " << v_name << "..." ;
             assert(v_name != 0);
+
             Node v = nodes[v_name - 1];
             // TODO So here we would just remove the thing, and see at the end that the numbers match
             // TODO Actually no. We would maintain a map that counts the multiplicity
-            if (findEdge(g, u, v) == INVALID) {
-                l.debug()  << "adding" << endl;
-                g.addEdge(u, v);
+
+#if MULTIGRAPH
+            // Self loop case, just count up the self loop map
+            if (v == u) {
+                num_self_loops[u] = num_self_loops[u]+1;
+                continue;
             }
+#endif
+
+            Edge found_edge = findEdge(g, u, v);
+
+            if (found_edge == INVALID) {
+                l.debug()  << "adding" << endl;
+                found_edge = g.addEdge(u, v);
+#if MULTIGRAPH
+                multiplicity[found_edge] = 0;
+#endif
+            }
+
+#if MULTIGRAPH
+            multiplicity[found_edge] = multiplicity[found_edge]+1;
+#endif
         }
     }
+
+#if MULTIGRAPH
+    // Count for assert
+    int counted_edges = 0;
+    int counted_verts = 0;
+    for(EdgeIt e(g); e != INVALID; ++e) {
+        assert(multiplicity[e] > 0);
+        counted_edges += multiplicity[e];
+    }
+    for(NodeIt n(g); n != INVALID; ++n) {
+        counted_verts++;
+        counted_edges += num_self_loops[n];
+    }
+    assert(n_edges == counted_edges);
+    assert(n_verts == counted_verts);
+#endif
 }
 
 void generate_large_graph(G &g, vector<Node> &nodes, size_t n_nodes) {
@@ -378,7 +428,11 @@ void read_partition_file(const string &filename, const vector<Node> &nodes, Cut 
 
 void initGraph(GraphContext &gc, InputConfiguration config) {
     if (config.load_from_file) {
+#if MULTIGRAPH
+        parse_chaco_format(config.file_name, gc.g, gc.nodes, gc.multiplicity, gc.num_self_loops);
+#else
         parse_chaco_format(config.file_name, gc.g, gc.nodes);
+#endif
 
     } else {
         l.debug() << "Generating graph with " << config.n_nodes_to_generate << " nodes." << endl;
