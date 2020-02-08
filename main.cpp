@@ -30,6 +30,7 @@
 // To write this with support for multi, need to:
 // 1. Parse multi (perhaps map with multiplicities) (map multiplicities and more-volumes of nodes)
 //      seems eash.
+// DONE
 // 2. Make sure subdiv happens well with multi
 //      Need to copy over the map and set vlaues for coped edges. And copied verts. Selfloops.
 // 3. IS cut_player random walk thing affected? I think not...
@@ -141,20 +142,40 @@ struct SubdividedGraphContext {
     origContext(gc),
     nf(sub_g),
     ef(sub_g),
-    n_ref(gc.g, INVALID),
-    n_cross_ref(sub_g, INVALID),
+    n_ref(gc.g, INVALID), // to_copied
+    n_cross_ref(sub_g, INVALID), // from copued
+#if MULTIGRAPH
+    e_ref(gc.g, INVALID), // to_copied
+    e_cross_ref(sub_g, INVALID), // from copued
+#endif
     origs(sub_g, false),
-    only_splits(sub_g, nf, ef) {} ;
+    only_splits(sub_g, nf, ef)
+#if MULTIGRAPH
+            , multiplicity(sub_g, 1),
+            num_self_loops(sub_g, 0)
+#endif
+    {} ;
 
     GraphContext& origContext;
     G sub_g;
     NodeMapb nf;
     EdgeMapb ef;
+#if MULTIGRAPH
+    EdgeMap<Edge> e_cross_ref;
+    EdgeMap<Edge> e_ref;
+#endif
     NodeMap<Node> n_cross_ref;
     NodeMap<Node> n_ref;
     NodeMap<bool> origs;
     SubGraph<G> only_splits;
     vector<Node> split_vertices;
+
+#if MULTIGRAPH
+    // Used to implement multigraph.
+    EdgeMap<size_t> multiplicity;
+    // Saving self loops like this
+    NodeMap<size_t> num_self_loops;
+#endif
 };
 
 // TODO What chnages will be necessary?
@@ -484,10 +505,20 @@ void print_graph(G& g, decltype(cout)& stream) {
 
 // Actually copies the graph.
 void createSubdividedGraph(SubdividedGraphContext& sgc) {
-    graphCopy(sgc.origContext.g, sgc.sub_g).nodeRef(sgc.n_ref).nodeCrossRef(sgc.n_cross_ref).run();
+    graphCopy(sgc.origContext.g, sgc.sub_g)
+      .nodeRef(sgc.n_ref)
+      .nodeCrossRef(sgc.n_cross_ref)
+#if MULTIGRAPH
+      .edgeRef(sgc.e_ref)
+      .edgeCrossRef(sgc.e_cross_ref)
+#endif
+      .run();
     G& g = sgc.sub_g;
     for (NodeIt n(g); n != INVALID; ++n) {
         sgc.origs[n] = true;
+#if MULTIGRAPH
+        sgc.num_self_loops[n] = sgc.origContext.num_self_loops[sgc.n_cross_ref[n]];
+#endif
     }
 
     // Too bad we do a copy cuz then we kinda need to copy the map too?
@@ -508,15 +539,30 @@ void createSubdividedGraph(SubdividedGraphContext& sgc) {
     for(auto& e : edges) {
         Node u = g.u(e);
         Node v = g.v(e);
+#if MULTIGRAPH
+        size_t edge_multiplicity = sgc.origContext.multiplicity[sgc.e_cross_ref[e]];
+#endif
         g.erase(e);
 
         Node s = g.addNode();
+#if MULTIGRAPH
+        sgc.num_self_loops[s] = 0;
+#endif
         sgc.origs[s] = false;
         sgc.only_splits.enable(s);
+
+#if MULTIGRAPH
+        assert(u != v);
+        Edge e1 = g.addEdge(u, s);
+        sgc.multiplicity[e1] = edge_multiplicity;
+        Edge e2 = g.addEdge(s, v);
+        sgc.multiplicity[e2] = edge_multiplicity;
+        // Trying not to have this become a multigraph
+#else
         g.addEdge(u, s);
         // Trying not to have this become a multigraph
         if(u != v) g.addEdge(s, v);
-
+#endif
         sgc.split_vertices.push_back(s);
     }
 }
@@ -1064,6 +1110,7 @@ int main(int argc, char **argv) {
                     ? default_random_engine(config.seed)
                     : default_random_engine(random_device()());
 
+    // MULTI we are here..
     CutMatching cm(gc, config, random_engine);
     cm.run();
 
