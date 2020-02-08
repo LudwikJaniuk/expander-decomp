@@ -1,0 +1,27 @@
+time -o final/whitaker3-hphi-0.1.out.time timeout 15m cmake-build-debug/a.out -f graphs/whitaker3.graph -r 0 -s --H_phi=0.1 --G_phi=0.010101525445522107 --vol 0.1 -o final/whitaker3-hphi-0.1.ptn >> final/whitaker3-hphi-0.1.outReading graph from graphs/whitaker3.graph
+Reading a graph with V 9800E 28989
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 13651 (0.255785 s)
+Cap 2 ... flow: 14492 (0.669838 s)
+Cap 4 ... flow: 14494 (0.283522 s)
+Flow search took (seconds) 1.21392
+SUBG cut conductance: 0.00702658
+SUBG cut minside volume 22913
+SUBG cut maxside volume 35065
+== End round 0 ==
+CASE2 G Expansion target reached with a cut that is relatively balanced. Cut-matching game has found a balanced cut as good as you wanted it.
+Claimed g conductance: 0.00702658
+R0 cond 0.00702658
+The best with best expansion was found on round0
+Edge crossings (E) : 161
+cut size: (3875 | 5925)
+diff: 2050 (0.209184 of total n vertices)
+Min side: 3875
+expansion: 0.0415484
+conductance: 0.0415484
+cut volume: 22913
+noncut volume: 35065
+CASE2 Goodenough balanced cut

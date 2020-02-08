@@ -1,0 +1,36 @@
+time -o final/vibrobox-hphi-0.1.out.time timeout 15m cmake-build-debug/a.out -f graphs/vibrobox.graph -r 0 -s --H_phi=0.1 --G_phi=0.00900645092912525 --vol 0.1 -o final/vibrobox-hphi-0.1.ptn >> final/vibrobox-hphi-0.1.outReading graph from graphs/vibrobox.graph
+Reading a graph with V 12328E 165250
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 82625 (0.495248 s)
+Flow search took (seconds) 0.503337
+SUBG cut conductance: 999
+SUBG cut minside volume 0
+SUBG cut maxside volume 330500
+== End round 0 ==
+H expansion: 0.248871, num cross: 20563
+H conductance: 0.248871, num cross: 20563
+H_single expansion: 0.248871, num cross: 20563
+H_single conductance: 0.248871, num cross: 20563
+Cap 1 ... flow: 82622 (0.544118 s)
+Cap 2 ... flow: 82625 (0.482594 s)
+Flow search took (seconds) 1.04205
+SUBG cut conductance: 0.736842
+SUBG cut minside volume 114
+SUBG cut maxside volume 330386
+== End round 1 ==
+H Conductance target reached, this will be case 1 or 3. According to theory, this means we probably won't find a better cut. That is, assuming you set H_phi right. If was used together with G_phi target, this also certifies the input graph is a G_phi expander unless there was a very unbaanced cut somewhere, which we will proceed to look for.
+R0 cond 999
+R1 cond 0.736842
+The best with best expansion was found on round1
+Edge crossings (E) : 84
+cut size: (12 | 12316)
+diff: 12304 (0.998053 of total n vertices)
+Min side: 12
+expansion: 7
+conductance: 7
+cut volume: 114
+noncut volume: 330386
+CASE1 NO Goodenough cut, G certified expander.

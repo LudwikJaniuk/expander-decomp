@@ -1,0 +1,111 @@
+time -o final/4elt-hphi-0.55.out.time timeout 15m cmake-build-debug/a.out -f graphs/4elt.graph -r 0 -s --H_phi=0.55 --G_phi=0.008004868440467902 --vol 0.1 -o final/4elt-hphi-0.55.ptn >> final/4elt-hphi-0.55.outReading graph from graphs/4elt.graph
+Reading a graph with V 15606E 45878
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 21500 (0.789037 s)
+Cap 2 ... flow: 22850 (1.76196 s)
+Cap 4 ... flow: 22939 (0.659579 s)
+Flow search took (seconds) 3.22276
+SUBG cut conductance: 0.00960561
+SUBG cut minside volume 26547
+SUBG cut maxside volume 65209
+== End round 0 ==
+H expansion: 0.247918, num cross: 5687
+H conductance: 0.247918, num cross: 5687
+H_single expansion: 0.247918, num cross: 5687
+H_single conductance: 0.247918, num cross: 5687
+Cap 1 ... flow: 20895 (0.710048 s)
+Cap 2 ... flow: 22622 (1.52856 s)
+Cap 4 ... flow: 22916 (1.37575 s)
+Cap 8 ... flow: 22939 (0.878674 s)
+Flow search took (seconds) 4.50117
+SUBG cut conductance: 0.0145892
+SUBG cut minside volume 3907
+SUBG cut maxside volume 87849
+== End round 1 ==
+H expansion: 0.543703, num cross: 12472
+H conductance: 0.271851, num cross: 12472
+H_single expansion: 0.536946, num cross: 12317
+H_single conductance: 0.272446, num cross: 12317
+Cap 1 ... flow: 19980 (0.853078 s)
+Cap 2 ... flow: 22450 (1.14699 s)
+Cap 4 ... flow: 22939 (1.31103 s)
+Flow search took (seconds) 3.32098
+SUBG cut conductance: 0.0160253
+SUBG cut minside volume 44617
+SUBG cut maxside volume 47139
+== End round 2 ==
+H expansion: 0.866864, num cross: 19885
+H conductance: 0.288955, num cross: 19885
+H_single expansion: 0.850735, num cross: 19515
+H_single conductance: 0.291874, num cross: 19515
+Cap 1 ... flow: 19117 (0.852237 s)
+Cap 2 ... flow: 22001 (1.43074 s)
+Cap 4 ... flow: 22869 (2.04412 s)
+Cap 8 ... flow: 22939 (0.788672 s)
+Flow search took (seconds) 5.12558
+SUBG cut conductance: 0.0116751
+SUBG cut minside volume 19700
+SUBG cut maxside volume 72056
+== End round 3 ==
+H expansion: 1.21051, num cross: 27768
+H conductance: 0.302629, num cross: 27768
+H_single expansion: 1.17782, num cross: 27018
+H_single conductance: 0.306646, num cross: 27018
+Cap 1 ... flow: 18242 (0.812594 s)
+Cap 2 ... flow: 21346 (1.02171 s)
+Cap 4 ... flow: 22820 (1.32629 s)
+Cap 8 ... flow: 22939 (0.591111 s)
+Flow search took (seconds) 3.76201
+SUBG cut conductance: 0.00822466
+SUBG cut minside volume 26992
+SUBG cut maxside volume 64764
+== End round 4 ==
+H expansion: 1.56951, num cross: 36003
+H conductance: 0.313902, num cross: 36003
+H_single expansion: 1.51428, num cross: 34736
+H_single conductance: 0.319136, num cross: 34736
+Cap 1 ... flow: 17541 (0.793283 s)
+Cap 2 ... flow: 20730 (0.946655 s)
+Cap 4 ... flow: 22545 (0.705566 s)
+Cap 8 ... flow: 22939 (0.61603 s)
+Flow search took (seconds) 3.07093
+SUBG cut conductance: 0.0208831
+SUBG cut minside volume 16760
+SUBG cut maxside volume 74996
+== End round 5 ==
+H expansion: 1.88814, num cross: 43312
+H conductance: 0.31469, num cross: 43312
+H_single expansion: 1.80487, num cross: 41402
+H_single conductance: 0.320221, num cross: 41402
+Cap 1 ... flow: 16721 (0.897934 s)
+Cap 2 ... flow: 19832 (0.878725 s)
+Cap 4 ... flow: 21526 (1.34382 s)
+Cap 8 ... flow: 22616 (1.53731 s)
+Cap 16 ... flow: 22939 (0.780927 s)
+Flow search took (seconds) 5.45057
+SUBG cut conductance: 0.00774217
+SUBG cut minside volume 22216
+SUBG cut maxside volume 69540
+== End round 6 ==
+CASE2 G Expansion target reached with a cut that is relatively balanced. Cut-matching game has found a balanced cut as good as you wanted it.
+Claimed g conductance: 0.00774217
+R0 cond 0.00960561
+R1 cond 0.0145892
+R2 cond 0.0160253
+R3 cond 0.0116751
+R4 cond 0.00822466
+R5 cond 0.0208831
+R6 cond 0.00774217
+The best with best expansion was found on round6
+Edge crossings (E) : 172
+cut size: (3781 | 11825)
+diff: 8044 (0.515443 of total n vertices)
+Min side: 3781
+expansion: 0.0454906
+conductance: 0.0454906
+cut volume: 22216
+noncut volume: 69540
+CASE2 Goodenough balanced cut

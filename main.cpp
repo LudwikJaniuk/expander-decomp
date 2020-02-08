@@ -84,6 +84,7 @@ double duration_sec(const high_resolution_clock::time_point& start, high_resolut
 struct InputConfiguration {
     bool load_from_file = false;
     string file_name = "";
+    bool ignore_multi = false;
     size_t n_nodes_to_generate;
 };
 
@@ -308,9 +309,9 @@ double conductance() {
     void print(string prefix="") {
         l.progress() << prefix << "Edge crossings (E) : " << crossing_edges << endl;
 #if REAL_MULTI
-        l.progress() << prefix << "cut size: (" << cut_size << " | " << othersize << ")" << endl
+        l.progress() << prefix << "cut size: ( " << cut_size << " | " << othersize << " )" << endl
              << "diff: " << diff() << " (factor " << imbalance() << " of total n vertices)" << endl;
-        l.progress() << prefix << "cut volumes: (" << cut_volume << " | " << non_cut_volume << ")" << endl;
+        l.progress() << prefix << "cut volumes: ( " << cut_volume << " | " << non_cut_volume << " )" << endl;
 #else
         l.progress() << prefix << "cut size: (" << min_side << " | " << max_side << ")" << endl
              << "diff: " << diff() << " (factor " << imbalance() << " of total n vertices)" << endl;
@@ -333,6 +334,7 @@ static void parse_chaco_format
         ( const string &filename
         , ListGraph &g
         , vector<Node> &nodes
+        , bool take_multi_edges
 #if MULTIGRAPH
         , EdgeMap<size_t>& multiplicity
         , NodeMap<size_t>& num_self_loops
@@ -380,7 +382,10 @@ static void parse_chaco_format
             Node v = nodes[v_name - 1];
 
 #if REAL_MULTI
-            g.addEdge(u, v);
+
+            if (take_multi_edges || findEdge(g, u, v)== INVALID) {
+                g.addEdge(u, v);
+            }
 #else // REAL_MULTI
 
             // TODO So here we would just remove the thing, and see at the end that the numbers match
@@ -505,7 +510,7 @@ void initGraph(GraphContext &gc, InputConfiguration config) {
 #if MULTIGRAPH
         parse_chaco_format(config.file_name, gc.g, gc.nodes, gc.multiplicity, gc.num_self_loops);
 #else
-        parse_chaco_format(config.file_name, gc.g, gc.nodes);
+        parse_chaco_format(config.file_name, gc.g, gc.nodes, !config.ignore_multi);
 #endif
 
     } else {
@@ -1096,6 +1101,7 @@ cxxopts::Options create_options() {
              cxxopts::value<long>()->default_value("100"))
             ("S,Silent", "Only output one line of summary at the end")
             ("v,verbose", "Debug; Whether to print nodes and cuts Does not include paths. Produces a LOT of output on large graphs.")
+            ("ignore-multi", "ignores the same edges repeated when parsing.")
             ("d,paths", "Debug; Whether to print paths")
             ;
     return options;
@@ -1144,6 +1150,10 @@ void parse_options(int argc, char **argv, Configuration &config) {
         config.output_cut = true;
         config.output_file = result["output"].as<string>();
     }
+    if (result.count("ignore-multi")) {
+        config.input.ignore_multi = true;
+    }
+
     if (result.count("partition")) {
         config.compare_partition = true;
         config.partition_file = result["partition"].as<string>();

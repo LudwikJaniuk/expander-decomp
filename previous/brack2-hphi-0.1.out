@@ -1,0 +1,37 @@
+time -o final/brack2-hphi-0.1.out.time timeout 15m cmake-build-debug/a.out -f graphs/brack2.graph -r 0 -s --H_phi=0.1 --G_phi=0.003995814578334844 --vol 0.1 -o final/brack2-hphi-0.1.ptn >> final/brack2-hphi-0.1.outReading graph from graphs/brack2.graph
+Reading a graph with V 62631E 366559
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 183183 (11.6257 s)
+Cap 2 ... flow: 183279 (5.23361 s)
+Flow search took (seconds) 16.9497
+SUBG cut conductance: 0.0164756
+SUBG cut minside volume 237745
+SUBG cut maxside volume 495373
+== End round 0 ==
+H expansion: 0.250471, num cross: 45906
+H conductance: 0.250472, num cross: 45906
+H_single expansion: 0.250471, num cross: 45906
+H_single conductance: 0.250472, num cross: 45906
+Cap 1 ... flow: 182661 (14.6863 s)
+Cap 2 ... flow: 183279 (9.95824 s)
+Flow search took (seconds) 24.7395
+SUBG cut conductance: 0.0583626
+SUBG cut minside volume 156213
+SUBG cut maxside volume 576905
+== End round 1 ==
+H Conductance target reached, this will be case 1 or 3. According to theory, this means we probably won't find a better cut. That is, assuming you set H_phi right. If was used together with G_phi target, this also certifies the input graph is a G_phi expander unless there was a very unbaanced cut somewhere, which we will proceed to look for.
+R0 cond 0.0164756
+R1 cond 0.0583626
+The best with best expansion was found on round0
+Edge crossings (E) : 3917
+cut size: (20668 | 41963)
+diff: 21295 (0.340007 of total n vertices)
+Min side: 20668
+expansion: 0.18952
+conductance: 0.18952
+cut volume: 495373
+noncut volume: 237745
+CASE1 NO Goodenough cut, G certified expander.
