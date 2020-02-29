@@ -1,0 +1,49 @@
+time -o out_log2/wing_nodal-h-0.55-g-0.44842961245068674-t-30m.out.time timeout 30m cmake-build-debug/a.out -f graphs/wing_nodal.graph --ignore-multi -r 0 -s --H_phi=0.55 --G_phi=0.44842961245068674 --vol 0.1 -o out_log2/wing_nodal-h-0.55-g-0.44842961245068674-t-30m.ptn >> out_log2/wing_nodal-h-0.55-g-0.44842961245068674-t-30m.outReading graph from graphs/wing_nodal.graph
+Reading a graph with V 10937E 75488
+75488
+10937
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 37743 (0.327941 s)
+Cap 2 ... flow: 37744 (0.189374 s)
+Flow search took (seconds) 0.539363
+SUBG cut conductance: 0.952381
+SUBG cut minside volume 42
+SUBG cut maxside volume 150934
+== End round 0 ==
+H expansion: 0.247139, num cross: 9328
+H conductance: 0.247139, num cross: 9328
+H_single expansion: 0.247139, num cross: 9328
+H_single conductance: 0.247139, num cross: 9328
+Cap 1 ... flow: 37744 (0.394988 s)
+Flow search took (seconds) 0.399244
+SUBG cut conductance: 999
+SUBG cut minside volume 0
+SUBG cut maxside volume 150976
+== End round 1 ==
+H expansion: 0.548696, num cross: 20710
+H conductance: 0.274348, num cross: 20710
+H_single expansion: 0.543689, num cross: 20521
+H_single conductance: 0.274856, num cross: 20521
+Cap 1 ... flow: 37666 (0.527586 s)
+Cap 2 ... flow: 37744 (0.268517 s)
+Flow search took (seconds) 0.804667
+SUBG cut conductance: 0.0734616
+SUBG cut minside volume 14089
+SUBG cut maxside volume 136887
+== End round 2 ==
+CASE2 G Expansion target reached with a cut that is relatively balanced. Cut-matching game has found a balanced cut as good as you wanted it.
+Claimed g conductance: 0.0734616
+R0 cond 0.952381
+R1 cond 999
+R2 cond 0.0734616
+The best with best expansion was found on round2
+final_Edge crossings (E) : 1035
+final_cut size: ( 1099 | 9838 )
+diff: 8739 (factor 0.799031 of total n vertices)
+final_cut volumes: ( 14089 | 136887 )
+final_expansion: 0.941765
+final_conductance: 0.0734616
+CASE2 Goodenough balanced cut

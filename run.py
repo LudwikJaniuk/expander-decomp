@@ -4,7 +4,7 @@ import sys
 
 assert len(sys.argv) == 2 
 do_summarize = sys.argv[1] == "a" # ANalyze
-out_dir = "output"
+out_dir = "run_output"
 
 def source_file(graph):
     return "graphs/"+graph+".graph"
@@ -29,10 +29,10 @@ def num_edges_in_graph_file(name):
     firstword = ln.split()[1]
     return int(firstword)
 
-def run_cut_matching(graph_file, out_partition_file, print_file, g_phi, h_phi, multi, timeout="15m"):
+def run_cut_matching(graph_file, out_partition_file, print_file, g_phi, h_phi, multi, rounds, timeout="15m"):
     #process = subprocess.run(["echo", graph_file, out_partition_file, str(g_phi), str(h_phi)], timeout=2)
     try:
-        command = f"time -o {print_file}.time timeout {timeout} " + " ".join(["cmake-build-debug/a.out", "-f", graph_file, "" if multi else "--ignore-multi", "-r", "0", "-s", f"--H_phi={h_phi}", f"--G_phi={g_phi}", "--vol", "0.1", "-o", out_partition_file, ">>", print_file])
+        command = f"time -o {print_file}.time timeout {timeout} " + " ".join(["cmake-build-debug/a.out", "-f", graph_file, "" if multi else "--ignore-multi", "-r", f"{rounds}", "-s", f"--H_phi={h_phi}", f"--G_phi={g_phi}", "--vol", "0.1", "-o", out_partition_file, ">>", print_file])
 
         f = open(print_file, "w")
         f.write(command)
@@ -132,21 +132,27 @@ def summarize(graph_name, g_phi, h_phi, multi, timeout, graph_file, print_file, 
 
 
 
-def run_with(graph, h_phi, g_phi, multi, timeout):
+def run_with(graph, g_phi, h_phi, multi, rounds, timeout):
     graph_with_postfix = f"{graph}-h-{h_phi}-g-{g_phi}-t-{timeout}"
 
     if do_summarize:
         summarize(graph, g_phi, h_phi, multi, timeout, source_file(graph), output_file(graph_with_postfix), output_file(graph_with_postfix)+".time")
     else:
         print(f"Running on h_phi {h_phi} g_phi {g_phi} timeout {timeout}")
-        run_cut_matching(source_file(graph), out_partition_file(graph_with_postfix), output_file(graph_with_postfix), g_phi, h_phi, multi, timeout)
+        run_cut_matching(source_file(graph), out_partition_file(graph_with_postfix), output_file(graph_with_postfix), g_phi, h_phi, multi, rounds, timeout)
 
 
 def default_analyze(graph, multi):
     n_nodes = num_nodes_in_graph_file(source_file(graph))
-    g_phi = 1.0/math.sqrt(n_nodes)
-    for h_phi in [0.1, 0.55]:
-        run_with(graph, g_phi, h_phi, multi, "100s")
+    rounds = 30
+    #g_phi = 0.0
+    # g_phi = 1.0/math.log(math.log(n_nodes))
+    g_phi = 1.0/math.log(n_nodes)**2
+    #g_phi = 1.0/math.sqrt(n_nodes)
+    #g_phi = 1.0/n_nodes
+    #for h_phi in [0.1, 0.55]:
+    for h_phi in [0.1]: # Unreachable
+        run_with(graph, g_phi, h_phi, multi, rounds, "30m")
 
 default_analyze("barbell10-10", True)
 default_analyze("barbell100-100", True)
@@ -157,7 +163,7 @@ default_analyze("complete100", True)
 default_analyze("expander4", True)
 default_analyze("expander16", True)
 default_analyze("expander64", True)
-#default_analyze("expander256", True)
+default_analyze("expander256", True)
 #default_analyze("expander1024", True)
 default_analyze("looploop8", True)
 default_analyze("multi8", True)

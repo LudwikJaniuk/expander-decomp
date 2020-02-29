@@ -1,0 +1,49 @@
+time -o out_log2/expander256-h-0.55-g-0.5837954878463602-t-30m.out.time timeout 30m cmake-build-debug/a.out -f graphs/expander256.graph  -r 0 -s --H_phi=0.55 --G_phi=0.5837954878463602 --vol 0.1 -o out_log2/expander256-h-0.55-g-0.5837954878463602-t-30m.ptn >> out_log2/expander256-h-0.55-g-0.5837954878463602-t-30m.outReading graph from graphs/expander256.graph
+Reading a graph with V 256E 1024
+1024
+256
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 512 (0.000745 s)
+Flow search took (seconds) 0.000797
+SUBG cut conductance: 999
+SUBG cut minside volume 0
+SUBG cut maxside volume 1984
+== End round 0 ==
+H expansion: 0.273438, num cross: 140
+H conductance: 0.273438, num cross: 140
+H_single expansion: 0.273438, num cross: 140
+H_single conductance: 0.273438, num cross: 140
+Cap 1 ... flow: 509 (0.002505 s)
+Cap 2 ... flow: 512 (0.00063 s)
+Flow search took (seconds) 0.00331
+SUBG cut conductance: 0.635294
+SUBG cut minside volume 85
+SUBG cut maxside volume 1899
+== End round 1 ==
+H expansion: 0.535156, num cross: 274
+H conductance: 0.267578, num cross: 274
+H_single expansion: 0.523438, num cross: 268
+H_single conductance: 0.265873, num cross: 268
+Cap 1 ... flow: 486 (0.001591 s)
+Cap 2 ... flow: 512 (0.000572 s)
+Flow search took (seconds) 0.002299
+SUBG cut conductance: 0.420886
+SUBG cut minside volume 632
+SUBG cut maxside volume 1352
+== End round 2 ==
+CASE2 G Expansion target reached with a cut that is relatively balanced. Cut-matching game has found a balanced cut as good as you wanted it.
+Claimed g conductance: 0.420886
+R0 cond 999
+R1 cond 0.635294
+R2 cond 0.420886
+The best with best expansion was found on round2
+final_Edge crossings (E) : 266
+final_cut size: ( 82 | 174 )
+diff: 92 (factor 0.359375 of total n vertices)
+final_cut volumes: ( 632 | 1352 )
+final_expansion: 3.2439
+final_conductance: 0.420886
+CASE2 Goodenough balanced cut

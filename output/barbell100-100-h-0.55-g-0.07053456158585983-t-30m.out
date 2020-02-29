@@ -1,0 +1,31 @@
+time -o output/barbell100-100-h-0.55-g-0.07053456158585983-t-30m.out.time timeout 30m cmake-build-debug/a.out -f graphs/barbell100-100.graph  -r 0 -s --H_phi=0.55 --G_phi=0.07053456158585983 --vol 0.1 -o output/barbell100-100-h-0.55-g-0.07053456158585983-t-30m.ptn >> output/barbell100-100-h-0.55-g-0.07053456158585983-t-30m.outReading graph from graphs/barbell100-100.graph
+Reading a graph with V 201E 9902
+9902
+201
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 4914 (0.010435 s)
+Cap 2 ... flow: 4915 (0.014504 s)
+Cap 4 ... flow: 4917 (0.012423 s)
+Cap 8 ... flow: 4921 (0.011567 s)
+Cap 16 ... flow: 4929 (0.011028 s)
+Cap 32 ... flow: 4945 (0.010166 s)
+Cap 64 ... flow: 4951 (0.009254 s)
+Flow search took (seconds) 0.081959
+SUBG cut conductance: 0.000101
+SUBG cut minside volume 9901
+SUBG cut maxside volume 9903
+== End round 0 ==
+CASE2 G Expansion target reached with a cut that is relatively balanced. Cut-matching game has found a balanced cut as good as you wanted it.
+Claimed g conductance: 0.000101
+R0 cond 0.000101
+The best with best expansion was found on round0
+final_Edge crossings (E) : 1
+final_cut size: ( 100 | 101 )
+diff: 1 (factor 0.00497512 of total n vertices)
+final_cut volumes: ( 9901 | 9903 )
+final_expansion: 0.01
+final_conductance: 0.000101
+CASE2 Goodenough balanced cut

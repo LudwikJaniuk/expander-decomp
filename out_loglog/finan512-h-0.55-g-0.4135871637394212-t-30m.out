@@ -1,0 +1,27 @@
+time -o out_log2/finan512-h-0.55-g-0.4135871637394212-t-30m.out.time timeout 30m cmake-build-debug/a.out -f graphs/finan512.graph --ignore-multi -r 0 -s --H_phi=0.55 --G_phi=0.4135871637394212 --vol 0.1 -o out_log2/finan512-h-0.55-g-0.4135871637394212-t-30m.ptn >> out_log2/finan512-h-0.55-g-0.4135871637394212-t-30m.outReading graph from graphs/finan512.graph
+Reading a graph with V 74752E 261120
+261120
+74752
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 127830 (8.0975 s)
+Cap 2 ... flow: 130256 (10.0189 s)
+Cap 4 ... flow: 130560 (18.8668 s)
+Flow search took (seconds) 37.0647
+SUBG cut conductance: 0.00189271
+SUBG cut minside volume 98272
+SUBG cut maxside volume 423968
+== End round 0 ==
+CASE2 G Expansion target reached with a cut that is relatively balanced. Cut-matching game has found a balanced cut as good as you wanted it.
+Claimed g conductance: 0.00189271
+R0 cond 0.00189271
+The best with best expansion was found on round0
+final_Edge crossings (E) : 186
+final_cut size: ( 60668 | 14084 )
+diff: 46584 (factor 0.623181 of total n vertices)
+final_cut volumes: ( 423968 | 98272 )
+final_expansion: 0.0132065
+final_conductance: 0.00189271
+CASE2 Goodenough balanced cut

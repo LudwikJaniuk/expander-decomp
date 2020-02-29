@@ -1,0 +1,48 @@
+time -o output/multi8-h-0.35355339059327373-g-0.1-t-30m.out.time timeout 30m cmake-build-debug/a.out -f graphs/multi8.graph  -r 0 -s --H_phi=0.35355339059327373 --G_phi=0.1 --vol 0.1 -o output/multi8-h-0.35355339059327373-g-0.1-t-30m.ptn >> output/multi8-h-0.35355339059327373-g-0.1-t-30m.outReading graph from graphs/multi8.graph
+Reading a graph with V 8E 12
+12
+8
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 5 (6e-06 s)
+Cap 2 ... flow: 6 (6e-06 s)
+Flow search took (seconds) 2.4e-05
+SUBG cut conductance: 0.5
+SUBG cut minside volume 4
+SUBG cut maxside volume 20
+== End round 0 ==
+H expansion: 0, num cross: 0
+H conductance: 0, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: 0, num cross: 0
+Cap 1 ... flow: 5 (3e-06 s)
+Cap 2 ... flow: 6 (2e-06 s)
+Flow search took (seconds) 1.6e-05
+SUBG cut conductance: 0.5
+SUBG cut minside volume 4
+SUBG cut maxside volume 20
+== End round 1 ==
+H expansion: 1.33333, num cross: 8
+H conductance: 0.666667, num cross: 8
+H_single expansion: 1.33333, num cross: 8
+H_single conductance: 0.666667, num cross: 8
+Cap 1 ... flow: 6 (3e-06 s)
+Flow search took (seconds) 8e-06
+SUBG cut conductance: 999
+SUBG cut minside volume 0
+SUBG cut maxside volume 24
+== End round 2 ==
+H Conductance target reached, this will be case 1 or 3. According to theory, this means we probably won't find a better cut. That is, assuming you set H_phi right. If was used together with G_phi target, this also certifies the input graph is a G_phi expander unless there was a very unbaanced cut somewhere, which we will proceed to look for.
+R0 cond 0.5
+R1 cond 0.5
+R2 cond 999
+The best with best expansion was found on round0
+final_Edge crossings (E) : 2
+final_cut size: ( 2 | 6 )
+diff: 4 (factor 0.5 of total n vertices)
+final_cut volumes: ( 4 | 20 )
+final_expansion: 1
+final_conductance: 0.5
+CASE1 NO Goodenough cut, G certified expander.

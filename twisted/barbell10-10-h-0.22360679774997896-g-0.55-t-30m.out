@@ -1,0 +1,28 @@
+time -o output/barbell10-10-h-0.22360679774997896-g-0.55-t-30m.out.time timeout 30m cmake-build-debug/a.out -f graphs/barbell10-10.graph  -r 0 -s --H_phi=0.22360679774997896 --G_phi=0.55 --vol 0.1 -o output/barbell10-10-h-0.22360679774997896-g-0.55-t-30m.ptn >> output/barbell10-10-h-0.22360679774997896-g-0.55-t-30m.outReading graph from graphs/barbell10-10.graph
+Reading a graph with V 20E 91
+91
+20
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 40 (6.1e-05 s)
+Cap 2 ... flow: 41 (6.3e-05 s)
+Cap 4 ... flow: 43 (6.2e-05 s)
+Cap 8 ... flow: 45 (5.8e-05 s)
+Flow search took (seconds) 0.000291
+SUBG cut conductance: 0.010989
+SUBG cut minside volume 91
+SUBG cut maxside volume 91
+== End round 0 ==
+CASE2 G Expansion target reached with a cut that is relatively balanced. Cut-matching game has found a balanced cut as good as you wanted it.
+Claimed g conductance: 0.010989
+R0 cond 0.010989
+The best with best expansion was found on round0
+final_Edge crossings (E) : 1
+final_cut size: ( 10 | 10 )
+diff: 0 (factor 0 of total n vertices)
+final_cut volumes: ( 91 | 91 )
+final_expansion: 0.1
+final_conductance: 0.010989
+CASE2 Goodenough balanced cut

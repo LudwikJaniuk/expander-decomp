@@ -1,0 +1,62 @@
+time -o out_log2/expander1024-h-0.55-g-0.5165096705842229-t-30m.out.time timeout 30m cmake-build-debug/a.out -f graphs/expander1024.graph  -r 0 -s --H_phi=0.55 --G_phi=0.5165096705842229 --vol 0.1 -o out_log2/expander1024-h-0.55-g-0.5165096705842229-t-30m.ptn >> out_log2/expander1024-h-0.55-g-0.5165096705842229-t-30m.outReading graph from graphs/expander1024.graph
+Reading a graph with V 1024E 4096
+4096
+1024
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 2044 (0.003726 s)
+Cap 2 ... flow: 2048 (0.003318 s)
+Flow search took (seconds) 0.007418
+SUBG cut conductance: 0.722222
+SUBG cut minside volume 36
+SUBG cut maxside volume 8028
+== End round 0 ==
+H expansion: 0.242188, num cross: 496
+H conductance: 0.242188, num cross: 496
+H_single expansion: 0.242188, num cross: 496
+H_single conductance: 0.242188, num cross: 496
+Cap 1 ... flow: 2036 (0.004305 s)
+Cap 2 ... flow: 2048 (0.0037 s)
+Flow search took (seconds) 0.008353
+SUBG cut conductance: 0.59306
+SUBG cut minside volume 317
+SUBG cut maxside volume 7747
+== End round 1 ==
+H expansion: 0.550781, num cross: 1128
+H conductance: 0.275391, num cross: 1128
+H_single expansion: 0.541992, num cross: 1110
+H_single conductance: 0.275025, num cross: 1110
+Cap 1 ... flow: 2022 (0.005962 s)
+Cap 2 ... flow: 2048 (0.003263 s)
+Flow search took (seconds) 0.009605
+SUBG cut conductance: 0.609294
+SUBG cut minside volume 581
+SUBG cut maxside volume 7483
+== End round 2 ==
+H expansion: 0.87207, num cross: 1786
+H conductance: 0.29069, num cross: 1786
+H_single expansion: 0.855957, num cross: 1753
+H_single conductance: 0.293684, num cross: 1753
+Cap 1 ... flow: 1964 (0.010642 s)
+Cap 2 ... flow: 2048 (0.003359 s)
+Flow search took (seconds) 0.014542
+SUBG cut conductance: 0.369016
+SUBG cut minside volume 3008
+SUBG cut maxside volume 5056
+== End round 3 ==
+CASE2 G Expansion target reached with a cut that is relatively balanced. Cut-matching game has found a balanced cut as good as you wanted it.
+Claimed g conductance: 0.369016
+R0 cond 0.722222
+R1 cond 0.59306
+R2 cond 0.609294
+R3 cond 0.369016
+The best with best expansion was found on round3
+final_Edge crossings (E) : 1110
+final_cut size: ( 381 | 643 )
+diff: 262 (factor 0.255859 of total n vertices)
+final_cut volumes: ( 3008 | 5056 )
+final_expansion: 2.91339
+final_conductance: 0.369016
+CASE2 Goodenough balanced cut

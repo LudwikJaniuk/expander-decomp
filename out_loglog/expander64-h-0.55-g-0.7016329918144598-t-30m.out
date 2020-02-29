@@ -1,0 +1,38 @@
+time -o out_log2/expander64-h-0.55-g-0.7016329918144598-t-30m.out.time timeout 30m cmake-build-debug/a.out -f graphs/expander64.graph  -r 0 -s --H_phi=0.55 --G_phi=0.7016329918144598 --vol 0.1 -o out_log2/expander64-h-0.55-g-0.7016329918144598-t-30m.ptn >> out_log2/expander64-h-0.55-g-0.7016329918144598-t-30m.outReading graph from graphs/expander64.graph
+Reading a graph with V 64E 256
+256
+64
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 127 (0.000322 s)
+Cap 2 ... flow: 128 (0.000283 s)
+Flow search took (seconds) 0.000649
+SUBG cut conductance: 0.857143
+SUBG cut minside volume 7
+SUBG cut maxside volume 473
+== End round 0 ==
+H expansion: 0.25, num cross: 32
+H conductance: 0.25, num cross: 32
+H_single expansion: 0.25, num cross: 32
+H_single conductance: 0.25, num cross: 32
+Cap 1 ... flow: 126 (0.000335 s)
+Cap 2 ... flow: 128 (0.000203 s)
+Flow search took (seconds) 0.000613
+SUBG cut conductance: 0.588235
+SUBG cut minside volume 34
+SUBG cut maxside volume 446
+== End round 1 ==
+CASE2 G Expansion target reached with a cut that is relatively balanced. Cut-matching game has found a balanced cut as good as you wanted it.
+Claimed g conductance: 0.588235
+R0 cond 0.857143
+R1 cond 0.588235
+The best with best expansion was found on round1
+final_Edge crossings (E) : 20
+final_cut size: ( 59 | 5 )
+diff: 54 (factor 0.84375 of total n vertices)
+final_cut volumes: ( 446 | 34 )
+final_expansion: 4
+final_conductance: 0.588235
+CASE2 Goodenough balanced cut

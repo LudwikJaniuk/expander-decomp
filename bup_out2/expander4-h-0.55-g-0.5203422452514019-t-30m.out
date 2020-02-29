@@ -1,0 +1,48 @@
+time -o out_log2/expander4-h-0.55-g-0.5203422452514019-t-30m.out.time timeout 30m cmake-build-debug/a.out -f graphs/expander4.graph  -r 0 -s --H_phi=0.55 --G_phi=0.5203422452514019 --vol 0.1 -o out_log2/expander4-h-0.55-g-0.5203422452514019-t-30m.ptn >> out_log2/expander4-h-0.55-g-0.5203422452514019-t-30m.outReading graph from graphs/expander4.graph
+Reading a graph with V 4E 16
+16
+4
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 8 (9e-06 s)
+Flow search took (seconds) 1.6e-05
+SUBG cut conductance: 999
+SUBG cut minside volume 0
+SUBG cut maxside volume 24
+== End round 0 ==
+H expansion: 0, num cross: 0
+H conductance: 0, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: 0, num cross: 0
+Cap 1 ... flow: 8 (9e-06 s)
+Flow search took (seconds) 1.5e-05
+SUBG cut conductance: 999
+SUBG cut minside volume 0
+SUBG cut maxside volume 24
+== End round 1 ==
+H expansion: 0.5, num cross: 4
+H conductance: 0.25, num cross: 4
+H_single expansion: 0.5, num cross: 4
+H_single conductance: 0.25, num cross: 4
+Cap 1 ... flow: 4 (6e-06 s)
+Cap 2 ... flow: 8 (7e-06 s)
+Flow search took (seconds) 2.5e-05
+SUBG cut conductance: 0.333333
+SUBG cut minside volume 12
+SUBG cut maxside volume 12
+== End round 2 ==
+CASE2 G Expansion target reached with a cut that is relatively balanced. Cut-matching game has found a balanced cut as good as you wanted it.
+Claimed g conductance: 0.333333
+R0 cond 999
+R1 cond 999
+R2 cond 0.333333
+The best with best expansion was found on round2
+final_Edge crossings (E) : 4
+final_cut size: ( 2 | 2 )
+diff: 0 (factor 0 of total n vertices)
+final_cut volumes: ( 12 | 12 )
+final_expansion: 2
+final_conductance: 0.333333
+CASE2 Goodenough balanced cut

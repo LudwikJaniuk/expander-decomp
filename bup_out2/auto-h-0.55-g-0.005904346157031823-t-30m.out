@@ -1,0 +1,41 @@
+time -o out_log2/auto-h-0.55-g-0.005904346157031823-t-30m.out.time timeout 30m cmake-build-debug/a.out -f graphs/auto.graph --ignore-multi -r 0 -s --H_phi=0.55 --G_phi=0.005904346157031823 --vol 0.1 -o out_log2/auto-h-0.55-g-0.005904346157031823-t-30m.ptn >> out_log2/auto-h-0.55-g-0.005904346157031823-t-30m.outReading graph from graphs/auto.graph
+Reading a graph with V 448695E 3314611
+3314611
+448695
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 1657305 (104.905 s)
+Flow search took (seconds) 105.194
+SUBG cut conductance: 999
+SUBG cut minside volume 0
+SUBG cut maxside volume 6629222
+== End round 0 ==
+H expansion: 0.250078, num cross: 414456
+H conductance: 0.250078, num cross: 414456
+H_single expansion: 0.250078, num cross: 414456
+H_single conductance: 0.250078, num cross: 414456
+Cap 1 ... flow: 1657251 (296.606 s)
+Cap 2 ... flow: 1657305 (166.566 s)
+Flow search took (seconds) 463.722
+SUBG cut conductance: 0.281068
+SUBG cut minside volume 2398
+SUBG cut maxside volume 6626824
+== End round 1 ==
+H expansion: 0.54449, num cross: 902386
+H conductance: 0.272245, num cross: 902386
+H_single expansion: 0.538537, num cross: 892520
+H_single conductance: 0.272513, num cross: 892520
+Cap 1 ... flow: 1654332 (315.396 s)
+Cap 2 ... flow: 1657305 (120.401 s)
+Flow search took (seconds) 436.63
+SUBG cut conductance: 0.0171031
+SUBG cut minside volume 2495045
+SUBG cut maxside volume 4134177
+== End round 2 ==
+H expansion: 0.877516, num cross: 1454312
+H conductance: 0.292505, num cross: 1454312
+H_single expansion: 0.864356, num cross: 1432501
+H_single conductance: 0.295176, num cross: 1432501
+Cap 1 ... 

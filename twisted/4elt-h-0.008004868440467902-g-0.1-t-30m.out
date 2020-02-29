@@ -1,0 +1,27 @@
+time -o output/4elt-h-0.008004868440467902-g-0.1-t-30m.out.time timeout 30m cmake-build-debug/a.out -f graphs/4elt.graph --ignore-multi -r 0 -s --H_phi=0.008004868440467902 --G_phi=0.1 --vol 0.1 -o output/4elt-h-0.008004868440467902-g-0.1-t-30m.ptn >> output/4elt-h-0.008004868440467902-g-0.1-t-30m.outReading graph from graphs/4elt.graph
+Reading a graph with V 15606E 45878
+45878
+15606
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 21500 (0.7557 s)
+Cap 2 ... flow: 22850 (1.69424 s)
+Cap 4 ... flow: 22939 (0.640459 s)
+Flow search took (seconds) 3.10131
+SUBG cut conductance: 0.00960561
+SUBG cut minside volume 26547
+SUBG cut maxside volume 65209
+== End round 0 ==
+CASE2 G Expansion target reached with a cut that is relatively balanced. Cut-matching game has found a balanced cut as good as you wanted it.
+Claimed g conductance: 0.00960561
+R0 cond 0.00960561
+The best with best expansion was found on round0
+final_Edge crossings (E) : 255
+final_cut size: ( 11087 | 4519 )
+diff: 6568 (factor 0.420864 of total n vertices)
+final_cut volumes: ( 65209 | 26547 )
+final_expansion: 0.0564284
+final_conductance: 0.00960561
+CASE2 Goodenough balanced cut
