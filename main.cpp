@@ -1,5 +1,50 @@
 // Authored by Ludvig Janiuk 2019/2020 as part of individual project at KTH.
 
+// CUT MATCHING GAME IMPLEMENTATION
+// Based off of
+// "Graph partitioning using single commodity flows"
+// by Khandekar, Vazirani, Rao
+// https://dl.acm.org/doi/10.1145/1538902.1538903
+// and
+// "Expander Decomposition and Pruning: Faster, Stronger, and Simpler"
+// by Saranurak and Wang.
+// https://arxiv.org/abs/1812.08958
+
+// The Cut-Matching game approximates sparsest cuts in graphs or certifies them as expanders.
+// The two players take turns playing in rounds.
+// THe Cut player produces bisections 
+// High-level Pseudocode:
+//   Input: Graph G = (V, E), g_phi, h_phi
+//   Matchings := []
+//   Cuts := []
+//   G’ = (Xe Union V, E’) := SubdivisionGraph(G)
+//   While not ShouldStop():
+//    Bisection := CutPlayer(Xe, Matchings)
+//    (Matching, CutG’) := MatchingPlayer(G’, Bisection)
+//    Cut := CutInG(CutG’)
+//    Push(Matchings, Matching); Push(Cuts, Cut)
+//   Return C in Cuts with minimal Conductance(C)
+//
+//   CutPlayer(V, Matchings):
+//    Assign each vertex a random charge from {-1, 1}
+//    For M in Matchings:
+//     For (u, v) in M:
+//      charge(u), charge(v) := avg(charge(u), charge(v))
+//    Sort V by charge
+//    Return (First half, second half) of V
+//
+//   MatchingPlayer(Graph, (S, S’)):
+//    Create new vertices s, t; connect s with all of S, and all of S’ with t
+//    LastCut := null
+//    For C in [1, 2, 4, 8, …]:
+//     Set all edge capacities to C
+//     Flow := (Try to route n/2 flow from s to t with a MaxFlow algorithm)
+//     If successful:
+//      Matching :=DecomposePaths(Flow)
+//      return (Matching, LastCut)
+//     Else:
+//      LastCut = MinCut(Flow)
+
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "cert-msc32-c"
 #pragma ide diagnostic ignored "cppcoreguidelines-slicing"
@@ -25,30 +70,17 @@
 #include "cxxopts.hpp"
 #include "preliminaries.h"
 
-#define MULTIGRAPH 0
-#define REAL_MULTI 1
-
-// To write this with support for multi, need to:
-// 1. Parse multi (perhaps map with multiplicities) (map multiplicities and more-volumes of nodes)
-//      seems eash.
-// 2. Make sure subdiv happens well with multi
-//      Need to copy over the map and set vlaues for coped edges. And copied verts. Selfloops.
-// DONE
-// 3. IS cut_player random walk thing affected? I think not...
-// Done, didsnt require anything
-// 4. capacities must be set correct with flow
-//      Yes indeed, scaled
-//      But that means path decomp should be unaffected
-// 5. computations of conductance and volume must still be correct
-//      Lucky we have cutstats.
-// Should be done...
-// 6. does multi affect matchings? We don
-
 using namespace lemon;
 using namespace std;
 using namespace std::chrono;
 
+
+// The following are basically some typedefs to make code easier to read.
+
+// ListGraphs used throughout, seem to be the best choice among LEMON, but others might be better who knows
 using G = ListGraph;
+
+// Following shold be self-explanatory
 using NodeMapd = typename G::template NodeMap<double>;
 using Node = typename G::Node;
 using NodeIt = typename G::NodeIt;
@@ -57,49 +89,97 @@ using Edge = typename G::Edge;
 using EdgeIt = typename G::EdgeIt;
 using IncEdgeIt = typename G::IncEdgeIt;
 using OutArcIt = typename G::OutArcIt;
-using Paths = vector<array<Node, 2>>;
 using ArcLookup = ArcLookUp<G>;
+
+// Took lots of template magic to make this work... not C++' brightest moment
 template<class T> using EdgeMap = typename G::template EdgeMap<T>;
-using EdgeMapi = EdgeMap<int>; // LEMON uses ints internally. We might want to look into this
-using EdgeMapb = EdgeMap<bool>; // LEMON uses ints internally. We might want to look into this
 template<class T> using NodeMap = typename G::template NodeMap<T>;
+using EdgeMapi = EdgeMap<int>;
+using EdgeMapb = EdgeMap<bool>;
 using NodeMapi = NodeMap<int>;
-using NodeMapb= NodeMap<bool>;
+using NodeMapb = NodeMap<bool>;
+
+// For path decompositions. For each node, a list of (child, flowToChild) tuples.
 using NodeNeighborMap = NodeMap<vector<tuple<Node, int>>>;
+
+// Preflow is the fastest, EdmondsKarp is an alternative which provides more control, but we don't need that control
 using FlowAlgo = Preflow<G, EdgeMapi>;
+
+// A matching is a pairing-up of nodes.
 using Matching = vector<array<Node, 2>>;
+// p suffix implies unique pointer. This pattern is used throughout. LEMON graphs explicitly forbid copying, so this is
+// often the only way to move them around (with std::move). And it's useful not only for graphs.
 using Matchingp = unique_ptr<Matching>;
+
+// A Bisection represents a perfectly balanced cut. The context needs to keep track of "the whole set" of nodes,
+// of course.
 using Bisection = set<Node>;
 using Bisectionp = unique_ptr<Bisection>;
+
+// A cut is a subset of some larger set of nodes. This data structure does not track thar larger set.
 using Cut = set<Node>;
 using Cutp = unique_ptr<Cut>;
+
+// A different way to represent a cut.
 using CutMap = NodeMap<bool>;
 
+// This used to be a vector of vectors but when optimizing the path decomposition, of course we only need the endpoints
+// in the end. Yes, it's now equivalent to a matching. Could in principle be removed.
+using Paths = vector<array<Node, 2>>;
+
+
+// Microseconds per second
 const double MICROSECS = 1000000.0;
+
+// Just a reference to shorten code
 const auto& now = high_resolution_clock::now;
+
+
+// Used for printing timing information. Duration in seconds.
 double duration_sec(const high_resolution_clock::time_point& start, high_resolution_clock::time_point& stop) {
     return duration_cast<microseconds>(stop - start).count() / MICROSECS;
 }
 
+// Configuration and InputConfiguration just contain all the configuration options.
+// The option parsing code produces an instance of Configuration, which then impacts everything.
 struct InputConfiguration {
+    // Whether to load graph from file, in-program generation is also technically supported
     bool load_from_file = false;
     string file_name = "";
+    // Whether to silently ignore repeated edges in the input. This is necessary for correctly reading Walshaw's graphs.
     bool ignore_multi = false;
+    // For in-program generation, there's some other switches somewhere else as to type of graph to generate but use is
+    // generally discouraged.
     size_t n_nodes_to_generate;
 };
 
 struct Configuration {
+    // No special reason for splitting these up
     InputConfiguration input;
+
+    // Whether to also load the partition file of this graph (as provided by walshaw) and report stats on that later
     bool compare_partition = false;
     string partition_file = "";
+
+    // Thanks to seeding we can have randomness but still reproducible results. For production use (whatever that would
+    // be) you would turn it off.
     bool seed_randomness = false;
     int seed;
+
+    // End after this many rounds, set to 0 to never end because of rounds number.
     int max_rounds;
+
+    // Whether to output the found best cut and into which file
     bool output_cut;
     string output_file;
+
     bool show_help_and_exit = false;
+
+    // Whether to measure conductance on the cuts on the H graph and end when it goes OVER H_phi_target.
     bool use_H_phi_target = false;
     double H_phi_target = 0;
+
+    // Whether to measure conductance of the cuts on the G graph, and end when we find a cut BELOW this target
     bool use_G_phi_target = false;
     double G_phi_target = 0;
     // we only break if we find a good enough cut that is also this balanced (has this minside volume)
@@ -107,6 +187,7 @@ struct Configuration {
     double volume_treshold_factor = 0;
 };
 
+// Some attempt at nice controllable levels of logging. I'm not really that proud of it.
 struct Logger {
     bool silent = false;
     bool verbose = false;
@@ -120,71 +201,53 @@ struct Logger {
     };
 } l;
 
+
+// This idea of "contexts" is trying to strike a balance between avoiding globals, passing too many parameters between
+// several layers of functions, and only giving parts of the code as much data as they reasonably need to minimize area
+// for bugs. Ideally they should be way more polished and thought out.
+
+// In any case, this is the most basic, just wrapping a graph to cache the number of edges and keep the nodes in an
+// easily accessable and passable list.
 struct GraphContext {
     G g;
     vector<Node> nodes;
-    long num_edges;
-
-#if MULTIGRAPH
-    // Used to implement multigraph.
-    EdgeMap<size_t> multiplicity;
-    // Saving self loops like this
-    NodeMap<size_t> num_self_loops;
-
-    GraphContext() :
-        g(),
-        multiplicity(g, 1),
-        num_self_loops(g, 0)
-    {}
-#endif
+    long num_edges; // Yes long is probably overkill.
 };
 
-// I'd say implementing our own adaptor is more effort, we can just do the snapshot thing
-// Actually lets just subdivide manually at the start and we dont even need to restore.
+
+// An integral part of the algorithm is generating a subdivision graph. The subivision graph is implemented as a full
+// copy, and crossreference maps are maintained to know which nodes in each copy correspond to which in the other.
+// Not the best in terms of memory footprint, could be implemented with some smarter structures instead and probably
+// LEMON adapters. But, footprint is not our primary optimisation concern now.
 struct SubdividedGraphContext {
     SubdividedGraphContext (GraphContext& gc) :
-    origContext(gc),
-    nf(sub_g),
-    ef(sub_g),
-    n_ref(gc.g, INVALID), // to_copied
-    n_cross_ref(sub_g, INVALID), // from copued
-#if MULTIGRAPH
-    e_ref(gc.g, INVALID), // to_copied
-    e_cross_ref(sub_g, INVALID), // from copued
-#endif
-    origs(sub_g, false),
-    only_splits(sub_g, nf, ef)
-#if MULTIGRAPH
-            , multiplicity(sub_g, 1),
-            num_self_loops(sub_g, 0)
-#endif
+     origContext(gc),
+     nf(sub_g),
+     ef(sub_g),
+     n_ref(gc.g, INVALID), // to_copied
+     n_cross_ref(sub_g, INVALID), // from copied
+     origs(sub_g, false),
+     only_splits(sub_g, nf, ef)
     {} ;
 
-    GraphContext& origContext;
-    G sub_g;
-    NodeMapb nf;
-    EdgeMapb ef;
-#if MULTIGRAPH
-    EdgeMap<Edge> e_cross_ref;
-    EdgeMap<Edge> e_ref;
-#endif
-    NodeMap<Node> n_cross_ref;
-    NodeMap<Node> n_ref;
-    NodeMap<bool> origs;
-    SubGraph<G> only_splits;
-    vector<Node> split_vertices;
-
-#if MULTIGRAPH
-    // Used to implement multigraph.
-    EdgeMap<size_t> multiplicity;
-    // Saving self loops like this
-    NodeMap<size_t> num_self_loops;
-#endif
+    GraphContext& origContext; // The original context, and in it, the original graph.
+    G sub_g; // The copy that is the subdivision graph
+    NodeMapb nf; // Node filter and
+    EdgeMapb ef; // Edge filter directly for use in the only_splits subgraph (LEMON requires such structures to say how
+                 // the subgraph shall look.
+    NodeMap<Node> n_cross_ref; // Map over the split graph to the corr. vertices in original graph, or INVALID for split
+                               // vertices.
+    NodeMap<Node> n_ref; // Map over the original graph to the corr. vertices in the split graph
+    NodeMap<bool> origs; // Whether a node was one of the original ones, or is a split node.
+                         // Inverse of nf.
+    SubGraph<G> only_splits; // Adapter with only the split nodes. Can be passed to the cut player.
+    vector<Node> split_vertices; // List of the split vertices
 };
 
-// TODO What chnages will be necessary?
+// Generated after every round, so we keep a growing list and then we can iterate over them and compare at the end.
+// Mostly, the cuts are important.
 struct RoundReport {
-    size_t index;
+    size_t index; // Zero-indexed.
     size_t capacity_required_for_full_flow;
     double multi_h_conductance;
     double g_conductance;
@@ -207,17 +270,10 @@ private:
     size_t min_side = 0;
     size_t cut_volume = 0;
     size_t max_side = 0;
-#if !REAL_MULTI
-    size_t num_edges = 0;
-    long degreesum() { return num_edges*2;}
-    long noncut_volume () { return degreesum() - cut_volume;}
-#else
     size_t cut_size = 0;
     size_t othersize = 0;
     size_t non_cut_volume = 0;
     long noncut_volume () { return non_cut_volume; }
-#endif
-
 public:
     CutStats(const G &g, size_t num_vertices, const Cut &cut) {
         initialize(g, num_vertices, cut);
@@ -225,20 +281,13 @@ public:
 
     void initialize(const G &g, size_t num_vertices, const Cut &cut) {
         for (EdgeIt e(g); e != INVALID; ++e) {
-#if !REAL_MULTI
-            ++num_edges;
-#endif
             if (is_crossing(g, cut, e)) crossing_edges += 1;
             if (cut.count(g.u(e))) cut_volume += 1;
-#if REAL_MULTI
             else non_cut_volume += 1;
-#endif
             // If it's a self loop, if only contributes once, but if not, it contributes twice
             if (g.u(e) == g.v(e)) continue;
             if (cut.count(g.v(e))) cut_volume += 1;
-#if REAL_MULTI
             else non_cut_volume += 1;
-#endif
         }
 
         assert(cut.size() <= num_vertices);
@@ -246,11 +295,8 @@ public:
         min_side = min(cut.size(), other_size);
         max_side = max(cut.size(), other_size);
         is_min_side = cut.size() == min_side;
-
-#if REAL_MULTI
         cut_size = cut.size();
         othersize = other_size;
-#endif
     }
 
     static bool is_crossing(const G &g, const Bisection &c, const Edge &e) {
@@ -289,40 +335,23 @@ public:
         return min_side == 0 ? 0 : crossing_edges * 1. / min_side;
     }
 
-#if REAL_MULTI
     long min_volume() {
         return min(cut_volume, non_cut_volume);
     }
-#endif
 
 double conductance() {
-#if REAL_MULTI
         return min_side == 0 ? 999 : crossing_edges * 1. / min_volume();
-#else
-        // TODO But this is probably wrong in all cases...
-        return min_side == 0 ? 999 : crossing_edges * 1. / minside_volume();
-#endif
-    }
+}
 
 
 
     void print(string prefix="") {
         l.progress() << prefix << "Edge crossings (E) : " << crossing_edges << endl;
-#if REAL_MULTI
         l.progress() << prefix << "cut size: ( " << cut_size << " | " << othersize << " )" << endl
              << "diff: " << diff() << " (factor " << imbalance() << " of total n vertices)" << endl;
         l.progress() << prefix << "cut volumes: ( " << cut_volume << " | " << non_cut_volume << " )" << endl;
-#else
-        l.progress() << prefix << "cut size: (" << min_side << " | " << max_side << ")" << endl
-             << "diff: " << diff() << " (factor " << imbalance() << " of total n vertices)" << endl;
-        l.progress() << prefix << "Min side: " << min_side << endl;
-#endif
         l.progress() << prefix << "expansion: " << expansion() << endl;
         l.progress() << prefix << "conductance: " << conductance() << endl;
-#if !REAL_MULTI
-        l.progress() << prefix << prefix << "cut volume: " << cut_volume << endl;
-        l.progress() << prefix << "noncut volume: " << noncut_volume() << endl;
-#endif
     }
 };
 // Reads the file filename,
@@ -335,10 +364,6 @@ static void parse_chaco_format
         , ListGraph &g
         , vector<Node> &nodes
         , bool take_multi_edges
-#if MULTIGRAPH
-        , EdgeMap<size_t>& multiplicity
-        , NodeMap<size_t>& num_self_loops
-#endif
 ) {
     assert(nodes.empty());
     l.progress() << "Reading graph from " << filename << endl;
@@ -363,9 +388,6 @@ static void parse_chaco_format
     for (size_t i = 0; i < n_verts; i++) {
         Node n = g.addNode();
         nodes.push_back(n);
-#if MULTIGRAPH
-        num_self_loops[n] = 0;
-#endif
     }
 
     for (size_t i = 0; i < n_verts; i++) {
@@ -381,38 +403,9 @@ static void parse_chaco_format
 
             Node v = nodes[v_name - 1];
 
-#if REAL_MULTI
-
             if (take_multi_edges || findEdge(g, u, v)== INVALID) {
                 g.addEdge(u, v);
             }
-#else // REAL_MULTI
-
-            // TODO So here we would just remove the thing, and see at the end that the numbers match
-            // TODO Actually no. We would maintain a map that counts the multiplicity
-
-#if MULTIGRAPH
-            // Self loop case, just count up the self loop map
-            if (v == u) {
-                num_self_loops[u] = num_self_loops[u]+1;
-                continue;
-            }
-#endif
-
-            Edge found_edge = findEdge(g, u, v);
-
-            if (found_edge == INVALID) {
-                l.debug()  << "adding" << endl;
-                found_edge = g.addEdge(u, v);
-#if MULTIGRAPH
-                multiplicity[found_edge] = 0;
-#endif
-            }
-
-#if MULTIGRAPH
-            multiplicity[found_edge] = multiplicity[found_edge]+1;
-#endif
-#endif // REAL_MULTI
 
         }
 
@@ -421,22 +414,6 @@ static void parse_chaco_format
     cout << countNodes(g) << endl;
     assert(countEdges(g) == n_edges);
     assert(countNodes(g) == n_verts);
-
-#if MULTIGRAPH
-    // Count for assert
-    int counted_edges = 0;
-    int counted_verts = 0;
-    for(EdgeIt e(g); e != INVALID; ++e) {
-        assert(multiplicity[e] > 0);
-        counted_edges += multiplicity[e];
-    }
-    for(NodeIt n(g); n != INVALID; ++n) {
-        counted_verts++;
-        counted_edges += num_self_loops[n];
-    }
-    assert(n_edges == counted_edges);
-    assert(n_verts == counted_verts);
-#endif
 }
 
 void generate_large_graph(G &g, vector<Node> &nodes, size_t n_nodes) {
@@ -507,12 +484,7 @@ void read_partition_file(const string &filename, const vector<Node> &nodes, Cut 
 
 void initGraph(GraphContext &gc, InputConfiguration config) {
     if (config.load_from_file) {
-#if MULTIGRAPH
-        parse_chaco_format(config.file_name, gc.g, gc.nodes, gc.multiplicity, gc.num_self_loops);
-#else
         parse_chaco_format(config.file_name, gc.g, gc.nodes, !config.ignore_multi);
-#endif
-
     } else {
         l.debug() << "Generating graph with " << config.n_nodes_to_generate << " nodes." << endl;
         generate_large_graph(gc.g, gc.nodes, config.n_nodes_to_generate);
@@ -566,17 +538,10 @@ void createSubdividedGraph(SubdividedGraphContext& sgc) {
     graphCopy(sgc.origContext.g, sgc.sub_g)
       .nodeRef(sgc.n_ref)
       .nodeCrossRef(sgc.n_cross_ref)
-#if MULTIGRAPH
-      .edgeRef(sgc.e_ref)
-      .edgeCrossRef(sgc.e_cross_ref)
-#endif
       .run();
     G& g = sgc.sub_g;
     for (NodeIt n(g); n != INVALID; ++n) {
         sgc.origs[n] = true;
-#if MULTIGRAPH
-        sgc.num_self_loops[n] = sgc.origContext.num_self_loops[sgc.n_cross_ref[n]];
-#endif
     }
 
     // Too bad we do a copy cuz then we kinda need to copy the map too?
@@ -597,31 +562,15 @@ void createSubdividedGraph(SubdividedGraphContext& sgc) {
     for(auto& e : edges) {
         Node u = g.u(e);
         Node v = g.v(e);
-#if MULTIGRAPH
-        size_t edge_multiplicity = sgc.origContext.multiplicity[sgc.e_cross_ref[e]];
-#endif
         g.erase(e);
 
         Node s = g.addNode();
-#if MULTIGRAPH
-        sgc.num_self_loops[s] = 0;
-#endif
         sgc.origs[s] = false;
         sgc.only_splits.enable(s);
-
-#if MULTIGRAPH
-        assert(u != v);
-        Edge e1 = g.addEdge(u, s);
-        sgc.multiplicity[e1] = edge_multiplicity;
-        Edge e2 = g.addEdge(s, v);
-        sgc.multiplicity[e2] = edge_multiplicity;
-        // Trying not to have this become a multigraph
-#else
         // This behavior is correct with real_multi assuming (1)
         g.addEdge(u, s);
         // Trying not to have this become a multigraph
         if(u != v) g.addEdge(s, v);
-#endif
         sgc.split_vertices.push_back(s);
     }
 }

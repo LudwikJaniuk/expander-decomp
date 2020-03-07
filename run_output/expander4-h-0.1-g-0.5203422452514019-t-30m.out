@@ -6,8 +6,8 @@ H expansion: 0, num cross: 0
 H conductance: -nan, num cross: 0
 H_single expansion: 0, num cross: 0
 H_single conductance: -nan, num cross: 0
-Cap 1 ... flow: 8 (1.4e-05 s)
-Flow search took (seconds) 3e-05
+Cap 1 ... flow: 8 (1.8e-05 s)
+Flow search took (seconds) 3.7e-05
 SUBG cut conductance: 999
 SUBG cut minside volume 0
 SUBG cut maxside volume 24
@@ -16,8 +16,8 @@ H expansion: 0, num cross: 0
 H conductance: 0, num cross: 0
 H_single expansion: 0, num cross: 0
 H_single conductance: 0, num cross: 0
-Cap 1 ... flow: 8 (1.5e-05 s)
-Flow search took (seconds) 3e-05
+Cap 1 ... flow: 8 (1.9e-05 s)
+Flow search took (seconds) 3.6e-05
 SUBG cut conductance: 999
 SUBG cut minside volume 0
 SUBG cut maxside volume 24
@@ -26,9 +26,9 @@ H expansion: 0.5, num cross: 4
 H conductance: 0.25, num cross: 4
 H_single expansion: 0.5, num cross: 4
 H_single conductance: 0.25, num cross: 4
-Cap 1 ... flow: 4 (1e-05 s)
-Cap 2 ... flow: 8 (1.3e-05 s)
-Flow search took (seconds) 5.2e-05
+Cap 1 ... flow: 4 (1.5e-05 s)
+Cap 2 ... flow: 8 (1.8e-05 s)
+Flow search took (seconds) 6.9e-05
 SUBG cut conductance: 0.333333
 SUBG cut minside volume 12
 SUBG cut maxside volume 12

@@ -6,10 +6,10 @@ H expansion: 0, num cross: 0
 H conductance: -nan, num cross: 0
 H_single expansion: 0, num cross: 0
 H_single conductance: -nan, num cross: 0
-Cap 1 ... flow: 5 (2e-05 s)
-Cap 2 ... flow: 7 (2.7e-05 s)
-Cap 4 ... flow: 8 (1e-05 s)
-Flow search took (seconds) 0.000109
+Cap 1 ... flow: 5 (2.4e-05 s)
+Cap 2 ... flow: 7 (3e-05 s)
+Cap 4 ... flow: 8 (1.2e-05 s)
+Flow search took (seconds) 0.000123
 SUBG cut conductance: 0.2
 SUBG cut minside volume 10
 SUBG cut maxside volume 14

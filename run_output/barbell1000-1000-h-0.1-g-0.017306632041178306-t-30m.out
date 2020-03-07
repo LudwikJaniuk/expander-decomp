@@ -10,4 +10,24 @@ Cap 1 ... flow: 499256 (23.0927 s)
 Cap 2 ... flow: 499257 (26.4665 s)
 Cap 4 ... flow: 499259 (29.7253 s)
 Cap 8 ... flow: 499263 (23.789 s)
-Cap 16 ... 
+Cap 16 ... flow: 499271 (34.8964 s)
+Cap 32 ... flow: 499287 (45.7443 s)
+Cap 64 ... flow: 499319 (46.974 s)
+Cap 128 ... flow: 499383 (46.2395 s)
+Cap 256 ... flow: 499501 (25.5228 s)
+Flow search took (seconds) 303.385
+SUBG cut conductance: 1.001e-06
+SUBG cut minside volume 999001
+SUBG cut maxside volume 999003
+== End round 0 ==
+CASE2 G Expansion target reached with a cut that is relatively balanced. Cut-matching game has found a balanced cut as good as you wanted it.
+Claimed g conductance: 1.001e-06
+R0 cond 1.001e-06
+The best with best expansion was found on round0
+final_Edge crossings (E) : 1
+final_cut size: ( 1000 | 1001 )
+diff: 1 (factor 0.00049975 of total n vertices)
+final_cut volumes: ( 999001 | 999003 )
+final_expansion: 0.001
+final_conductance: 1.001e-06
+CASE2 Goodenough balanced cut

@@ -13,4 +13,41 @@ Cap 8 ... flow: 499263 (37.2919 s)
 Cap 16 ... flow: 499271 (33.5553 s)
 Cap 32 ... flow: 499287 (31.6222 s)
 Cap 64 ... flow: 499319 (33.7909 s)
-Cap 128 ... 
+Cap 128 ... flow: 499383 (39.5906 s)
+Cap 256 ... flow: 499501 (27.7961 s)
+Flow search took (seconds) 271.744
+SUBG cut conductance: 1.001e-06
+SUBG cut minside volume 999001
+SUBG cut maxside volume 999003
+== End round 0 ==
+H expansion: 0.250176, num cross: 124963
+H conductance: 0.250176, num cross: 124963
+H_single expansion: 0.250176, num cross: 124963
+H_single conductance: 0.250176, num cross: 124963
+Cap 1 ... flow: 498612 (18.8687 s)
+Cap 2 ... flow: 498613 (34.0866 s)
+Cap 4 ... flow: 498615 (29.1626 s)
+Cap 8 ... flow: 498619 (31.0404 s)
+Cap 16 ... flow: 498627 (36.4131 s)
+Cap 32 ... flow: 498643 (37.5577 s)
+Cap 64 ... flow: 498675 (36.9974 s)
+Cap 128 ... flow: 498739 (44.6382 s)
+Cap 256 ... flow: 498867 (28.7605 s)
+Cap 512 ... flow: 499123 (26.4388 s)
+Cap 1024 ... flow: 499501 (35.146 s)
+Flow search took (seconds) 360.336
+SUBG cut conductance: 1.001e-06
+SUBG cut minside volume 999001
+SUBG cut maxside volume 999003
+== End round 1 ==
+H Conductance target reached, this will be case 1 or 3. According to theory, this means we probably won't find a better cut. That is, assuming you set H_phi right. If was used together with G_phi target, this also certifies the input graph is a G_phi expander unless there was a very unbaanced cut somewhere, which we will proceed to look for.
+R0 cond 1.001e-06
+R1 cond 1.001e-06
+The best with best expansion was found on round0
+final_Edge crossings (E) : 1
+final_cut size: ( 1000 | 1001 )
+diff: 1 (factor 0.00049975 of total n vertices)
+final_cut volumes: ( 999001 | 999003 )
+final_expansion: 0.001
+final_conductance: 1.001e-06
+CASE1 NO Goodenough cut, G certified expander.

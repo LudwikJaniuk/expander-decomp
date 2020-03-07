@@ -6,8 +6,8 @@ H expansion: 0, num cross: 0
 H conductance: -nan, num cross: 0
 H_single expansion: 0, num cross: 0
 H_single conductance: -nan, num cross: 0
-Cap 1 ... flow: 2475 (0.00467 s)
-Flow search took (seconds) 0.005085
+Cap 1 ... flow: 2475 (0.005071 s)
+Flow search took (seconds) 0.005537
 SUBG cut conductance: 999
 SUBG cut minside volume 0
 SUBG cut maxside volume 9900
@@ -16,8 +16,8 @@ H expansion: 0.267071, num cross: 661
 H conductance: 0.267071, num cross: 661
 H_single expansion: 0.267071, num cross: 661
 H_single conductance: 0.267071, num cross: 661
-Cap 1 ... flow: 2475 (0.004449 s)
-Flow search took (seconds) 0.004878
+Cap 1 ... flow: 2475 (0.004823 s)
+Flow search took (seconds) 0.005311
 SUBG cut conductance: 999
 SUBG cut minside volume 0
 SUBG cut maxside volume 9900
