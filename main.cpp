@@ -1,49 +1,6 @@
 // Authored by Ludvig Janiuk 2019/2020 as part of individual project at KTH.
 
-// CUT MATCHING GAME IMPLEMENTATION
-// Based off of
-// "Graph partitioning using single commodity flows"
-// by Khandekar, Vazirani, Rao
-// https://dl.acm.org/doi/10.1145/1538902.1538903
-// and
-// "Expander Decomposition and Pruning: Faster, Stronger, and Simpler"
-// by Saranurak and Wang.
-// https://arxiv.org/abs/1812.08958
-
-// The Cut-Matching game approximates sparsest cuts in graphs or certifies them as expanders.
-// The two players take turns playing in rounds.
-// THe Cut player produces bisections 
-// High-level Pseudocode:
-//   Input: Graph G = (V, E), g_phi, h_phi
-//   Matchings := []
-//   Cuts := []
-//   G’ = (Xe Union V, E’) := SubdivisionGraph(G)
-//   While not ShouldStop():
-//    Bisection := CutPlayer(Xe, Matchings)
-//    (Matching, CutG’) := MatchingPlayer(G’, Bisection)
-//    Cut := CutInG(CutG’)
-//    Push(Matchings, Matching); Push(Cuts, Cut)
-//   Return C in Cuts with minimal Conductance(C)
-//
-//   CutPlayer(V, Matchings):
-//    Assign each vertex a random charge from {-1, 1}
-//    For M in Matchings:
-//     For (u, v) in M:
-//      charge(u), charge(v) := avg(charge(u), charge(v))
-//    Sort V by charge
-//    Return (First half, second half) of V
-//
-//   MatchingPlayer(Graph, (S, S’)):
-//    Create new vertices s, t; connect s with all of S, and all of S’ with t
-//    LastCut := null
-//    For C in [1, 2, 4, 8, …]:
-//     Set all edge capacities to C
-//     Flow := (Try to route n/2 flow from s to t with a MaxFlow algorithm)
-//     If successful:
-//      Matching :=DecomposePaths(Flow)
-//      return (Matching, LastCut)
-//     Else:
-//      LastCut = MinCut(Flow)
+// See algorithm implementation notes by the CutMatching struct
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "cert-msc32-c"
@@ -248,33 +205,47 @@ struct SubdividedGraphContext {
 // Mostly, the cuts are important.
 struct RoundReport {
     size_t index; // Zero-indexed.
-    size_t capacity_required_for_full_flow;
+
+    size_t capacity_required_for_full_flow; // What's the highest capacity the flow search algorithm had to set.
+    // Was used in some earlier versions as a stopping condition.
+
     double multi_h_conductance;
     double g_conductance;
-    long volume;
-    bool relatively_balanced;
+    long volume; // Always volume of the smaller side
+    bool relatively_balanced; // You'll have to look at where it's assigned for exact definition. Used as an additional
+    // stopping condition to set a minimum required balancedness.
     Cutp cut;
 };
 
+// Many measurements on cuts can be derived from others, so the way you go is you crete a "cutStats" on your cut which
+// computers several shared values, and can then be queried for e.g. conductance, minside volume, etc.
 template <class G>
 struct CutStats {
+    // Ahh, dear C++
     using Node = typename G::Node;
     using Edge = typename G::Edge;
     using Cut = set<Node>;
     using EdgeIt = typename G::EdgeIt;
     using Bisection = set<Node>;
+
     size_t crossing_edges = 0;
 
 private:
-    bool is_min_side;
+    // When CutStats is created, it gets a cut but it doesnt know whether it is the larger or smaller side, so it
+    // finds out and then adapts the queries accordingly
+    bool is_min_side; // Whether the side represented by the cut is the minimum side
+
     size_t min_side = 0;
     size_t cut_volume = 0;
     size_t max_side = 0;
     size_t cut_size = 0;
     size_t othersize = 0;
     size_t non_cut_volume = 0;
+
+    // Could probably be refactored around
     long noncut_volume () { return non_cut_volume; }
 public:
+    // The passing of number of vertices actually kinda sucks and I would refactor it away if I had time
     CutStats(const G &g, size_t num_vertices, const Cut &cut) {
         initialize(g, num_vertices, cut);
     }
@@ -284,7 +255,7 @@ public:
             if (is_crossing(g, cut, e)) crossing_edges += 1;
             if (cut.count(g.u(e))) cut_volume += 1;
             else non_cut_volume += 1;
-            // If it's a self loop, if only contributes once, but if not, it contributes twice
+            // If it's a self loop, it only contributes once, but if not, it contributes twice
             if (g.u(e) == g.v(e)) continue;
             if (cut.count(g.v(e))) cut_volume += 1;
             else non_cut_volume += 1;
@@ -305,6 +276,7 @@ public:
         return u_in != v_in;
     }
 
+    // Whether any of the endpoints of the edge are in this side of the cut
     static bool any_in_cut(const G &g, const Bisection &c, const Edge &e) {
         bool u_in = c.count(g.u(e));
         bool v_in = c.count(g.v(e));
@@ -339,12 +311,12 @@ public:
         return min(cut_volume, non_cut_volume);
     }
 
-double conductance() {
+    double conductance() {
         return min_side == 0 ? 999 : crossing_edges * 1. / min_volume();
-}
+    }
 
-
-
+    // These printouts are actually what's used in the run.py analysis code. It's highly dependent on the exact form
+    // here.
     void print(string prefix="") {
         l.progress() << prefix << "Edge crossings (E) : " << crossing_edges << endl;
         l.progress() << prefix << "cut size: ( " << cut_size << " | " << othersize << " )" << endl
@@ -356,8 +328,8 @@ double conductance() {
 };
 // Reads the file filename,
 // creates that graph in graph g which is assumed to be empty
-// In the process fills nodes with each node created at the index of (its id in the file minus one)
-// And sets each node's original_ids id to be (its id in the file minus one).
+// In the process fills "nodes" with each node created at the index of "its id in the file minus one"
+// And sets each node's original_ids id to be "its id in the file minus one".
 // Of course original_ids must be initialized onto the graph g already earlier.
 static void parse_chaco_format
         ( const string &filename
@@ -382,21 +354,23 @@ static void parse_chaco_format
     int n_verts, n_edges;
     ss >> n_verts >> n_edges;
     l.progress() << "Reading a graph with V " << n_verts << "E " << n_edges << endl;
-    //g.reserveNode(n_verts);
-    //g.reserveEdge(n_edges);
 
+    // We know how many nodes to create. Create them at once, so we can add edges to "future" nodes.
     for (size_t i = 0; i < n_verts; i++) {
         Node n = g.addNode();
         nodes.push_back(n);
     }
 
+    // Now read all the lines and add edges
     for (size_t i = 0; i < n_verts; i++) {
         getline(file, line);
-        istringstream iss(line);
+        istringstream iss(line); // This is one way to word-split in C++.
         vector<string> tokens{istream_iterator<string>{iss},
                               istream_iterator<string>{}};
-        Node u = nodes[i];
+        Node u = nodes[i]; // Current node we're working with
+        // This will be very easy. All ID's on the line are edges
         for(string& str : tokens) {
+            // This code could use some more assertions...
             size_t v_name = stoi(str);
             l.debug() << "edge from " << i << " to: " << v_name << "..." ;
             assert(v_name != 0);
@@ -406,16 +380,17 @@ static void parse_chaco_format
             if (take_multi_edges || findEdge(g, u, v)== INVALID) {
                 g.addEdge(u, v);
             }
-
         }
-
     }
+
     cout << countEdges(g) << endl;
     cout << countNodes(g) << endl;
     assert(countEdges(g) == n_edges);
     assert(countNodes(g) == n_verts);
 }
 
+// This code facilitates in-program generation of graphs. Honestly, uh, don't use this, just generate your graphs
+// externally with some python scripts and actually save them to a file. It will be way more dependable.
 void generate_large_graph(G &g, vector<Node> &nodes, size_t n_nodes) {
     assert(n_nodes > 0);
     nodes.reserve(n_nodes);
@@ -447,6 +422,7 @@ void generate_large_graph(G &g, vector<Node> &nodes, size_t n_nodes) {
     }
 }
 
+// Writes out a cut to a file. One line for each node, with "1" if it's on one side, "0" if the other.
 void write_cut(const vector<Node> &nodes, const Cut &cut, string file_name) {
     ofstream file;
     file.open(file_name);
@@ -466,6 +442,7 @@ void write_cut(const vector<Node> &nodes, const Cut &cut, string file_name) {
     file.close();
 }
 
+// Format assumed to be same as write_cut above
 void read_partition_file(const string &filename, const vector<Node> &nodes, Cut &partition) {
     ifstream file;
     file.open(filename);
@@ -482,6 +459,7 @@ void read_partition_file(const string &filename, const vector<Node> &nodes, Cut 
     l.debug() << "Reference patition size: " << partition.size() << endl;
 }
 
+// Brancher to make sure we have a graph to work from, wherever we're supposed to get it.
 void initGraph(GraphContext &gc, InputConfiguration config) {
     if (config.load_from_file) {
         parse_chaco_format(config.file_name, gc.g, gc.nodes, !config.ignore_multi);
@@ -490,11 +468,14 @@ void initGraph(GraphContext &gc, InputConfiguration config) {
         generate_large_graph(gc.g, gc.nodes, config.n_nodes_to_generate);
     }
 
+    // I would refactor num_edges away if I had time. Now, it is being used however, so can't just delete.
     gc.num_edges = countEdges(gc.g);
     l.debug() << "gc.num_edges: " << gc.num_edges << endl;
 }
 
-// For some reason lemon returns arbitrary values for flow, the difference is correct tho
+// For some reason lemon returns arbitrary values for flow. You only get the correct value by taking the difference.
+// The arc lookup is necessary for performance. Don't let LEMON look for arcs with its own lookup methods, it's way
+// too slow.
 inline
 int flow(
         const ArcLookUp<G> &alp,
@@ -518,6 +499,8 @@ void print_cut(const Bisection &out_cut, decltype(cout)& stream) {
     stream << endl;
 }
 
+// Note that this prints graph ID's. That's not the same as their positions in "nodes", so can you trust this output?
+// Just be careful not to make assumptions.
 void print_graph(G& g, decltype(cout)& stream) {
     stream << "Printing a graph" << endl;
     stream << "Vertices: " << countNodes(g) << ", Edges: " << countEdges(g) << endl;
@@ -532,8 +515,7 @@ void print_graph(G& g, decltype(cout)& stream) {
     stream << endl;
 }
 
-
-// Actually copies the graph.
+// This actually copies the graph.
 void createSubdividedGraph(SubdividedGraphContext& sgc) {
     graphCopy(sgc.origContext.g, sgc.sub_g)
       .nodeRef(sgc.n_ref)
@@ -543,22 +525,24 @@ void createSubdividedGraph(SubdividedGraphContext& sgc) {
     for (NodeIt n(g); n != INVALID; ++n) {
         sgc.origs[n] = true;
     }
+    // at this point it's just the pure copy, that's why we set them all to be "originals"
 
-    // Too bad we do a copy cuz then we kinda need to copy the map too?
-    // TODO either copy the edge map, or need to add an edge crossref. Does that exist?
-    // Yes it does! http://lemon.cs.elte.hu/pub/doc/latest/a00177.html#a49664d231463c080f54ebd3299cd1121
-    // Except we're deleting the edges. So maybe lets copy the map instead, cleaner code and faster.
-    // THe right engineering decision.
-
+    // We'll need to iterate over these edges but we'll be deleting and poking in the graph.
     vector<Edge> edges;
     for (EdgeIt e(g); e != INVALID; ++e) {
         edges.push_back(e);
     }
 
+    // Also, only the new verts added later should be in the only-splits adapter.
     for (NodeIt n(g); n != INVALID; ++n) {
         sgc.only_splits.disable(n);
     }
 
+    // Do the subdivisioning! Replace every edge (u, v) with instead two new vertices (u, s) and (s, v) where s is a new
+    // vertex, called a subdivision vertex.
+    // This also applies if the edge is a multi-edge, each one is treated individually, and gets its own s created.
+    // However, if the edge is a self-loop, we just replace it (u, u) with one new edge and vertex (s, u).
+    // This is in accordance with Saranurak's notion of self-loops only contributing one volume.
     for(auto& e : edges) {
         Node u = g.u(e);
         Node v = g.v(e);
@@ -567,22 +551,74 @@ void createSubdividedGraph(SubdividedGraphContext& sgc) {
         Node s = g.addNode();
         sgc.origs[s] = false;
         sgc.only_splits.enable(s);
-        // This behavior is correct with real_multi assuming (1)
         g.addEdge(u, s);
-        // Trying not to have this become a multigraph
+
+        // one-volume for selfloops notion.
+        // Also, there is actually another reason why it's implemented this way. And that is: if you want to let the
+        // subdivision graph be an actual multigraph, then the path decomposition code falls apart potentially or at
+        // least needs serious review.
         if(u != v) g.addEdge(s, v);
         sgc.split_vertices.push_back(s);
     }
+
+    // BIG OPTIMISATION OPPORTUNITY: Just create one new edge for each multi, and implement code to handle scaling the
+    // capacities.
 }
+
+// Finally, the actual algorithm! All above are supporting structures.
+
+// CUT MATCHING GAME IMPLEMENTATION
+// Based off of
+// "Graph partitioning using single commodity flows"
+// by Khandekar, Vazirani, Rao
+// https://dl.acm.org/doi/10.1145/1538902.1538903
+// and
+// "Expander Decomposition and Pruning: Faster, Stronger, and Simpler"
+// by Saranurak and Wang.
+// https://arxiv.org/abs/1812.08958
+
+// The Cut-Matching game approximates sparsest cuts in graphs or certifies them as expanders.
+// The two players take turns playing in rounds.
+// THe Cut player produces bisections
+// High-level Pseudocode:
+//   Input: Graph G = (V, E), g_phi, h_phi
+//   Matchings := []
+//   Cuts := []
+//   G’ = (Xe Union V, E’) := SubdivisionGraph(G)
+//   While not ShouldStop():
+//    Bisection := CutPlayer(Xe, Matchings)
+//    (Matching, CutG’) := MatchingPlayer(G’, Bisection)
+//    Cut := CutInG(CutG’)
+//    Push(Matchings, Matching); Push(Cuts, Cut)
+//   Return C in Cuts with minimal Conductance(C)
+//
+//   CutPlayer(V, Matchings):
+//    Assign each vertex a random charge from {-1, 1}
+//    For M in Matchings:
+//     For (u, v) in M:
+//      charge(u), charge(v) := avg(charge(u), charge(v))
+//    Sort V by charge
+//    Return (First half, second half) of V
+//
+//   MatchingPlayer(Graph, (S, S’)):
+//    Create new vertices s, t; connect s with all of S, and all of S’ with t
+//    LastCut := null
+//    For C in [1, 2, 4, 8, …]:
+//     Set all edge capacities to C
+//     Flow := (Try to route n/2 flow from s to t with a MaxFlow algorithm)
+//     If successful:
+//      Matching :=DecomposePaths(Flow)
+//      return (Matching, LastCut)
+//     Else:
+//      LastCut = MinCut(Flow)
 
 struct CutMatching {
     const Configuration &config;
     GraphContext &gc;
     SubdividedGraphContext sgc;
     default_random_engine &random_engine;
-    //vector<unique_ptr<RoundReport>> past_rounds;
-    vector<unique_ptr<RoundReport>> sub_past_rounds;
-    vector<Matchingp> matchings;
+    // Sub prefix just comes from the subdivision refactoring, could be removed
+    vector<unique_ptr<RoundReport>> sub_past_rounds; // We just want the reports on the heap, not the stack
     vector<Matchingp> sub_matchings;
     bool reached_H_target = false;
     // Input graph
@@ -605,15 +641,17 @@ struct CutMatching {
     };
 
     // During the matching step a lot of local setup is actually made, so it makes sense to group it
-    // inside a "matching context" that exists for the duration of the mathing step
+    // inside a "matching context" that exists for the duration of the matching step
     struct MatchingContext {
-        // This NEEDS to be the whole graph
+        // This NEEDS to be the whole graph - not some adapter (but why?)
         G& g;
         Node s;
         Node t;
         EdgeMapi capacity;
         CutMap cut_map;
-        Snapshot snap; //RAII
+        Snapshot snap; //RAII - in Destuctor it reverts the state of the graph, at least as far as new
+        // vertices and edges are concerned (seems this is a bit limited if you want more - consult LEMON). So this
+        // gives us free cleanup after the matching step.
 
         explicit MatchingContext(G& g_)
         :
@@ -634,7 +672,7 @@ struct CutMatching {
                    || g.v(e) == t;
         }
 
-        // Fills given cut pointer with a copy of the cut map
+        // Extracts a copy of the cut, for conveniently putting in the roundReports I think
         Cutp extract_cut() {
             Cutp cut(new Cut);
             for (NodeIt n(g); n != INVALID; ++n) {
@@ -656,6 +694,12 @@ struct CutMatching {
         size_t capacity; // First capacity (minumum) that worked to get full flow thru
     };
 
+    // This fast decomposition scheme was the last step of optimmizations until flow became the only bottleneck.
+    // We mostly achieve speed by precomputing lookups of arcs and flow children. Directly querying LEMON most often
+    // involves some stupid linear algorithm.
+    // In any case, this function starts from u_orig, extracts one path to t through which there is still flow,
+    // using flow_children, and returns the path (actually just start and end) as out_path. It also decreases the flows
+    // and deletes from flow_children appropriately.
     inline void extract_path_fast(
             const G &g,
             const unique_ptr<Preflow<G, EdgeMapi>> &f,
@@ -666,8 +710,7 @@ struct CutMatching {
     ) {
         out_path[0] = u_orig;
         Node u = u_orig;
-        while (true) {
-
+        while (true) { // This code is optimized and easy to get wrong. Just a watning.
             auto& vv = flow_children[u];
             assert(vv.size() > 0);
             auto &tup = vv.back();
@@ -688,11 +731,16 @@ struct CutMatching {
         }
     }
 
-    // TODO This will be different with multi
-    // OTOH if we're going maps, then it won't.
+    // Decompose the flow from a maxflow algorithm into a set of start/end pairs for the paths.
+    // This makes sense in this context, since of course the flow goes into each node on one side of the bisection with
+    // capacity one, so the only logical decomposition is that each node has a path to some other one and we get a
+    // matching. This matching is in no way unique probably.
+    // Currently this is a greedy one-path-after-another algorithm, one could surely optimize it even more to e.g. take
+    // advantage of large-flow-value edges but this is not a bottleneck right now so it's not necessary.
+    // This algo starts with precomputing the flow children for speed, and the arc lookups as well.
     void decompose_paths_fast(const MatchingContext &mg, const unique_ptr<FlowAlgo> &f, Paths &out_paths) {
         f->startSecondPhase();
-        EdgeMapi subtr(mg.g, 0);
+        EdgeMapi subtr(mg.g, 0); // Might not be in use anymore, was a solution for updating flow.
         NodeNeighborMap flow_children(mg.g, vector<tuple<Node, int>>());
         out_paths.reserve(countNodes(mg.g) / 2);
 
@@ -714,12 +762,6 @@ struct CutMatching {
         for (IncEdgeIt e(mg.g, mg.s); e != INVALID; ++e) {
             assert(mg.g.u(e) == mg.s || mg.g.v(e) == mg.s);
             Node u = mg.g.u(e) == mg.s ? mg.g.v(e) : mg.g.u(e);
-
-            // This approach would not produce a matching in the end...
-            //if(e_flow == 0) {
-            //    cout << "SKIPPING" << endl;
-            //    continue;
-           // }
 
             out_paths.push_back(array<Node, 2>());
             extract_path_fast(mg.g, f, flow_children, u, mg.t, out_paths[out_paths.size() - 1]);
