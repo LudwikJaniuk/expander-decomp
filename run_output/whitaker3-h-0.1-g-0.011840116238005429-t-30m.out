@@ -1,0 +1,33 @@
+time -o run_output/whitaker3-h-0.1-g-0.011840116238005429-t-30m.out.time timeout 30m cmake-build-debug/a.out -f graphs/whitaker3.graph -p partitions/5/whitaker3.2.ptn --ignore-multi -r 1 -s --H_phi=0.1 --G_phi=0.011840116238005429 --vol 0.1 -o run_output/whitaker3-h-0.1-g-0.011840116238005429-t-30m.ptn >> run_output/whitaker3-h-0.1-g-0.011840116238005429-t-30m.outReading graph from graphs/whitaker3.graph
+Reading a graph with V 9800E 28989
+28989
+9800
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 13651 (0.612168 s)
+Cap 2 ... flow: 14492 (1.32342 s)
+Cap 4 ... flow: 14494 (0.722816 s)
+Flow search took (seconds) 2.66751
+SUBG cut conductance: 0.00702658
+SUBG cut minside volume 22913
+SUBG cut maxside volume 35065
+== End round 0 ==
+R0 cond 0.00702658
+The best with best expansion was found on round0
+final_Edge crossings (E) : 161
+final_cut size: ( 3875 | 5925 )
+diff: 2050 (factor 0.209184 of total n vertices)
+final_cut volumes: ( 22913 | 35065 )
+final_expansion: 0.0415484
+final_conductance: 0.00702658
+CASE2 Goodenough balanced cut
+
+The given partition achieved the following:
+Edge crossings (E) : 126
+cut size: ( 4892 | 4908 )
+diff: 16 (factor 0.00163265 of total n vertices)
+cut volumes: ( 28930 | 29048 )
+expansion: 0.0257563
+conductance: 0.00435534

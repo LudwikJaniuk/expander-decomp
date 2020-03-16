@@ -9,6 +9,9 @@ out_dir = "run_output"
 def source_file(graph):
     return "graphs/"+graph+".graph"
 
+def in_partition_file(graph):
+    return "partitions/5/"+graph+".2.ptn"
+
 def out_partition_file(graph):
     return out_dir + "/" + graph+".ptn"
 
@@ -29,10 +32,10 @@ def num_edges_in_graph_file(name):
     firstword = ln.split()[1]
     return int(firstword)
 
-def run_cut_matching(graph_file, out_partition_file, print_file, g_phi, h_phi, multi, rounds, timeout="15m"):
+def run_cut_matching(graph_file, out_partition_file, print_file, g_phi, h_phi, multi, rounds, timeout, in_partition_file):
     #process = subprocess.run(["echo", graph_file, out_partition_file, str(g_phi), str(h_phi)], timeout=2)
     try:
-        command = f"time -o {print_file}.time timeout {timeout} " + " ".join(["cmake-build-debug/a.out", "-f", graph_file, "" if multi else "--ignore-multi", "-r", f"{rounds}", "-s", f"--H_phi={h_phi}", f"--G_phi={g_phi}", "--vol", "0.1", "-o", out_partition_file, ">>", print_file])
+        command = f"time -o {print_file}.time timeout {timeout} " + " ".join(["cmake-build-debug/a.out", "-f", graph_file, "-p", in_partition_file, "" if multi else "--ignore-multi", "-r", f"{rounds}", "-s", f"--H_phi={h_phi}", f"--G_phi={g_phi}", "--vol", "0.1", "-o", out_partition_file, ">>", print_file])
 
         f = open(print_file, "w")
         f.write(command)
@@ -139,12 +142,12 @@ def run_with(graph, g_phi, h_phi, multi, rounds, timeout):
         summarize(graph, g_phi, h_phi, multi, timeout, source_file(graph), output_file(graph_with_postfix), output_file(graph_with_postfix)+".time")
     else:
         print(f"Running on h_phi {h_phi} g_phi {g_phi} timeout {timeout}")
-        run_cut_matching(source_file(graph), out_partition_file(graph_with_postfix), output_file(graph_with_postfix), g_phi, h_phi, multi, rounds, timeout)
+        run_cut_matching(source_file(graph), out_partition_file(graph_with_postfix), output_file(graph_with_postfix), g_phi, h_phi, multi, rounds, timeout, in_partition_file(graph))
 
 
 def default_analyze(graph, multi):
     n_nodes = num_nodes_in_graph_file(source_file(graph))
-    rounds = 30
+    rounds = 1 
     #g_phi = 0.0
     # g_phi = 1.0/math.log(math.log(n_nodes))
     g_phi = 1.0/math.log(n_nodes)**2
@@ -154,32 +157,32 @@ def default_analyze(graph, multi):
     for h_phi in [0.1]: # Unreachable
         run_with(graph, g_phi, h_phi, multi, rounds, "30m")
 
-default_analyze("barbell10-10", True)
-default_analyze("barbell100-100", True)
+#default_analyze("barbell10-10", True)
+#default_analyze("barbell100-100", True)
 #default_analyze("barbell1000-1000", True)
-default_analyze("complete10", True)
-default_analyze("complete100", True)
+#default_analyze("complete10", True)
+#default_analyze("complete100", True)
 #default_analyze("complete1000", True)
-default_analyze("expander4", True)
-default_analyze("expander16", True)
-default_analyze("expander64", True)
-default_analyze("expander256", True)
+#default_analyze("expander4", True)
+#default_analyze("expander16", True)
+#default_analyze("expander64", True)
+#default_analyze("expander256", True)
 #default_analyze("expander1024", True)
-default_analyze("looploop8", True)
-default_analyze("multi8", True)
+#default_analyze("looploop8", True)
+#default_analyze("multi8", True)
 
-#default_analyze("144", False)
-#default_analyze("4elt", False)
-#default_analyze("add32", False)
-#default_analyze("auto", False)
-#default_analyze("bcsstk33", False)
-#default_analyze("brack2", False)
-#default_analyze("fe_4elt2", False)
-#default_analyze("fe_sphere", False)
-#default_analyze("fe_tooth", False)
-#default_analyze("finan512", False)
-#default_analyze("uk", False)
-#default_analyze("vibrobox", False)
-#default_analyze("whitaker3", False)
-#default_analyze("wing_nodal", False)
+default_analyze("144", False)
+default_analyze("4elt", False)
+default_analyze("add32", False)
+default_analyze("auto", False)
+default_analyze("bcsstk33", False)
+default_analyze("brack2", False)
+default_analyze("fe_4elt2", False)
+default_analyze("fe_sphere", False)
+default_analyze("fe_tooth", False)
+default_analyze("finan512", False)
+default_analyze("uk", False)
+default_analyze("vibrobox", False)
+default_analyze("whitaker3", False)
+default_analyze("wing_nodal", False)
 

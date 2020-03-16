@@ -1,0 +1,31 @@
+time -o run_output/vibrobox-h-0.1-g-0.01127022175249977-t-30m.out.time timeout 30m cmake-build-debug/a.out -f graphs/vibrobox.graph -p partitions/5/vibrobox.2.ptn --ignore-multi -r 1 -s --H_phi=0.1 --G_phi=0.01127022175249977 --vol 0.1 -o run_output/vibrobox-h-0.1-g-0.01127022175249977-t-30m.ptn >> run_output/vibrobox-h-0.1-g-0.01127022175249977-t-30m.outReading graph from graphs/vibrobox.graph
+Reading a graph with V 12328E 165250
+165250
+12328
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 82625 (0.827635 s)
+Flow search took (seconds) 0.842374
+SUBG cut conductance: 999
+SUBG cut minside volume 0
+SUBG cut maxside volume 330500
+== End round 0 ==
+R0 cond 999
+The best with best expansion was found on round0
+final_Edge crossings (E) : 0
+final_cut size: ( 0 | 12328 )
+diff: 12328 (factor 1 of total n vertices)
+final_cut volumes: ( 0 | 330500 )
+final_expansion: 0
+final_conductance: 999
+CASE2 Goodenough balanced cut
+
+The given partition achieved the following:
+Edge crossings (E) : 10310
+cut size: ( 6144 | 6184 )
+diff: 40 (factor 0.00324465 of total n vertices)
+cut volumes: ( 164750 | 165750 )
+expansion: 1.67806
+conductance: 0.0625797

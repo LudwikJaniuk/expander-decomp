@@ -1,0 +1,33 @@
+time -o run_output/fe_4elt2-h-0.1-g-0.011516002660902185-t-30m.out.time timeout 30m cmake-build-debug/a.out -f graphs/fe_4elt2.graph -p partitions/5/fe_4elt2.2.ptn --ignore-multi -r 1 -s --H_phi=0.1 --G_phi=0.011516002660902185 --vol 0.1 -o run_output/fe_4elt2-h-0.1-g-0.011516002660902185-t-30m.ptn >> run_output/fe_4elt2-h-0.1-g-0.011516002660902185-t-30m.outReading graph from graphs/fe_4elt2.graph
+Reading a graph with V 11143E 32818
+32818
+11143
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 15393 (0.397326 s)
+Cap 2 ... flow: 16397 (0.875465 s)
+Cap 4 ... flow: 16409 (0.518287 s)
+Flow search took (seconds) 1.79562
+SUBG cut conductance: 0.0235519
+SUBG cut minside volume 4713
+SUBG cut maxside volume 60923
+== End round 0 ==
+R0 cond 0.0235519
+The best with best expansion was found on round0
+final_Edge crossings (E) : 111
+final_cut size: ( 808 | 10335 )
+diff: 9527 (factor 0.854976 of total n vertices)
+final_cut volumes: ( 4713 | 60923 )
+final_expansion: 0.137376
+final_conductance: 0.0235519
+CASE2 Goodenough balanced cut
+
+The given partition achieved the following:
+Edge crossings (E) : 130
+cut size: ( 5572 | 5571 )
+diff: 1 (factor 8.97424e-05 of total n vertices)
+cut volumes: ( 32796 | 32840 )
+expansion: 0.0233351
+conductance: 0.0039639

@@ -694,7 +694,7 @@ struct CutMatching {
         size_t capacity; // First capacity (minumum) that worked to get full flow thru
     };
 
-    // This fast decomposition scheme was the last step of optimmizations until flow became the only bottleneck.
+    // This fast decomposition scheme was the last step of optimizations until flow became the only bottleneck.
     // We mostly achieve speed by precomputing lookups of arcs and flow children. Directly querying LEMON most often
     // involves some stupid linear algorithm.
     // In any case, this function starts from u_orig, extracts one path to t through which there is still flow,
@@ -734,8 +734,8 @@ struct CutMatching {
     // Decompose the flow from a maxflow algorithm into a set of start/end pairs for the paths.
     // This makes sense in this context, since of course the flow goes into each node on one side of the bisection with
     // capacity one, so the only logical decomposition is that each node has a path to some other one and we get a
-    // matching. This matching is in no way unique probably.
-    // Currently this is a greedy one-path-after-another algorithm, one could surely optimize it even more to e.g. take
+    // matching. This matching is not necessarily unique.
+    // Currently this is a greedy one-path-after-another algorithm, one could maybe optimize it even more to e.g. take
     // advantage of large-flow-value edges but this is not a bottleneck right now so it's not necessary.
     // This algo starts with precomputing the flow children for speed, and the arc lookups as well.
     void decompose_paths_fast(const MatchingContext &mg, const unique_ptr<FlowAlgo> &f, Paths &out_paths) {
@@ -768,7 +768,7 @@ struct CutMatching {
         }
     }
 
-    // Works for sub too, with the assumption that mg.g realy is the whole graph
+    // Just executes the maxflow/mincut algorithm, measures its time and prints it.
     void run_min_cut(const MatchingContext &mg, unique_ptr<FlowAlgo> &p) const {
         p.reset(new Preflow<G, EdgeMapi>(mg.g, mg.capacity, mg.s, mg.t));
         auto start2 = now();
@@ -777,7 +777,7 @@ struct CutMatching {
         l.progress() << "flow: " << p->flowValue() << " (" << duration_sec(start2, stop2) << " s)" << endl;
     }
 
-    // This should work well for sub too
+    // Small subroutine to set all capacities to cap, except the edges that touch source or sink (taken from mg).
     void set_matching_capacities(MatchingContext &mg, size_t cap) const {
         for (EdgeIt e(mg.g); e != INVALID; ++e) {
             if (mg.touches_source_or_sink(e)) continue;
@@ -785,11 +785,12 @@ struct CutMatching {
         }
     }
 
+    // Try exponentially larger capacities inside the graph, until flow_target flow can be achieved.
+    // NOTE: Returns result flow from the last capacity that could NOT accomodate flow_target flow. This is why the
+    // logic in the loop can seem a bit strange.
     MatchResult bin_search_flows(MatchingContext &mg, unique_ptr<FlowAlgo> &p, size_t flow_target) const {
         auto start = now();
-        size_t cap = 1;
-        // TODO will need to set capacities scaled by multiplicity
-        //for (; cap < mg.gc.nodes.size(); cap *= 2) {
+        size_t cap = 1; // Capacity
         for (; cap < flow_target*2; cap *= 2) {
             l.progress() << "Cap " << cap << " ... " << flush;
             set_matching_capacities(mg, cap);
@@ -810,6 +811,8 @@ struct CutMatching {
 
             if (reachedFullFlow) break;
         }
+        // If the for loop is exited without reaching full flow, then that's a severe issue with the graph itself
+        // and basically, a bug. Might be something like the graph is not connected.
 
         // Not we copy out the cut
         MatchResult result{mg.extract_cut(), cap};
@@ -824,7 +827,7 @@ struct CutMatching {
         decompose_paths_fast(mg, p, paths);
     }
 
-    // TODO this is totally wrong for edge version
+    // Create sink and source vertices, and attach them to the two sides of the cut
     template <typename GG>
     void make_sink_source(GG& g, MatchingContext &mg, const set<Node> &cut) const {
         mg.s = g.addNode();
@@ -848,16 +851,16 @@ struct CutMatching {
         assert(-1 <= diff && diff <= 1);
     }
 
-
-
-    // Actually, cut player gets H
-// Actually Actually, sure it gets H but it just needs the matchings...
-// TODO Ok so can we just call this with split_only and matchings of those?
+    // Cut player routine of creating a bisection of the split-nodes in the subdivision graph.
+    // Returns the bisection. Uses the list of previous matchings.
+    // Also returns, through h_multi_cond_out, the conductance of the returned bisection.
     template<typename GG, typename M>
     Bisectionp cut_player(const GG &g, const vector<unique_ptr<M>> &given_matchings, double &h_multi_cond_out) {
         l.debug() << "Running Cut player" << endl;
-        typename GG::template NodeMap<double> probs(g);
+        typename GG::template NodeMap<double> probs(g); // Probabilities, aka Charges
         vector<Node> all_nodes;
+
+        // assign all nodes a random (+-)1/N probability
 
         // Previous bug: would assign 1/"running total". But should just be 1/num verts.
         for (typename GG::NodeIt n(g); n != INVALID; ++n) {
@@ -872,8 +875,6 @@ struct CutMatching {
                        : -1.0 / all_nodes.size();
             deb_assigned++;
         }
-
-        //cout << "DEB: " << deb_n_nodes << " but assigned " << deb_assigned << endl;
 
         size_t num_vertices = all_nodes.size();
 
@@ -897,29 +898,26 @@ struct CutMatching {
             }
         }
 
-        // I need to shuffle before sorting to avoid dependency on original order
-        // Sort is probably stable and we have many equalis
-
+        // Now sort on charge.
+        // I'm shuffling before sorting to avoid dependency on original order; sort is probably stable and we have many
+        // equalities
         shuffle(all_nodes.begin(), all_nodes.end(), random_engine);
+        sort(all_nodes.begin(), all_nodes.end(), [&](Node a, Node b) { return probs[a] < probs[b]; });
 
-        sort(all_nodes.begin(), all_nodes.end(), [&](Node a, Node b) {
-            return probs[a] < probs[b];
-        });
-
+        // aand cut the list in half
         size_t size = all_nodes.size();
-        // With subdivisions, won't be this way longer
-        //assert(size % 2 == 0);
         all_nodes.resize(size / 2);
         auto b = Bisectionp(new Bisection(all_nodes.begin(), all_nodes.end()));
         l.debug() << "Cut player gave the following cut: " << endl;
         print_cut(*b, l.debug());
 
-        // So how does it give output?
-        // Ok it assigns h_outs, but actually also returns Bisectionp
+        // Yeah, we're printing for both variants of H since it's still unclear which is the relevant one.
+        // Research question for the future: Should H's conductance be computed with multiedges in mind?
         auto hcs = CutStats<decltype(H)>(H, num_vertices, *b);
         l.progress() << "H expansion: " << hcs.expansion() << ", num cross: " << hcs.crossing_edges << endl;
         l.progress() << "H conductance: " << hcs.conductance() << ", num cross: " << hcs.crossing_edges << endl;
         h_multi_cond_out = hcs.conductance();
+
         auto hscs = CutStats<decltype(H_single)>(H_single, num_vertices, *b);
         l.progress() << "H_single expansion: " << hscs.expansion() << ", num cross: " << hscs.crossing_edges << endl;
         l.progress() << "H_single conductance: " << hscs.conductance() << ", num cross: " << hscs.crossing_edges << endl;
@@ -927,102 +925,77 @@ struct CutMatching {
         return b;
     }
 
-    // returns capacity that was required
-// Maybe: make the binsearch an actual binsearch
-// TODO Let listedgeset just be 2-arrays of nodes. Lemon is getting in the way too much.
-// But also what is assigned in MtchResult?
+    // Matching player. Runs flow through the bisection and returns cut.
     MatchResult sub_matching_player(const set<Node> &bisection, vector<array<Node, 2>>& m_out) {
         MatchingContext mg(sgc.sub_g);
         make_sink_source(sgc.only_splits, mg, bisection);
-        // TODO so have s, t been created on the big greaph?
+
+        // These two lines probably pointless but if I delete them I have to run all my tests again.
         Node s = mg.s;
         int id = sgc.sub_g.id(s);
-        //cout << id << endl;
-        //cout << countNodes(sgc.sub_g) << endl;
 
         unique_ptr<FlowAlgo> p;
         MatchResult mr = bin_search_flows(mg, p, sgc.split_vertices.size()/2);
 
         decompose_paths(mg, p, m_out);
-
-        // Now how do we extract the cut?
-        // In this version, in one run of the matching the cut is strictly decided. We just need
-        // to decide which one of them.
-        // Only when we change to edge will the cut need to be explicitly extracted.
-        // Rn the important thing is to save cuts between rounds so I can choose the best.
-
         return mr;
     }
 
+    // The volume mechanism was added to prevent happily returning a cut with good conductance but balance below a
+    // certain treshold, and so this is the treshold for the volume of the smaller side.
     long sub_volume_treshold() {
         return config.volume_treshold_factor * sgc.origContext.nodes.size();
     }
 
-    // Ok lets attack from here
-    // Theres a lot of risk for problems with "is this a cut in the orig graph or in the splits?
+    // Runs one round of the whole algorithm
     unique_ptr<RoundReport> sub_one_round() {
-        unique_ptr<RoundReport> report = make_unique<RoundReport>();
+      // Results will be written into the round_report
+      unique_ptr<RoundReport> report = make_unique<RoundReport>();
 
-        Bisectionp sub_bisection = cut_player(sgc.only_splits, sub_matchings, report->multi_h_conductance);
+      // First, the cut player "plays" and creates a bisection
+      Bisectionp sub_bisection = cut_player(sgc.only_splits, sub_matchings, report->multi_h_conductance);
 
-        Matchingp smatchingp(new Matching());
-        MatchResult smr = sub_matching_player(*sub_bisection, *smatchingp);
-        sub_matchings.push_back(move(smatchingp));
+      // Then the matching player "plays" and creates a matching
+      Matchingp smatchingp(new Matching());
+      MatchResult smr = sub_matching_player(*sub_bisection, *smatchingp);
 
-        //c.cuts.push_back(move(mr.cut_from_flow));
-        report->index = sub_past_rounds.size();
-        report->capacity_required_for_full_flow = smr.capacity;
-        report->cut = make_unique<Cut>();
+      // We add the matching to the list of previous ones
+      sub_matchings.push_back(move(smatchingp));
 
+      // =======================
+      // The rest of this function is bookkeeping
+      // =======================
 
-        /*
-        cout << "cff size " << smr.cut_from_flow->size() << endl;
-        cout << "ff Has 0? " << smr.cut_from_flow->count(sgc.n_ref[gc.nodes[0]]) << endl;
-        cout << "it is " << sgc.sub_g.id(sgc.n_ref[gc.nodes[0]]) << endl;
-         */
+      // Write down relevant stuff into the report
+      report->index = sub_past_rounds.size();
+      report->capacity_required_for_full_flow = smr.capacity;
 
-        for(auto& n : *(smr.cut_from_flow)) {
-           /*
-            if(sgc.sub_g.id(n) == sgc.sub_g.id(sgc.n_ref[gc.nodes[0]])) {
-                cout << "exists" << endl;
-            }
-            if(sgc.n_cross_ref[n] == gc.nodes[0]) {
-                cout << "imporster exists" << endl;
-                cout << sgc.sub_g.id(n) << endl;
-                cout << "mapepd: " << sgc.origContext.g.id(sgc.n_cross_ref[n]) << endl;
-                cout << "mapepd: " << sgc.origContext.g.id(gc.nodes[0]) << endl;
-                cout << "orig: " << sgc.origs[n] << endl;
-            }
-            */
-            //if(sgc.n_cross_ref[n] != INVALID) {
-            if(sgc.origs[n]) {
-                /*
-                if(sgc.sub_g.id(n) == sgc.sub_g.id(sgc.n_ref[gc.nodes[0]])) {
-                    cout << "added" << endl;
-                }
-                if(sgc.n_cross_ref[n] == gc.nodes[0]) {
-                    cout << "imporster added" << endl;
-                    cout << sgc.sub_g.id(n) << endl;
-                }
-                 */
-                report->cut->insert(sgc.n_cross_ref[n]);
-            }
+      report->cut = make_unique<Cut>();
+      for(auto& n : *(smr.cut_from_flow)) {
+        if(sgc.origs[n]) {
+          report->cut->insert(sgc.n_cross_ref[n]);
         }
+      }
 
-        auto cs = CutStats<G>(sgc.origContext.g, sgc.origContext.nodes.size(), *report->cut);
-        report->g_conductance = cs.conductance();
-        if(report->g_conductance == 1) {
-            cout << "LYING" << endl;
-        }
-        l.progress() << "SUBG cut conductance: " << report->g_conductance << endl;
-        report->volume = cs.minside_volume();
-        l.progress() << "SUBG cut minside volume " << cs.minside_volume() << endl;
-        l.progress() << "SUBG cut maxside volume " << cs.maxside_volume() << endl;
-        report->relatively_balanced = report->volume > sub_volume_treshold();
-        return move(report);
+      auto cs = CutStats<G>(sgc.origContext.g, sgc.origContext.nodes.size(), *report->cut);
+      report->g_conductance = cs.conductance();
+      if(report->g_conductance == 1) {
+        cout << "LYING" << endl;
+      }
+      l.progress() << "SUBG cut conductance: " << report->g_conductance << endl;
+
+      report->volume = cs.minside_volume();
+      l.progress() << "SUBG cut minside volume " << cs.minside_volume() << endl;
+      l.progress() << "SUBG cut maxside volume " << cs.maxside_volume() << endl;
+
+      report->relatively_balanced = report->volume > sub_volume_treshold();
+      return move(report);
     }
 
-    // Stopping condition
+    // Figures out from all the bookkeeping if we should stop.
+    // Depending on configuration options there may be several reasons to stop, e.g. #rounds, cut conductnce, H conductance...
+    // There's also some logic on volume. You could basically just ignore that, it was added as a feature for use in the
+    // larger algorithm (Saranurak) but there were bigger problems it seemed.
     bool sub_should_stop() {
         int i = sub_past_rounds.size();
         if(i == 0) return false;
@@ -1053,20 +1026,17 @@ struct CutMatching {
             }
     }
 
+    // Loop that runs the whole algorithm. Prints a nice message after every round
     void run() {
         while (!sub_should_stop()) {
-            //past_rounds.push_back(one_round());
             sub_past_rounds.push_back(sub_one_round());
             print_end_round_message(sub_past_rounds.size()-1);
         }
     }
 };
 
-// TODO Make cut always the smallest (maybe)
-// TODO (In edge version) Implement breaking-logik for unbalance
-// om vi hittar phi-cut med volym obanför treshold
-// Om vi hittar phi-cut med volum under treshold, så ingorerar vi det och kör p
-// och sen om vi når H, då definieras det bästa som phi-cuttet med högsta volym
+// All the command-line options are created here, but parsed in parse_options. So if parse_options forgets about one of
+// these, it will be a noop.
 cxxopts::Options create_options() {
     cxxopts::Options options("executable_name",
                              "Individual project implementation of thatchapon's paper to find graph partitions. Currently only cut-matching game. \
@@ -1098,6 +1068,8 @@ cxxopts::Options create_options() {
     return options;
 }
 
+// Go through the command line options that were given, update code variables to make the changes happen.
+// Mosly writes to the centralized "config" object.
 void parse_options(int argc, char **argv, Configuration &config) {
     auto cmd_options = create_options();
     auto result = cmd_options.parse(argc, argv);
@@ -1154,39 +1126,47 @@ void parse_options(int argc, char **argv, Configuration &config) {
 int main(int argc, char **argv) {
     Configuration config;
     parse_options(argc, argv, config);
+    // And from here, all configuration should already be set up.
 
     if(config.show_help_and_exit) return 0;
 
     GraphContext gc;
-    // So right off the bat here, do we want to create the subdivision?
-    // No. Let CutMatching do it internally.
     initGraph(gc, config.input);
+    // Now the input graph is loaded (or possibly generated).
 
+    // Just initalize the random engine.
     default_random_engine random_engine = config.seed_randomness
                     ? default_random_engine(config.seed)
                     : default_random_engine(random_device()());
 
-    // MULTI we are here..
+    // And run the whole algorithm!
     CutMatching cm(gc, config, random_engine);
     cm.run();
 
+    // We should have run some rounds haha
     assert(!cm.sub_past_rounds.empty());
+
     // Best by conductance
     auto& best_round = *min_element(cm.sub_past_rounds.begin(), cm.sub_past_rounds.end(), [](auto &a, auto &b) {
         return a->g_conductance < b->g_conductance;
     });
 
+
+    // The rest is printing output
+
+
+    // Quick summaries of all the rounds
     for(int i = 0; i < cm.sub_past_rounds.size(); i++) {
         l.progress() << "R" << i << " cond " << cm.sub_past_rounds[i]->g_conductance << endl;
     }
 
+    // This string lies, it's conductance that counts now
     l.progress() << "The best with best expansion was found on round" << best_round->index << endl;
     auto &best_cut = best_round->cut;
     CutStats<G>(gc.g, gc.nodes.size(), *best_cut).print("final_");
 
     if(config.use_H_phi_target && config.use_G_phi_target && config.use_volume_treshold) {
         if(cm.reached_H_target) {
-
             if(best_round->g_conductance > config.G_phi_target) {
                 l.progress() << "CASE1 NO Goodenough cut, G certified expander." << endl;
             } else {
@@ -1200,6 +1180,7 @@ int main(int argc, char **argv) {
 
     if (config.output_cut) { write_cut(gc.nodes, *best_cut, config.output_file); }
 
+    // As a service, read and analyze the walshaw partition already given.
     if (config.compare_partition) {
         Cut reference_cut;
         read_partition_file(config.partition_file, gc.nodes, reference_cut);

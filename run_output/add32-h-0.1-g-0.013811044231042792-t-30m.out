@@ -1,0 +1,35 @@
+time -o run_output/add32-h-0.1-g-0.013811044231042792-t-30m.out.time timeout 30m cmake-build-debug/a.out -f graphs/add32.graph -p partitions/5/add32.2.ptn --ignore-multi -r 1 -s --H_phi=0.1 --G_phi=0.013811044231042792 --vol 0.1 -o run_output/add32-h-0.1-g-0.013811044231042792-t-30m.ptn >> run_output/add32-h-0.1-g-0.013811044231042792-t-30m.outReading graph from graphs/add32.graph
+Reading a graph with V 4960E 9462
+9462
+4960
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 4194 (0.073501 s)
+Cap 2 ... flow: 4576 (0.068686 s)
+Cap 4 ... flow: 4674 (0.127131 s)
+Cap 8 ... flow: 4713 (0.094883 s)
+Cap 16 ... flow: 4731 (0.040104 s)
+Flow search took (seconds) 0.408556
+SUBG cut conductance: 0.000941029
+SUBG cut minside volume 6376
+SUBG cut maxside volume 12548
+== End round 0 ==
+R0 cond 0.000941029
+The best with best expansion was found on round0
+final_Edge crossings (E) : 6
+final_cut size: ( 3286 | 1674 )
+diff: 1612 (factor 0.325 of total n vertices)
+final_cut volumes: ( 12548 | 6376 )
+final_expansion: 0.00358423
+final_conductance: 0.000941029
+CASE2 Goodenough balanced cut
+
+The given partition achieved the following:
+Edge crossings (E) : 10
+cut size: ( 2479 | 2481 )
+diff: 2 (factor 0.000403226 of total n vertices)
+cut volumes: ( 9448 | 9476 )
+expansion: 0.00403388
+conductance: 0.00105843

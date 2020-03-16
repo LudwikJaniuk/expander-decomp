@@ -1,0 +1,32 @@
+time -o run_output/wing_nodal-h-0.1-g-0.011562261995768892-t-30m.out.time timeout 30m cmake-build-debug/a.out -f graphs/wing_nodal.graph -p partitions/5/wing_nodal.2.ptn --ignore-multi -r 1 -s --H_phi=0.1 --G_phi=0.011562261995768892 --vol 0.1 -o run_output/wing_nodal-h-0.1-g-0.011562261995768892-t-30m.ptn >> run_output/wing_nodal-h-0.1-g-0.011562261995768892-t-30m.outReading graph from graphs/wing_nodal.graph
+Reading a graph with V 10937E 75488
+75488
+10937
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 37743 (0.596308 s)
+Cap 2 ... flow: 37744 (0.381251 s)
+Flow search took (seconds) 1.01635
+SUBG cut conductance: 0.952381
+SUBG cut minside volume 42
+SUBG cut maxside volume 150934
+== End round 0 ==
+R0 cond 0.952381
+The best with best expansion was found on round0
+final_Edge crossings (E) : 40
+final_cut size: ( 10932 | 5 )
+diff: 10927 (factor 0.999086 of total n vertices)
+final_cut volumes: ( 150934 | 42 )
+final_expansion: 8
+final_conductance: 0.952381
+CASE2 Goodenough balanced cut
+
+The given partition achieved the following:
+Edge crossings (E) : 1668
+cut size: ( 5195 | 5742 )
+diff: 547 (factor 0.0500137 of total n vertices)
+cut volumes: ( 71052 | 79924 )
+expansion: 0.321078
+conductance: 0.0234758
