@@ -1,4 +1,4 @@
-time -o run_output/4elt-h-0.1-g-0.010726511279807421-t-30m.out.time timeout 30m cmake-build-debug/a.out -f graphs/4elt.graph -p partitions/5/4elt.2.ptn --ignore-multi -r 1 -s --H_phi=0.1 --G_phi=0.010726511279807421 --vol 0.1 -o run_output/4elt-h-0.1-g-0.010726511279807421-t-30m.ptn >> run_output/4elt-h-0.1-g-0.010726511279807421-t-30m.outReading graph from graphs/4elt.graph
+time -o run_output/4elt-h-0.9-g-0.0-t-30m.out.time timeout 30m cmake-build-debug/a.out -f graphs/4elt.graph -p partitions/5/4elt.2.ptn --ignore-multi -r 1 -s --H_phi=0.9 --G_phi=0.0 --vol 0.1 -o run_output/4elt-h-0.9-g-0.0-t-30m.ptn >> run_output/4elt-h-0.9-g-0.0-t-30m.outReading graph from graphs/4elt.graph
 Reading a graph with V 15606E 45878
 45878
 15606
@@ -6,10 +6,10 @@ H expansion: 0, num cross: 0
 H conductance: -nan, num cross: 0
 H_single expansion: 0, num cross: 0
 H_single conductance: -nan, num cross: 0
-Cap 1 ... flow: 21500 (0.794398 s)
-Cap 2 ... flow: 22850 (1.762 s)
-Cap 4 ... flow: 22939 (0.657493 s)
-Flow search took (seconds) 3.22554
+Cap 1 ... flow: 21500 (0.808817 s)
+Cap 2 ... flow: 22850 (1.86559 s)
+Cap 4 ... flow: 22939 (0.695966 s)
+Flow search took (seconds) 3.38242
 SUBG cut conductance: 0.00960561
 SUBG cut minside volume 26547
 SUBG cut maxside volume 65209

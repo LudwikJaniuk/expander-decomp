@@ -148,13 +148,13 @@ def run_with(graph, g_phi, h_phi, multi, rounds, timeout):
 def default_analyze(graph, multi):
     n_nodes = num_nodes_in_graph_file(source_file(graph))
     rounds = 1 
-    #g_phi = 0.0
-    # g_phi = 1.0/math.log(math.log(n_nodes))
-    g_phi = 1.0/math.log(n_nodes)**2
+    g_phi = 1.0
+    #g_phi = 1.0/math.log(math.log(n_nodes))
+    #g_phi = 1.0/math.log(n_nodes)**2
     #g_phi = 1.0/math.sqrt(n_nodes)
     #g_phi = 1.0/n_nodes
     #for h_phi in [0.1, 0.55]:
-    for h_phi in [0.1]: # Unreachable
+    for h_phi in [0.90]: # Unreachable
         run_with(graph, g_phi, h_phi, multi, rounds, "30m")
 
 #default_analyze("barbell10-10", True)
@@ -171,18 +171,18 @@ def default_analyze(graph, multi):
 #default_analyze("looploop8", True)
 #default_analyze("multi8", True)
 
-default_analyze("144", False)
+#default_analyze("144", False)
 default_analyze("4elt", False)
-default_analyze("add32", False)
-default_analyze("auto", False)
-default_analyze("bcsstk33", False)
-default_analyze("brack2", False)
-default_analyze("fe_4elt2", False)
-default_analyze("fe_sphere", False)
-default_analyze("fe_tooth", False)
-default_analyze("finan512", False)
-default_analyze("uk", False)
-default_analyze("vibrobox", False)
-default_analyze("whitaker3", False)
-default_analyze("wing_nodal", False)
+#default_analyze("add32", False)
+#default_analyze("auto", False)
+#default_analyze("bcsstk33", False)
+#default_analyze("brack2", False)
+#default_analyze("fe_4elt2", False)
+#default_analyze("fe_sphere", False)
+#default_analyze("fe_tooth", False)
+#default_analyze("finan512", False)
+#default_analyze("uk", False)
+#default_analyze("vibrobox", False)
+#default_analyze("whitaker3", False)
+#default_analyze("wing_nodal", False)
 

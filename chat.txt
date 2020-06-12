@@ -1,0 +1,25 @@
+13:16:15	 From  Cristian Bogdan : Please add your questions here https://docs.google.com/document/d/1FzVCtbMqu3fVg8ZgFIPyo6kOCF5o_ge6Mn0NB5_HFHo/edit
+13:16:37	 From  Adrian : It is, loud and clear
+13:20:19	 From  Cristian Bogdan : this is also relating to *prototyping* strategies
+13:32:36	 From  Adrian  to  Ludvig Janiuk(Privately) : Hey, my questions "What git workflow do you use?" is kinda related, maybe its a nice momento to ask it 
+13:35:31	 From  Cristian Bogdan : https://docs.google.com/document/d/1FzVCtbMqu3fVg8ZgFIPyo6kOCF5o_ge6Mn0NB5_HFHo/edit
+13:35:42	 From  Cristian Bogdan : questions will close in 5-10 minutes, add yours now!
+13:41:53	 From  Adrian  to  Ludvig Janiuk(Privately) : I was thinking more about name for HMTL elements or functions, etc for the BEM or naming convention
+13:42:13	 From  Adrian  to  Ludvig Janiuk(Privately) : So everyone can understand the same from it?
+13:46:09	 From  Cristian Bogdan : JIRA. Trello
+13:47:53	 From  Cristian Bogdan : Mob programming
+13:48:17	 From  Cristian Bogdan : on-boarding
+13:50:47	 From  Adrian : I miss the on-boarding thing
+13:51:05	 From  Adrian : What was that a collab thing?
+13:51:18	 From  Cristian Bogdan : on-boarding means that you are adding one more person to a team
+13:51:26	 From  Adrian : ;)
+13:51:35	 From  Cristian Bogdan : and they use pair programming and mob programming to help that
+13:51:52	 From  Adrian : Been there, Thanks!
+13:55:24	 From  Ludvig Janiuk  to  Adrian(Privately) : cypress
+13:55:43	 From  Adrian : https://www.cypress.io/
+13:55:49	 From  Ludvig Janiuk  to  Adrian(Privately) : thx
+13:55:59	 From  Adrian  to  Ludvig Janiuk(Privately) : ;)
+14:00:40	 From  Adrian : Niiice
+14:02:24	 From  Alaa : Thanks! :)
+14:02:33	 From  Shuo Chen : Awesome
+14:02:53	 From  Adrian : Yup

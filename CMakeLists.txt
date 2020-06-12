@@ -14,4 +14,4 @@ target_include_directories(a.out PUBLIC ./lemon-1.3.1/ ./lemon-1.3.1/build)
 link_directories(a.out lemon-1.3.1/build/lemon)
 target_link_libraries(a.out PUBLIC -lemon)
 
-set (CMAKE_CXX_FLAGS "-O3")
+set (CMAKE_CXX_FLAGS "-O3 -Wall")
