@@ -1,0 +1,89 @@
+time -o run_output/4elt-h-0.3-g-0.0-t-30.out.time cmake-build-debug/a.out -f graphs/4elt.graph -p partitions/5/4elt.2.ptn --ignore-multi --timeout=30 -r 0 -s --H_phi=0.3 --G_phi=0.0 --vol 0.1 -o run_output/4elt-h-0.3-g-0.0-t-30.ptn >> run_output/4elt-h-0.3-g-0.0-t-30.outReading graph from graphs/4elt.graph
+Reading a graph with V 15606E 45878
+45878
+15606
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 21500 (0.833739 s)
+Cap 2 ... flow: 22850 (1.89982 s)
+Cap 4 ... flow: 22939 (0.701758 s)
+Flow search took (seconds) 3.448
+SUBG cut conductance: 0.00960561
+SUBG cut minside volume 26547
+SUBG cut maxside volume 65209
+== End round 0 ==
+H expansion: 0.247918, num cross: 5687
+H conductance: 0.247918, num cross: 5687
+H_single expansion: 0.247918, num cross: 5687
+H_single conductance: 0.247918, num cross: 5687
+Cap 1 ... flow: 20895 (0.753907 s)
+Cap 2 ... flow: 22622 (1.61883 s)
+Cap 4 ... flow: 22916 (1.40321 s)
+Cap 8 ... flow: 22939 (0.872855 s)
+Flow search took (seconds) 4.65766
+SUBG cut conductance: 0.0145892
+SUBG cut minside volume 3907
+SUBG cut maxside volume 87849
+== End round 1 ==
+H expansion: 0.543703, num cross: 12472
+H conductance: 0.271851, num cross: 12472
+H_single expansion: 0.536946, num cross: 12317
+H_single conductance: 0.272446, num cross: 12317
+Cap 1 ... flow: 19980 (0.878462 s)
+Cap 2 ... flow: 22450 (1.17261 s)
+Cap 4 ... flow: 22939 (1.35992 s)
+Flow search took (seconds) 3.42131
+SUBG cut conductance: 0.0160253
+SUBG cut minside volume 44617
+SUBG cut maxside volume 47139
+== End round 2 ==
+H expansion: 0.866864, num cross: 19885
+H conductance: 0.288955, num cross: 19885
+H_single expansion: 0.850735, num cross: 19515
+H_single conductance: 0.291892, num cross: 19515
+Cap 1 ... flow: 19117 (0.92197 s)
+Cap 2 ... flow: 22001 (1.49003 s)
+Cap 4 ... flow: 22869 (1.98376 s)
+Cap 8 ... flow: 22939 (0.757106 s)
+Flow search took (seconds) 5.16581
+SUBG cut conductance: 0.0116751
+SUBG cut minside volume 19700
+SUBG cut maxside volume 72056
+== End round 3 ==
+H expansion: 1.21051, num cross: 27768
+H conductance: 0.302629, num cross: 27768
+H_single expansion: 1.17782, num cross: 27018
+H_single conductance: 0.306646, num cross: 27018
+Cap 1 ... flow: 18242 (0.907777 s)
+Cap 2 ... flow: 21346 (0.992852 s)
+Cap 4 ... flow: 22820 (1.25027 s)
+Cap 8 ... flow: 22939 (0.568371 s)
+Flow search took (seconds) 3.72911
+SUBG cut conductance: 0.00822466
+SUBG cut minside volume 26992
+SUBG cut maxside volume 64764
+== End round 4 ==
+H Conductance target reached, this will be case 1 or 3. According to theory, this means we probably won't find a better cut. That is, assuming you set H_phi right. If was used together with G_phi target, this also certifies the input graph is a G_phi expander unless there was a very unbaanced cut somewhere, which we will proceed to look for.
+R0 cond 0.00960561
+R1 cond 0.0145892
+R2 cond 0.0160253
+R3 cond 0.0116751
+R4 cond 0.00822466
+The best with best expansion was found on round4
+final_Edge crossings (E) : 222
+final_cut size: ( 4595 | 11011 )
+diff: 6416 (factor 0.411124 of total n vertices)
+final_cut volumes: ( 26992 | 64764 )
+final_expansion: 0.0483134
+final_conductance: 0.00822466
+CASE1 NO Goodenough cut, G certified expander.
+
+The given partition achieved the following:
+Edge crossings (E) : 137
+cut size: ( 7603 | 8003 )
+diff: 400 (factor 0.0256312 of total n vertices)
+cut volumes: ( 44745 | 47011 )
+expansion: 0.0180192
+conductance: 0.00306179

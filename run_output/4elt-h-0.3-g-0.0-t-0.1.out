@@ -1,0 +1,41 @@
+time -o run_output/4elt-h-0.3-g-0.0-t-0.1.out.time cmake-build-debug/a.out -f graphs/4elt.graph -p partitions/5/4elt.2.ptn --ignore-multi --timeout_m=0.1 -r 0 -s --H_phi=0.3 --G_phi=0.0 --vol 0.1 -o run_output/4elt-h-0.3-g-0.0-t-0.1.ptn >> run_output/4elt-h-0.3-g-0.0-t-0.1.outReading graph from graphs/4elt.graph
+Reading a graph with V 15606E 45878
+45878
+15606
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 21500 (0.836228 s)
+Cap 2 ... flow: 22850 (1.81114 s)
+Cap 4 ... flow: 22939 (0.683498 s)
+Flow search took (seconds) 3.34698
+SUBG cut conductance: 0.00960561
+SUBG cut minside volume 26547
+SUBG cut maxside volume 65209
+== End round 0 ==
+H expansion: 0.247918, num cross: 5687
+H conductance: 0.247918, num cross: 5687
+H_single expansion: 0.247918, num cross: 5687
+H_single conductance: 0.247918, num cross: 5687
+Cap 1 ... flow: 20895 (0.73148 s)
+Cap 2 ... flow: 22622 (1.56623 s)
+Cap 4 ... flow: 22916 (1.35083 s)
+We ran out of time, wrapping up!
+R0 cond 0.00960561
+The best with best expansion was found on round0
+final_Edge crossings (E) : 255
+final_cut size: ( 11087 | 4519 )
+diff: 6568 (factor 0.420864 of total n vertices)
+final_cut volumes: ( 65209 | 26547 )
+final_expansion: 0.0564284
+final_conductance: 0.00960561
+CASE4 Time ran out, we were not able to finish the algorithm.
+
+The given partition achieved the following:
+Edge crossings (E) : 137
+cut size: ( 7603 | 8003 )
+diff: 400 (factor 0.0256312 of total n vertices)
+cut volumes: ( 44745 | 47011 )
+expansion: 0.0180192
+conductance: 0.00306179

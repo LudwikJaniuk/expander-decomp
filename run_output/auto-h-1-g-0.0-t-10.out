@@ -1,0 +1,38 @@
+time -o run_output/auto-h-1-g-0.0-t-10.out.time cmake-build-debug/a.out -f graphs/auto.graph -p partitions/5/auto.2.ptn --ignore-multi --timeout_m=10 -r 0 -s --H_phi=1 --G_phi=0.0 --vol 0.1 -o run_output/auto-h-1-g-0.0-t-10.ptn >> run_output/auto-h-1-g-0.0-t-10.outReading graph from graphs/auto.graph
+Reading a graph with V 448695E 3314611
+3314611
+448695
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 1657305 (114.897 s)
+Flow search took (seconds) 115.222
+SUBG cut conductance: 999
+SUBG cut minside volume 0
+SUBG cut maxside volume 6629222
+== End round 0 ==
+H expansion: 0.250078, num cross: 414456
+H conductance: 0.250078, num cross: 414456
+H_single expansion: 0.250078, num cross: 414456
+H_single conductance: 0.250078, num cross: 414456
+Cap 1 ... flow: 1657251 (331.007 s)
+Cap 2 ... flow: 1657305 (180.801 s)
+We ran out of time, wrapping up!
+R0 cond 999
+The best with best expansion was found on round0
+final_Edge crossings (E) : 0
+final_cut size: ( 0 | 448695 )
+diff: 448695 (factor 1 of total n vertices)
+final_cut volumes: ( 0 | 6629222 )
+final_expansion: 0
+final_conductance: 999
+CASE4 Time ran out, we were not able to finish the algorithm.
+
+The given partition achieved the following:
+Edge crossings (E) : 9450
+cut size: ( 235532 | 213163 )
+diff: 22369 (factor 0.0498535 of total n vertices)
+cut volumes: ( 3465872 | 3163350 )
+expansion: 0.0443323
+conductance: 0.00298734
