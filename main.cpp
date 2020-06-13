@@ -1104,7 +1104,7 @@ cxxopts::Options create_options() {
             ("v,verbose", "Debug; Whether to print nodes and cuts Does not include paths. Produces a LOT of output on large graphs.")
             ("ignore-multi", "ignores the same edges repeated when parsing.")
             ("d,paths", "Debug; Whether to print paths")
-      ("timeout", "After this many minutes, try to break the algorithm and just report on the rounds until now. Might carry a small delay.",
+      ("timeout_m", "After this many minutes, try to break the algorithm and just report on the rounds until now. Might carry a small delay.",
         cxxopts::value<float>())
             ;
     return options;
@@ -1164,8 +1164,8 @@ void parse_options(int argc, char **argv, Configuration &config) {
         config.partition_file = result["partition"].as<string>();
     }
 
-    if(result.count("timeout")) {
-      config.timeout_after_minutes = result["timeout"].as<float>();
+    if(result.count("timeout_m")) {
+      config.timeout_after_minutes = result["timeout_m"].as<float>();
     }
 }
 

@@ -35,7 +35,7 @@ def num_edges_in_graph_file(name):
 def run_cut_matching(graph_file, out_partition_file, print_file, g_phi, h_phi, multi, rounds, timeout, in_partition_file):
     #process = subprocess.run(["echo", graph_file, out_partition_file, str(g_phi), str(h_phi)], timeout=2)
     try:
-        command = f"time -o {print_file}.time timeout {timeout} " + " ".join(["cmake-build-debug/a.out", "-f", graph_file, "-p", in_partition_file, "" if multi else "--ignore-multi", "-r", f"{rounds}", "-s", f"--H_phi={h_phi}", f"--G_phi={g_phi}", "--vol", "0.1", "-o", out_partition_file, ">>", print_file])
+        command = f"time -o {print_file}.time " + " ".join(["cmake-build-debug/a.out", "-f", graph_file, "-p", in_partition_file, "" if multi else "--ignore-multi",f"--timeout_m={timeout}" , "-r", f"{rounds}", "-s", f"--H_phi={h_phi}", f"--G_phi={g_phi}", "--vol", "0.1", "-o", out_partition_file, ">>", print_file])
 
         f = open(print_file, "w")
         f.write(command)
@@ -155,8 +155,8 @@ def default_analyze(graph, multi):
     #g_phi = 1.0/math.sqrt(n_nodes)
     #g_phi = 1.0/n_nodes
     #for h_phi in [0.1, 0.55]:
-    for h_phi in [0.9]: # Unreachable
-        run_with(graph, g_phi, h_phi, multi, rounds, "30m")
+    for h_phi in [0.3]: # Unreachable
+        run_with(graph, g_phi, h_phi, multi, rounds, "0.1")
 
 #default_analyze("barbell10-10", True)
 #default_analyze("barbell100-100", True)
