@@ -101,6 +101,7 @@ def summarize(graph_name, g_phi, h_phi, multi, timeout, graph_file, print_file, 
 
         with open(print_file) as pf:
             lines = pf.read().splitlines()
+            lines = lines[:-8] # skip partition output
             case_line = lines[-1]
             cond_line = lines[-2]
             exp_line = lines[-3]
@@ -147,14 +148,14 @@ def run_with(graph, g_phi, h_phi, multi, rounds, timeout):
 
 def default_analyze(graph, multi):
     n_nodes = num_nodes_in_graph_file(source_file(graph))
-    rounds = 1 
-    g_phi = 1.0
+    rounds = 0 
+    g_phi = 0.0
     #g_phi = 1.0/math.log(math.log(n_nodes))
     #g_phi = 1.0/math.log(n_nodes)**2
     #g_phi = 1.0/math.sqrt(n_nodes)
     #g_phi = 1.0/n_nodes
     #for h_phi in [0.1, 0.55]:
-    for h_phi in [0.90]: # Unreachable
+    for h_phi in [0.9]: # Unreachable
         run_with(graph, g_phi, h_phi, multi, rounds, "30m")
 
 #default_analyze("barbell10-10", True)

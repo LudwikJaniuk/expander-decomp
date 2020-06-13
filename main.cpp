@@ -93,9 +93,18 @@ const auto& now = high_resolution_clock::now;
 
 
 // Used for printing timing information. Duration in seconds.
-double duration_sec(const high_resolution_clock::time_point& start, high_resolution_clock::time_point& stop) {
+double duration_sec(const high_resolution_clock::time_point start, high_resolution_clock::time_point stop) {
     return duration_cast<microseconds>(stop - start).count() / MICROSECS;
 }
+
+// To use for stopping running when too much time has passed
+struct JaniukException : public std::exception
+{
+  const char * what () const throw ()
+  {
+    return "C++ Exception";
+  }
+};
 
 // Configuration and InputConfiguration just contain all the configuration options.
 // The option parsing code produces an instance of Configuration, which then impacts everything.
@@ -142,6 +151,9 @@ struct Configuration {
     // we only break if we find a good enough cut that is also this balanced (has this minside volume)
     bool use_volume_treshold = false;
     double volume_treshold_factor = 0;
+
+    // If zero, don't time out.
+    float timeout_after_minutes = 0;
 };
 
 // Some attempt at nice controllable levels of logging. I'm not really that proud of it.
@@ -621,6 +633,8 @@ struct CutMatching {
     vector<unique_ptr<RoundReport>> sub_past_rounds; // We just want the reports on the heap, not the stack
     vector<Matchingp> sub_matchings;
     bool reached_H_target = false;
+    std::chrono::time_point<std::chrono::system_clock> start_time;
+    bool timed_out = false;
     // Input graph
     CutMatching(GraphContext &gc, const Configuration &config_, default_random_engine &random_engine_)
     :
@@ -775,6 +789,11 @@ struct CutMatching {
         p->runMinCut(); // Note that "startSecondPhase" must be run to get flows for individual verts
         auto stop2 = now();
         l.progress() << "flow: " << p->flowValue() << " (" << duration_sec(start2, stop2) << " s)" << endl;
+
+        if(config.timeout_after_minutes > 0 && duration_sec(start_time, now())/60.0 > config.timeout_after_minutes) {
+          // We're over time and need to break
+          throw JaniukException();
+        }
     }
 
     // Small subroutine to set all capacities to cap, except the edges that touch source or sink (taken from mg).
@@ -999,7 +1018,10 @@ struct CutMatching {
     bool sub_should_stop() {
         int i = sub_past_rounds.size();
         if(i == 0) return false;
-        if(i >= config.max_rounds && config.max_rounds != 0) return true;
+        if(i >= config.max_rounds && config.max_rounds != 0) {
+          l.progress() << "Max rounds reached, should stop." << endl;
+          return true;
+        }
 
         const auto& last_round = sub_past_rounds[sub_past_rounds.size() - 1];
         if(config.use_H_phi_target && last_round->multi_h_conductance >= config.H_phi_target) {
@@ -1024,15 +1046,32 @@ struct CutMatching {
                     return true;
                 }
             }
-
+        return false;
     }
 
     // Loop that runs the whole algorithm. Prints a nice message after every round
     void run() {
+      // bin_search_flows will compare agains this and throw an exception if we are over time.
+      // Because that's the most time consuming operation. It's an ugly solution but kinda should work.
+      start_time = now();
+
+
+      int num_rounds_completed = 0;
+      try {
         while (!sub_should_stop()) {
-            sub_past_rounds.push_back(sub_one_round());
-            print_end_round_message(sub_past_rounds.size()-1);
+          sub_past_rounds.push_back(sub_one_round());
+          num_rounds_completed++;
+          print_end_round_message(sub_past_rounds.size()-1);
         }
+      } catch(JaniukException& e) { // Poor man's timer interrupt. With more time I would have redesigned this...
+        l.progress() << "We ran out of time, wrapping up!" << endl;
+        timed_out = true;
+      }
+
+      if(sub_past_rounds.size() > num_rounds_completed) {
+        sub_past_rounds.pop_back();
+      }
+      assert(num_rounds_completed == sub_past_rounds.size());
     }
 };
 
@@ -1065,6 +1104,8 @@ cxxopts::Options create_options() {
             ("v,verbose", "Debug; Whether to print nodes and cuts Does not include paths. Produces a LOT of output on large graphs.")
             ("ignore-multi", "ignores the same edges repeated when parsing.")
             ("d,paths", "Debug; Whether to print paths")
+      ("timeout", "After this many minutes, try to break the algorithm and just report on the rounds until now. Might carry a small delay.",
+        cxxopts::value<float>())
             ;
     return options;
 }
@@ -1122,6 +1163,10 @@ void parse_options(int argc, char **argv, Configuration &config) {
         config.compare_partition = true;
         config.partition_file = result["partition"].as<string>();
     }
+
+    if(result.count("timeout")) {
+      config.timeout_after_minutes = result["timeout"].as<float>();
+    }
 }
 
 int main(int argc, char **argv) {
@@ -1166,7 +1211,9 @@ int main(int argc, char **argv) {
     auto &best_cut = best_round->cut;
     CutStats<G>(gc.g, gc.nodes.size(), *best_cut).print("final_");
 
-    if(config.use_H_phi_target && config.use_G_phi_target && config.use_volume_treshold) {
+    if(cm.timed_out) {
+      l.progress() << "CASE4 Time ran out, we were not able to finish the algorithm." << endl;
+    } else if(config.use_H_phi_target && config.use_G_phi_target && config.use_volume_treshold) {
         if(cm.reached_H_target) {
             if(best_round->g_conductance > config.G_phi_target) {
                 l.progress() << "CASE1 NO Goodenough cut, G certified expander." << endl;
@@ -1176,7 +1223,6 @@ int main(int argc, char **argv) {
         } else {
             l.progress() << "CASE2 Goodenough balanced cut" << endl;
         }
-
     }
 
     if (config.output_cut) { write_cut(gc.nodes, *best_cut, config.output_file); }
@@ -1191,7 +1237,6 @@ int main(int argc, char **argv) {
              << endl;
         CutStats<G>(gc.g, gc.nodes.size(), reference_cut).print();
     }
-
     return 0;
 }
 
