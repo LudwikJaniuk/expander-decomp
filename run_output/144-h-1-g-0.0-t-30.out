@@ -1,0 +1,111 @@
+time -o run_output/144-h-1-g-0.0-t-30.out.time cmake-build-debug/a.out -f graphs/144.graph -p partitions/5/144.2.ptn --ignore-multi --timeout_m=30 -r 0 -s --H_phi=1 --G_phi=0.0 --vol 0.1 -o run_output/144-h-1-g-0.0-t-30.ptn >> run_output/144-h-1-g-0.0-t-30.outReading graph from graphs/144.graph
+Reading a graph with V 144649E 1074393
+1074393
+144649
+H expansion: 0, num cross: 0
+H conductance: -nan, num cross: 0
+H_single expansion: 0, num cross: 0
+H_single conductance: -nan, num cross: 0
+Cap 1 ... flow: 537196 (24.8687 s)
+Flow search took (seconds) 24.9615
+SUBG cut conductance: 999
+SUBG cut minside volume 0
+SUBG cut maxside volume 2148786
+== End round 0 ==
+H expansion: 0.249412, num cross: 133983
+H conductance: 0.249412, num cross: 133983
+H_single expansion: 0.249412, num cross: 133983
+H_single conductance: 0.249412, num cross: 133983
+Cap 1 ... flow: 537195 (40.7841 s)
+Cap 2 ... flow: 537196 (20.6787 s)
+Flow search took (seconds) 61.6283
+SUBG cut conductance: 0.806452
+SUBG cut minside volume 31
+SUBG cut maxside volume 2148755
+== End round 1 ==
+H expansion: 0.543074, num cross: 291737
+H conductance: 0.271537, num cross: 291737
+H_single expansion: 0.537484, num cross: 288734
+H_single conductance: 0.271861, num cross: 288734
+Cap 1 ... flow: 536250 (81.297 s)
+Cap 2 ... flow: 537196 (25.8925 s)
+Flow search took (seconds) 107.474
+SUBG cut conductance: 0.0384098
+SUBG cut minside volume 964910
+SUBG cut maxside volume 1183876
+== End round 2 ==
+H expansion: 0.876557, num cross: 470883
+H conductance: 0.292186, num cross: 470883
+H_single expansion: 0.863774, num cross: 464016
+H_single conductance: 0.294899, num cross: 464016
+Cap 1 ... flow: 529910 (132.753 s)
+Cap 2 ... flow: 537196 (34.9457 s)
+Flow search took (seconds) 167.962
+SUBG cut conductance: 0.0821394
+SUBG cut minside volume 964288
+SUBG cut maxside volume 1184498
+== End round 3 ==
+H expansion: 1.23099, num cross: 661282
+H conductance: 0.307748, num cross: 661282
+H_single expansion: 1.20327, num cross: 646391
+H_single conductance: 0.312051, num cross: 646391
+Cap 1 ... flow: 517014 (178.962 s)
+Cap 2 ... flow: 537196 (43.7414 s)
+Flow search took (seconds) 222.963
+SUBG cut conductance: 0.124637
+SUBG cut minside volume 1013867
+SUBG cut maxside volume 1134919
+== End round 4 ==
+H expansion: 1.59598, num cross: 857354
+H conductance: 0.319196, num cross: 857354
+H_single expansion: 1.54374, num cross: 829289
+H_single conductance: 0.324102, num cross: 829289
+Cap 1 ... flow: 500697 (218.882 s)
+Cap 2 ... flow: 537196 (48.1241 s)
+Flow search took (seconds) 267.28
+SUBG cut conductance: 0.140178
+SUBG cut minside volume 1075015
+SUBG cut maxside volume 1073771
+== End round 5 ==
+H expansion: 1.95528, num cross: 1050371
+H conductance: 0.325881, num cross: 1050371
+H_single expansion: 1.87259, num cross: 1005948
+H_single conductance: 0.331023, num cross: 1005948
+Cap 1 ... flow: 481943 (222.412 s)
+Cap 2 ... flow: 536620 (241.367 s)
+Cap 4 ... flow: 537196 (59.3334 s)
+Flow search took (seconds) 523.544
+SUBG cut conductance: 0.0210055
+SUBG cut minside volume 322678
+SUBG cut maxside volume 1826108
+== End round 6 ==
+H expansion: 2.31472, num cross: 1243460
+H conductance: 0.330675, num cross: 1243460
+H_single expansion: 2.19663, num cross: 1180019
+H_single conductance: 0.335714, num cross: 1180019
+Cap 1 ... flow: 460419 (264.81 s)
+Cap 2 ... flow: 530614 (279.228 s)
+We ran out of time, wrapping up!
+R0 cond 999
+R1 cond 0.806452
+R2 cond 0.0384098
+R3 cond 0.0821394
+R4 cond 0.124637
+R5 cond 0.140178
+R6 cond 0.0210055
+The best with best expansion was found on round6
+final_Edge crossings (E) : 6778
+final_cut size: ( 123132 | 21517 )
+diff: 101615 (factor 0.702494 of total n vertices)
+final_cut volumes: ( 1826108 | 322678 )
+final_expansion: 0.315007
+final_conductance: 0.0210055
+CASE4 Time ran out, we were not able to finish the algorithm.
+
+The given partition achieved the following:
+Edge crossings (E) : 6345
+cut size: ( 68708 | 75941 )
+diff: 7233 (factor 0.0500038 of total n vertices)
+cut volumes: ( 1023645 | 1125141 )
+expansion: 0.0923473
+conductance: 0.00619844

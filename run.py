@@ -48,7 +48,7 @@ def run_cut_matching(graph_file, out_partition_file, print_file, g_phi, h_phi, m
 
 
 if do_summarize:
-    print("Graph_name\tvertices\tedges\tg_phi\th_phi\ttimed_out\tspent_time\tallowed_time\tread_as_multi\tCASE\tbest_cut_conductance\tbest_cut_expansion\tedges_crossing\tsize1\tsize2\tdiff_total\tdiff_div_nodes\tvol1\tvol2")
+    print("Graph_name\tvertices\tedges\tg_phi\th_phi\ttimed_out\tspent_time\tallowed_time\tread_as_multi\tCASE\tbest_cut_conductance\tbest_cut_expansion\tedges_crossing\tsize1\tsize2\tdiff_total\tdiff_div_nodes\tvol1\tvol2\tbest_round\tlast_round")
 
 def summarize(graph_name, g_phi, h_phi, multi, timeout, graph_file, print_file, time_file):
     timed_out = False
@@ -74,6 +74,8 @@ def summarize(graph_name, g_phi, h_phi, multi, timeout, graph_file, print_file, 
     vol1 = "-"
     vol2 = "-"
     crossing_edges = "-"
+    best_round = "-"
+    last_round = "-"
     
     # TODO consider these...
     if not timed_out:
@@ -98,6 +100,8 @@ def summarize(graph_name, g_phi, h_phi, multi, timeout, graph_file, print_file, 
         size_line = ""
         diff_line = ""
         cross_line = ""
+        bestround_line = ""
+        lastround_line = ""
 
         with open(print_file) as pf:
             lines = pf.read().splitlines()
@@ -109,6 +113,8 @@ def summarize(graph_name, g_phi, h_phi, multi, timeout, graph_file, print_file, 
             diff_line = lines[-5]
             size_line = lines[-6]
             cross_line = lines[-7]
+            bestround_line = lines[-8]
+            lastround_line = lines[-9]
 
         line_int = case_line[4]
 
@@ -128,12 +134,14 @@ def summarize(graph_name, g_phi, h_phi, multi, timeout, graph_file, print_file, 
 
         crossing_edges = int(cross_line.split()[4])
 
-    print(f"{graph_name}\t{num_nodes_in_graph_file(graph_file)}\t{num_edges_in_graph_file(graph_file)}\t{g_phi}\t{h_phi}\t{timed_out}\t{time_used}\t{timeout}\t{multi}\t{line_int}\t{cond}\t{expansion}\t{crossing_edges}\t{size1}\t{size2}\t{diff_abs}\t{diff_fact}\t{vol1}\t{vol2}")
+        best_round = int(bestround_line.split()[-1][5:])
+        last_round = int(lastround_line.split()[0][1:])
+
+
+
+    print(f"{graph_name}\t{num_nodes_in_graph_file(graph_file)}\t{num_edges_in_graph_file(graph_file)}\t{g_phi}\t{h_phi}\t{timed_out}\t{time_used}\t{timeout}\t{multi}\t{line_int}\t{cond}\t{expansion}\t{crossing_edges}\t{size1}\t{size2}\t{diff_abs}\t{diff_fact}\t{vol1}\t{vol2}\t{best_round}\t{last_round}")
 
     #pf = open(print_file)
-
-
-
 
 
 def run_with(graph, g_phi, h_phi, multi, rounds, timeout):
@@ -156,7 +164,7 @@ def default_analyze(graph, multi):
     #g_phi = 1.0/n_nodes
     #for h_phi in [0.1, 0.55]:
     for h_phi in [1]: # Unreachable
-        run_with(graph, g_phi, h_phi, multi, rounds, "10")
+        run_with(graph, g_phi, h_phi, multi, rounds, "60")
 
 #default_analyze("barbell10-10", True)
 #default_analyze("barbell100-100", True)
@@ -172,18 +180,18 @@ def default_analyze(graph, multi):
 #default_analyze("looploop8", True)
 #default_analyze("multi8", True)
 
-default_analyze("144", False)
-default_analyze("4elt", False)
-default_analyze("add32", False)
-default_analyze("auto", False)
-default_analyze("bcsstk33", False)
+#default_analyze("144", False)
+#default_analyze("4elt", False)
+#default_analyze("add32", False)
+#default_analyze("auto", False)
+#default_analyze("bcsstk33", False)
 default_analyze("brack2", False)
-default_analyze("fe_4elt2", False)
+#default_analyze("fe_4elt2", False)
 default_analyze("fe_sphere", False)
 default_analyze("fe_tooth", False)
 default_analyze("finan512", False)
-default_analyze("uk", False)
-default_analyze("vibrobox", False)
-default_analyze("whitaker3", False)
-default_analyze("wing_nodal", False)
+#default_analyze("uk", False)
+#default_analyze("vibrobox", False)
+#default_analyze("whitaker3", False)
+#default_analyze("wing_nodal", False)
 
