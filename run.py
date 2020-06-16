@@ -47,8 +47,71 @@ def run_cut_matching(graph_file, out_partition_file, print_file, g_phi, h_phi, m
         print("timeout")
 
 
+name_colors = {
+        "uk":	"150 150 0",
+        "add32":	"0 150 150",
+        "bcsstk33":	"150 0 150",
+        "whitaker3":	"0 150 0",
+        "wing_nodal":	"150 0 0",
+        "fe_4elt2":	"0 0 150",
+        "vibrobox":	"100 150 0",
+        "4elt":	    "150 150 100",
+        "fe_sphere":	"150 100 0",
+        "brack2":	"100 150 100",
+        "finan512":	"150 100 100",
+        "fe_tooth":	"100 150 150",
+        "144":	"150 150 100",
+        "auto":	"100 100 150"
+        }
+
+def colorof(name):
+    if name in name_colors:
+        return name_colors[name]
+    return "0 0 0"
+
 if do_summarize:
-    print("Graph_name\tvertices\tedges\tg_phi\th_phi\ttimed_out\tspent_time\tallowed_time\tread_as_multi\tCASE\tbest_cut_conductance\tbest_cut_expansion\tedges_crossing\tsize1\tsize2\tdiff_total\tdiff_div_nodes\tvol1\tvol2\tbest_round\tlast_round")
+    print("Graph_name\t"
+          f"vertices\t"
+          f"edges\t"
+          f"g_phi\t"
+          f"h_phi\t"
+          f"timed_out\t"
+          f"spent_time\t"
+          f"allowed_time\t"
+          f"read_as_multi\t"
+          f"CASE\t"
+          f"best_cut_conductance\t"
+          f"best_cut_expansion\t"
+          f"edges_crossing\t"
+          f"size1\t"
+          f"size2\t"
+          f"diff_total\t"
+          f"diff_div_nodes\t"
+          f"vol1\t"
+          f"vol2\t"
+          f"best_round\t"
+          f"last_round\t"
+          f"walshaw_conductance\t"
+          f"walshaw_imbalance\t"
+          f"colR\t"
+          f"colG\t"
+          f"colB\t"
+          )
+
+def deciformat(n):
+    normal = f"{n:9.4}"
+    if 'e' in normal:
+        return f"{n:9.4f}"
+    return normal
+
+def myform(n):
+    ret = deciformat(n).strip()
+    if n == 0:
+        return ret
+    if ret[0] == '0':
+        return ret[1:]
+    return ret
+
 
 def summarize(graph_name, g_phi, h_phi, multi, timeout, graph_file, print_file, time_file):
     timed_out = False
@@ -76,6 +139,8 @@ def summarize(graph_name, g_phi, h_phi, multi, timeout, graph_file, print_file, 
     crossing_edges = "-"
     best_round = "-"
     last_round = "-"
+    walsh_cond = "-"
+    walsh_imb = "-"
     
     # TODO consider these...
     if not timed_out:
@@ -102,9 +167,14 @@ def summarize(graph_name, g_phi, h_phi, multi, timeout, graph_file, print_file, 
         cross_line = ""
         bestround_line = ""
         lastround_line = ""
+        walsh_cond_line = ""
+        walsh_imb_line = ""
 
         with open(print_file) as pf:
             lines = pf.read().splitlines()
+            walsh_cond_line = lines[-1]
+            walsh_imb_line = lines[-4]
+
             lines = lines[:-8] # skip partition output
             case_line = lines[-1]
             cond_line = lines[-2]
@@ -137,9 +207,35 @@ def summarize(graph_name, g_phi, h_phi, multi, timeout, graph_file, print_file, 
         best_round = int(bestround_line.split()[-1][5:])
         last_round = int(lastround_line.split()[0][1:])
 
+        walsh_cond = float(walsh_cond_line.split()[1])
+        walsh_imb = float(walsh_imb_line.split()[3])
 
 
-    print(f"{graph_name}\t{num_nodes_in_graph_file(graph_file)}\t{num_edges_in_graph_file(graph_file)}\t{g_phi}\t{h_phi}\t{timed_out}\t{time_used}\t{timeout}\t{multi}\t{line_int}\t{cond}\t{expansion}\t{crossing_edges}\t{size1}\t{size2}\t{diff_abs}\t{diff_fact}\t{vol1}\t{vol2}\t{best_round}\t{last_round}")
+
+    print(f"{graph_name}\t"
+          f"{num_nodes_in_graph_file(graph_file)}\t"
+          f"{num_edges_in_graph_file(graph_file)}\t"
+          f"{g_phi}\t"
+          f"{h_phi}\t"
+          f"{timed_out}\t"
+          f"{time_used}\t"
+          f"{timeout}\t"
+          f"{multi}\t"
+          f"{line_int}\t"
+          f"{myform(cond)}\t"
+          f"{expansion}\t"
+          f"{crossing_edges}\t"
+          f"{size1}\t"
+          f"{size2}\t"
+          f"{diff_abs}\t"
+          f"{myform(diff_fact)}\t"
+          f"{vol1}\t"
+          f"{vol2}\t"
+          f"{best_round}\t"
+          f"{last_round}\t"
+          f"{myform(walsh_cond)}\t"
+          f"{myform(walsh_imb)}\t"
+          f"{colorof(graph_name)}\t")
 
     #pf = open(print_file)
 
@@ -164,7 +260,7 @@ def default_analyze(graph, multi):
     #g_phi = 1.0/n_nodes
     #for h_phi in [0.1, 0.55]:
     for h_phi in [1]: # Unreachable
-        run_with(graph, g_phi, h_phi, multi, rounds, "60")
+        run_with(graph, g_phi, h_phi, multi, rounds, "120")
 
 #default_analyze("barbell10-10", True)
 #default_analyze("barbell100-100", True)
@@ -185,13 +281,27 @@ def default_analyze(graph, multi):
 #default_analyze("add32", False)
 #default_analyze("auto", False)
 #default_analyze("bcsstk33", False)
-default_analyze("brack2", False)
+#default_analyze("brack2", False)
 #default_analyze("fe_4elt2", False)
-default_analyze("fe_sphere", False)
-default_analyze("fe_tooth", False)
-default_analyze("finan512", False)
+#default_analyze("fe_sphere", False)
+#efault_analyze("fe_tooth", False)
+#default_analyze("finan512", False)
 #default_analyze("uk", False)
 #default_analyze("vibrobox", False)
 #default_analyze("whitaker3", False)
 #default_analyze("wing_nodal", False)
 
+run_with("144", 0.0, 1, False, 0, "30")
+run_with("4elt", 0.0, 1, False, 0, "60")
+run_with("add32", 0.0, 1, False, 0, "30")
+run_with("auto", 0.0, 1, False, 0, "60")
+run_with("bcsstk33", 0.0, 1, False, 0, "60")
+run_with("brack2", 0.0, 1, False, 0, "120")
+run_with("fe_4elt2", 0.0, 1, False, 0, "60")
+run_with("fe_sphere", 0.0, 1, False, 0, "120")
+run_with("fe_tooth", 0.0, 1, False, 0, "120")
+run_with("finan512", 0.0, 1, False, 0, "60")
+run_with("uk", 0.0, 1, False, 0, "30")
+run_with("vibrobox", 0.0, 1, False, 0, "30")
+run_with("whitaker3", 0.0, 1, False, 0, "60")
+run_with("wing_nodal", 0.0, 1, False, 0, "60")
