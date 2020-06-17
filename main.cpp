@@ -514,17 +514,25 @@ struct CutMatching {
         size_t crossing_edges = 0;
         size_t min_side = 0;
         size_t max_side = 0;
+        size_t cut_volume = 0;
+        size_t non_cut_volume = 0;
 
-        CutStats(const Context &c, const Cut &cut) {
-		assert(cut.size() != 0);
-            for (EdgeIt e(c.g); e != INVALID; ++e) {
-                if (is_crossing(c.g, cut, e)) crossing_edges += 1;
-            }
-            assert(cut.size() <= c.num_vertices);
-            size_t other_size = c.num_vertices - cut.size();
-            min_side = min(cut.size(), other_size);
-            max_side = max(cut.size(), other_size);
+      CutStats(const Context &c, const Cut &cut) {
+        assert(cut.size() != 0);
+        for (EdgeIt e(c.g); e != INVALID; ++e) {
+          if (is_crossing(c.g, cut, e)) crossing_edges += 1;
+          if (cut.count(c.g.u(e))) cut_volume += 1;
+          else non_cut_volume += 1;
+          // If it's a self loop, it only contributes once, but if not, it contributes twice
+          if (c.g.u(e) == c.g.v(e)) continue;
+          if (cut.count(c.g.v(e))) cut_volume += 1;
+          else non_cut_volume += 1;
         }
+        assert(cut.size() <= c.num_vertices);
+        size_t other_size = c.num_vertices - cut.size();
+        min_side = min(cut.size(), other_size);
+        max_side = max(cut.size(), other_size);
+      }
 
         size_t diff() {
             return max_side - min_side;
@@ -541,6 +549,16 @@ struct CutMatching {
         double expansion() {
             return crossing_edges * 1. / min_side;
         }
+
+
+      long min_volume() {
+        return min(cut_volume, non_cut_volume);
+      }
+
+
+      double conductance() {
+        return min_side == 0 ? 999 : crossing_edges * 1. / min_volume();
+      }
 
         void print() {
             cout << "Edge crossings (E) : " << crossing_edges << endl;
