@@ -3,7 +3,7 @@ import sys
 
 lines = iter(sys.stdin)
 next(lines)
-lines = map(lambda s: s.replace("_", "\\_").split(), lines)
+lines = map(lambda s: s.split(), lines)
 
 #0 Graph_name	vertices	edges	g_phi	h_phi	timed_out	
 #6 spent_time	allowed_time	read_as_multi	CASE	best_cut_conductance	
@@ -17,4 +17,5 @@ print("#vertices	conductance	our_cut_conductance	name	colors	imbalance")
 
 
 for line in lines:
+    line[0] = f'"{line[0].replace("_", " ")}"'
     print(f"{line[1]}\t{line[21]}\t{line[10]}\t{line[0]}\t{line[23]}\t{line[24]}\t{line[25]}\t{line[16]}\t")

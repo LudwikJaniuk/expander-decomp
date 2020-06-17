@@ -16,6 +16,8 @@ unset clip points
 set clip one
 unset clip two
 set errorbars front 1.000000 
+unset bars
+unset errorbars
 set border 31 front lt black linewidth 1.000 dashtype solid
 set zdata 
 set ydata 
@@ -57,7 +59,7 @@ set style histogram clustered gap 2 title textcolor lt -1
 unset object
 set style textbox transparent margins  1.0,  1.0 border  lt -1 linewidth  1.0
 set offsets 0, 0, 0, 0
-set pointsize 1.5
+set pointsize 1.6
 set pointintervalbox 1
 set encoding default
 unset polar
@@ -170,6 +172,6 @@ GNUTERM = "qt"
 #GPFUN_rgb = "rgb(r,g,b) = 65536 * int(r) + 256 * int(g) + int(b)"
 ## Last datafile plotted: "walshaw-stats.txt"
 plot "walshaw-stats.txt" using 1:2:2:3 with yerrorbars lc rgb "black" notitle, \
-	'' using 1:2:4:(rgb($5,$6,$7)) with labels point lc rgb variable pt 7 offset char 1,1 notitle, \
-	'' using 1:3:(rgb($5,$6,$7)) with point lc rgb variable pt 6 notitle
+	'' using 1:2:4:(rgb($5,$6,$7)) with labels point lc rgb variable pt 1 offset char 1,1 notitle, \
+	'' using 1:3:(rgb($5,$6,$7)) with point lc rgb variable pt 4 notitle
 #    EOF

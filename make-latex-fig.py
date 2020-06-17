@@ -13,6 +13,8 @@ lines = map(lambda s: s.replace("_", "\\_").split(), lines)
 print(f"{4}")
 
 for line in lines:
+    line[22] = "{:.3%}".format(float(line[22])).replace("%","")
+    line[16] = "{:.3%}".format(float(line[16])).replace("%","")
     latex = (
             f"\\textbf{{{line[0]}}} & {line[1]} & \\multirow{{2}}*{{{line[19]} / {line[20]}}} &  {line[10]}   & {line[16]}   \\\\\n" 
             f" {line[7]} & {line[2]} &  &  {line[21]} & {line[22]}    \\\\ \n"
